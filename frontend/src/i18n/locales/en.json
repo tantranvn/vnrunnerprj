@@ -36,10 +36,43 @@
   },
   "home": {
     "hero": {
+      "aiFinderLabel": "THE AI RACE FINDER",
+      "racesIndexed": "{{count}} RACES INDEXED",
+      "titleLine1": "Find your",
+      "titleLine2Next": "next",
+      "titleLine2Rest": "start",
+      "titleLine3": "line.",
+      "subtitle": "Describe what you want — terrain, weather, distance, vibe — and we'll find the races that fit.",
+      "searchPlaceholder": "Ask anything — \"half marathon in October, cool weather, scenic\"",
+      "findRaces": "Find races",
+      "tryLabel": "Try:",
+      "quickFilters": {
+        "halfMarathons": "search half marathons in October",
+        "flat10K": "flat fast 10K near me",
+        "coolMarathons": "cool weather marathons",
+        "ultras50K": "find ultras under 50K"
+      },
       "title": "Discover Your Next Running Challenge",
-      "subtitle": "Find and register for running races across Vietnam. From 5Ks to ultramarathons, road races to trail runs.",
-      "cta": "Browse Races",
-      "searchPlaceholder": "Search races..."
+      "cta": "Browse Races"
+    },
+    "handPicked": {
+      "recommendedLabel": "RECOMMENDED FOR YOU",
+      "title": "Hand-picked races.",
+      "seeAll": "See all",
+      "noRacesAvailable": "No races available at the moment."
+    },
+    "cta": {
+      "freeForever": "FREE FOREVER · NO CREDIT CARD",
+      "titleLine1": "Save races.",
+      "titleLine2": "Get smarter",
+      "titleLine3": "recommendations.",
+      "description": "Sign up to save races, build a season calendar, get personalized AI picks, and never miss a registration window.",
+      "formLabel": "Start in 30 seconds",
+      "emailPlaceholder": "your@email.com",
+      "createAccount": "Create free account",
+      "or": "OR",
+      "apple": "Apple",
+      "google": "Google"
     },
     "features": {
       "title": "Why Choose VNRunner",

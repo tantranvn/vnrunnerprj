@@ -29,7 +29,7 @@ export const Route = createFileRoute("/$lang/_public/")({
 
 function HomePage() {
   const loggedIn = isLoggedIn()
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { lang } = Route.useParams()
   const currentLang = lang || i18n.language || "vi"
   const [searchQuery, setSearchQuery] = useState("")
@@ -51,10 +51,10 @@ function HomePage() {
   })
 
   const quickFilters = [
-    "search half marathons in October",
-    "flat fast 10K near me",
-    "cool weather marathons",
-    "find ultras under 50K",
+    t("home.hero.quickFilters.halfMarathons"),
+    t("home.hero.quickFilters.flat10K"),
+    t("home.hero.quickFilters.coolMarathons"),
+    t("home.hero.quickFilters.ultras50K"),
   ]
 
   const handleSearch = () => {
@@ -77,48 +77,50 @@ function HomePage() {
             {/* Small header text with icon */}
             <div className="flex items-center justify-center gap-2 text-xs tracking-[0.14em] uppercase text-[#74716A] font-mono">
               <Sparkles className="size-3.5" />
-              <span>THE AI RACE FINDER · {totalRaces.toLocaleString()} RACES INDEXED</span>
+              <span>{t("home.hero.aiFinderLabel")} · {t("home.hero.racesIndexed", { count: totalRaces.toLocaleString() })}</span>
             </div>
             
             {/* Large bold heading - Anton-style */}
-            <h1 className="text-6xl md:text-8xl lg:text-[168px] font-black tracking-[-0.01em] leading-[0.9] uppercase">
-              Find your
+            <h1 className="text-4xl md:text-5xl lg:text-7xl xl:text-[100px] font-black tracking-[-0.01em] leading-[0.9] uppercase">
+              {t("home.hero.titleLine1")}
               <br />
-              <span className="text-[#FF5A1F]">next</span> start
+              <span className="text-[#FF5A1F]">{t("home.hero.titleLine2Next")}</span> {t("home.hero.titleLine2Rest")}
               <br />
-              line.
+              {t("home.hero.titleLine3")}
             </h1>
             
             {/* Subtitle */}
-            <p className="text-lg md:text-xl text-[#74716A] max-w-[620px] mx-auto leading-7">
-              Describe what you want — terrain, weather, distance, vibe — and we'll find the races that fit.
+            <p className="text-base md:text-lg lg:text-xl text-[#74716A] max-w-[620px] mx-auto leading-7 px-4">
+              {t("home.hero.subtitle")}
             </p>
             
             {/* AI Search Bar */}
-            <div className="max-w-[820px] mx-auto space-y-4 pt-5">
+            <div className="max-w-[820px] mx-auto space-y-4 pt-5 px-4">
               <div className="relative bg-white border-2 border-[#E6E1D7] rounded-[28px] shadow-[0px_6px_12px_rgba(15,14,12,0.06),0px_1px_1px_rgba(15,14,12,0.04)] p-2.5">
-                <div className="flex items-center gap-3 px-4">
-                  <Sparkles className="size-3.5 text-[#74716A] flex-shrink-0" />
-                  <Input
-                    type="text"
-                    placeholder='Ask anything — "half marathon in October, cool weather, scenic"'
-                    className="flex-1 h-11 px-1 border-0 text-base focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  />
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 px-4">
+                  <div className="flex items-center gap-3 flex-1">
+                    <Sparkles className="size-3.5 text-[#74716A] flex-shrink-0" />
+                    <Input
+                      type="text"
+                      placeholder={t("home.hero.searchPlaceholder")}
+                      className="flex-1 h-11 px-1 border-0 text-base focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                    />
+                  </div>
                   <Button
                     onClick={handleSearch}
-                    className="rounded-full h-11 px-5 font-bold text-sm bg-[#FF5A1F] hover:bg-[#FF5A1F]/90"
+                    className="rounded-full h-11 px-5 font-bold text-sm bg-[#FF5A1F] hover:bg-[#FF5A1F]/90 w-full sm:w-auto whitespace-nowrap"
                   >
-                    Find races <ArrowRight className="ml-2 size-4" />
+                    {t("home.hero.findRaces")} <ArrowRight className="ml-2 size-4" />
                   </Button>
                 </div>
               </div>
               
               {/* Quick filters */}
               <div className="flex flex-wrap items-center justify-center gap-2">
-                <span className="text-xs text-[#74716A] font-mono tracking-widest uppercase">Try:</span>
+                <span className="text-xs text-[#74716A] font-mono tracking-widest uppercase">{t("home.hero.tryLabel")}</span>
                 {quickFilters.map((filter) => (
                   <Badge
                     key={filter}
@@ -140,22 +142,22 @@ function HomePage() {
         <div className="container max-w-[1400px]">
           <div className="space-y-7">
             {/* Section header with border */}
-            <div className="flex items-end justify-between pb-7 border-b-2 border-[#0F0E0C]">
+            <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between pb-7 border-b-2 border-[#0F0E0C] gap-4">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-xs tracking-[0.14em] uppercase text-[#74716A] font-mono">
                   <Sparkles className="size-3.5" />
-                  <span>RECOMMENDED FOR YOU</span>
+                  <span>{t("home.handPicked.recommendedLabel")}</span>
                 </div>
-                <h2 className="text-4xl md:text-5xl lg:text-[56px] font-black tracking-tight leading-[0.92] uppercase">
-                  Hand-picked races.
+                <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-[56px] font-black tracking-tight leading-[0.92] uppercase">
+                  {t("home.handPicked.title")}
                 </h2>
               </div>
               <Link
                 to="/$lang/races"
                 params={{ lang: currentLang }}
-                className="text-sm font-bold hover:text-primary transition-colors flex items-center gap-2 border border-[#E6E1D7] rounded-full px-5 py-2.5"
+                className="text-sm font-bold hover:text-primary transition-colors flex items-center gap-2 border border-[#E6E1D7] rounded-full px-5 py-2.5 whitespace-nowrap"
               >
-                See all <ArrowRight className="size-4" />
+                {t("home.handPicked.seeAll")} <ArrowRight className="size-4" />
               </Link>
             </div>
             
@@ -177,7 +179,7 @@ function HomePage() {
               </div>
             ) : (
               <p className="text-center text-muted-foreground py-12">
-                No races available at the moment.
+                {t("home.handPicked.noRacesAvailable")}
               </p>
             )}
           </div>
@@ -193,53 +195,53 @@ function HomePage() {
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl" />
           </div>
           
-          <div className="container max-w-[1328px] relative">
-            <div className="grid lg:grid-cols-[1.4fr_1fr] gap-12 items-center">
+          <div className="container max-w-[1328px] relative px-4">
+            <div className="grid lg:grid-cols-[1.4fr_1fr] gap-8 md:gap-12 items-center">
               {/* Left side - Copy */}
               <div className="space-y-3">
                 <p className="text-xs tracking-[0.14em] uppercase text-white/70 font-mono">
-                  FREE FOREVER · NO CREDIT CARD
+                  {t("home.cta.freeForever")}
                 </p>
-                <h2 className="text-5xl md:text-6xl lg:text-[80px] font-black tracking-tight leading-[0.95] uppercase text-white">
-                  Save races.
+                <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-[80px] font-black tracking-tight leading-[0.95] uppercase text-white">
+                  {t("home.cta.titleLine1")}
                   <br />
-                  Get smarter
+                  {t("home.cta.titleLine2")}
                   <br />
-                  recommendations.
+                  {t("home.cta.titleLine3")}
                 </h2>
-                <p className="text-base leading-6 text-white/90 max-w-[680px]">
-                  Sign up to save races, build a season calendar, get personalized AI picks, and never miss a registration window.
+                <p className="text-sm md:text-base leading-6 text-white/90 max-w-[680px]">
+                  {t("home.cta.description")}
                 </p>
               </div>
                 
               {/* Right side - Form */}
               <div className="bg-white rounded-[22px] p-6 space-y-2.5">
                 <p className="text-xs tracking-[0.14em] uppercase text-[#74716A] font-mono">
-                  Start in 30 seconds
+                  {t("home.cta.formLabel")}
                 </p>
                 
                 <Input
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder={t("home.cta.emailPlaceholder")}
                   className="h-12 rounded-full border-[#E6E1D7] text-sm"
                 />
                 
                 <Button className="w-full h-11 rounded-full bg-[#0F0E0C] hover:bg-[#0F0E0C]/90 text-white font-bold text-sm">
-                  Create free account <ArrowRight className="ml-2 size-4" />
+                  {t("home.cta.createAccount")} <ArrowRight className="ml-2 size-4" />
                 </Button>
                 
                 <div className="flex items-center gap-2 py-1">
                   <div className="flex-1 h-px bg-[#E6E1D7]" />
-                  <span className="text-xs text-[#74716A]">OR</span>
+                  <span className="text-xs text-[#74716A]">{t("home.cta.or")}</span>
                   <div className="flex-1 h-px bg-[#E6E1D7]" />
                 </div>
                 
                 <div className="grid grid-cols-2 gap-2 pt-1">
                   <Button variant="outline" className="h-[34px] rounded-full border-[#E6E1D7] text-xs font-bold">
-                    Apple
+                    {t("home.cta.apple")}
                   </Button>
                   <Button variant="outline" className="h-[34px] rounded-full border-[#E6E1D7] text-xs font-bold">
-                    Google
+                    {t("home.cta.google")}
                   </Button>
                 </div>
               </div>

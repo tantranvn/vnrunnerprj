@@ -28,7 +28,7 @@ export function PublicHeader() {
             params={{ lang }}
             className="flex items-center gap-2 font-bold text-xl hover:text-primary transition-colors"
           >
-            <span>RaceHub</span>
+            <span>VNRUNNER</span>
           </Link>
 
           <nav

@@ -36,10 +36,43 @@
   },
   "home": {
     "hero": {
+      "aiFinderLabel": "TÌM GIẢI CHẠY BẰNG AI",
+      "racesIndexed": "{{count}} GIẢI CHẠY ĐÃ ĐƯỢC LƯU TRỮ",
+      "titleLine1": "Tìm vạch",
+      "titleLine2Next": "xuất phát",
+      "titleLine2Rest": "tiếp theo",
+      "titleLine3": "của bạn.",
+      "subtitle": "Mô tả những gì bạn muốn — địa hình, thời tiết, khoảng cách, phong cách — và chúng tôi sẽ tìm giải chạy phù hợp.",
+      "searchPlaceholder": "Hỏi bất cứ điều gì — \"half marathon tháng 10, thời tiết mát, cảnh đẹp\"",
+      "findRaces": "Tìm giải chạy",
+      "tryLabel": "Thử:",
+      "quickFilters": {
+        "halfMarathons": "tìm half marathon tháng 10",
+        "flat10K": "10K bằng phẳng gần tôi",
+        "coolMarathons": "marathon thời tiết mát",
+        "ultras50K": "tìm ultra dưới 50K"
+      },
       "title": "Khám Phá Thử Thách Chạy Tiếp Theo Của Bạn",
-      "subtitle": "Tìm và đăng ký giải chạy trên khắp Việt Nam. Từ 5K đến siêu marathon, đường trường đến trail.",
-      "cta": "Xem giải chạy",
-      "searchPlaceholder": "Tìm kiếm giải chạy..."
+      "cta": "Xem giải chạy"
+    },
+    "handPicked": {
+      "recommendedLabel": "GỢI Ý DÀNH CHO BẠN",
+      "title": "Giải chạy được chọn lọc.",
+      "seeAll": "Xem tất cả",
+      "noRacesAvailable": "Hiện chưa có giải chạy nào."
+    },
+    "cta": {
+      "freeForever": "MIỄN PHÍ MÃI MÃI · KHÔNG CẦN THẺ TÍN DỤNG",
+      "titleLine1": "Lưu giải chạy.",
+      "titleLine2": "Nhận đề xuất",
+      "titleLine3": "thông minh hơn.",
+      "description": "Đăng ký để lưu giải chạy, xây dựng lịch mùa giải, nhận gợi ý AI cá nhân hóa và không bao giờ bỏ lỡ cửa sổ đăng ký.",
+      "formLabel": "Bắt đầu trong 30 giây",
+      "emailPlaceholder": "email@cua.ban",
+      "createAccount": "Tạo tài khoản miễn phí",
+      "or": "HOẶC",
+      "apple": "Apple",
+      "google": "Google"
     },
     "features": {
       "title": "Tại Sao Chọn VNRunner",

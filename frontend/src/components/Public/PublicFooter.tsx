@@ -8,11 +8,11 @@ interface PublicFooterProps {
 
 export function PublicFooter({ totalRaces = 11248 }: PublicFooterProps) {
   return (
-    <footer className="bg-[#0F0E0C] text-white py-14 px-14">
+    <footer className="bg-[#0F0E0C] text-white py-10 md:py-14 px-4 md:px-8 lg:px-14">
       <div className="container max-w-[1328px]">
-        <div className="grid grid-cols-5 gap-8 pb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 md:gap-8 pb-12">
           {/* Brand column */}
-          <div className="space-y-4">
+          <div className="space-y-4 sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2">
               <Sparkles className="size-5" />
               <span className="text-lg font-black tracking-wide uppercase">VNRUNNER</span>
@@ -20,7 +20,7 @@ export function PublicFooter({ totalRaces = 11248 }: PublicFooterProps) {
             <p className="text-sm text-white/60 leading-relaxed">
               The AI race finder for runners who know what they want. {totalRaces.toLocaleString()} races indexed across Vietnam.
             </p>
-            <div className="flex gap-2 pt-1">
+            <div className="flex flex-wrap gap-2 pt-1">
               <Button variant="ghost" size="sm" className="h-[34px] rounded-full bg-white/8 hover:bg-white/12 text-white text-xs font-bold px-3.5">
                 App Store
               </Button>
@@ -81,17 +81,17 @@ export function PublicFooter({ totalRaces = 11248 }: PublicFooterProps) {
         </div>
 
         {/* Bottom bar */}
-        <div className="flex items-center justify-between pt-6 border-t border-white/10">
-          <p className="text-xs text-white/50">
+        <div className="flex flex-col md:flex-row items-center justify-between pt-6 border-t border-white/10 gap-4 md:gap-0">
+          <p className="text-xs text-white/50 text-center md:text-left">
             © 2026 Vnrunner · Made for runners
           </p>
-          <div className="flex gap-4 text-xs text-white/50">
+          <div className="flex flex-wrap justify-center gap-3 md:gap-4 text-xs text-white/50">
             <span className="hover:text-white cursor-pointer transition-colors">Privacy</span>
             <span className="hover:text-white cursor-pointer transition-colors">Terms</span>
             <span className="hover:text-white cursor-pointer transition-colors">Cookies</span>
             <span className="hover:text-white cursor-pointer transition-colors">Accessibility</span>
           </div>
-          <p className="text-xs text-white/50 font-mono tracking-wider">
+          <p className="text-xs text-white/50 font-mono tracking-wider text-center md:text-right">
             v2.4 · UPDATED 4 MIN AGO
           </p>
         </div>
