@@ -105,7 +105,7 @@ function RaceDetailSkeleton() {
 }
 
 function RaceDetailPage() {
-  const { raceId } = Route.useParams()
+  const { raceId, lang } = Route.useParams()
 
   const { data: race, isLoading } = useQuery<RacePublicWithDetails>({
     queryKey: ["race", raceId],
@@ -341,7 +341,7 @@ function RaceDetailPage() {
           )}
 
           <div className="pt-4">
-            <Link to="/races" className="text-sm text-primary hover:underline">
+            <Link to="/$lang/races" params={{ lang }} className="text-sm text-primary hover:underline">
               ← Back to all races
             </Link>
           </div>
