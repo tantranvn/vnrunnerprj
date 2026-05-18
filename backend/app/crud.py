@@ -229,20 +229,76 @@ def get_races(
     skip: int = 0,
     limit: int = 100,
     organizer_id: uuid.UUID | None = None,
+    status: str | None = None,
+    search: str | None = None,
+    start_date_from: datetime | None = None,
+    start_date_to: datetime | None = None,
 ) -> list[Race]:
-    """Get races with pagination, optionally filtered by organizer."""
-    statement = select(Race).offset(skip).limit(limit)
+    """Get races with pagination and filters."""
+    statement = select(Race)
+    
+    # Apply filters
     if organizer_id:
         statement = statement.where(Race.organizer_id == organizer_id)
+    if status:
+        statement = statement.where(Race.status == status)
+    if search:
+        statement = statement.where(Race.name.ilike(f"%{search}%"))
+    if start_date_from:
+        statement = statement.where(Race.event_start_date >= start_date_from)
+    if start_date_to:
+        statement = statement.where(Race.event_start_date <= start_date_to)
+    
     statement = statement.order_by(col(Race.event_start_date).desc())
+    statement = statement.offset(skip).limit(limit)
     return list(session.exec(statement).all())
 
 
-def get_races_count(*, session: Session, organizer_id: uuid.UUID | None = None) -> int:
-    """Get total count of races."""
+def enrich_races_with_cover_urls(
+    *, session: Session, races: list[Race]
+) -> list[Race]:
+    """
+    Enrich races with cover image URLs in their race_metadata.
+    Uses cached cover_image_url field for performance optimization.
+    Modifies races in-place and returns them.
+    """
+    if not races:
+        return races
+    
+    # Use cached cover URLs - no database query needed!
+    for race in races:
+        if race.cover_image_url:
+            if race.race_metadata is None:
+                race.race_metadata = {}
+            race.race_metadata["cover_url"] = race.cover_image_url
+    
+    return races
+
+
+def get_races_count(
+    *,
+    session: Session,
+    organizer_id: uuid.UUID | None = None,
+    status: str | None = None,
+    search: str | None = None,
+    start_date_from: datetime | None = None,
+    start_date_to: datetime | None = None,
+) -> int:
+    """Get total count of races with filters."""
     statement = select(func.count(Race.id))
+    
+    # Apply same filters as get_races
     if organizer_id:
         statement = statement.where(Race.organizer_id == organizer_id)
+    if status:
+        statement = statement.where(Race.status == status)
+    if search:
+        statement = statement.where(Race.name.ilike(f"%{search}%"))
+    if start_date_from:
+        statement = statement.where(Race.event_start_date >= start_date_from)
+    if start_date_to:
+        statement = statement.where(Race.event_start_date <= start_date_to)
+    
     return session.exec(statement).one()
 
 
@@ -283,6 +339,11 @@ def update_race(*, session: Session, db_race: Race, race_in: RaceUpdate) -> Race
     session.refresh(db_race)
     if tag_ids is not None:
         set_race_tags(session=session, race=db_race, tag_ids=tag_ids)
+    
+    # Refresh cached image URLs to ensure they're in sync with media assets
+    _update_race_cached_image_urls(session=session, race_id=db_race.id)
+    session.refresh(db_race)
+    
     return db_race
 
 
@@ -321,12 +382,58 @@ def get_races_without_embedding(
 # =============================================================================
 
 
+def _update_race_cached_image_urls(
+    *, session: Session, race_id: uuid.UUID, kind: str | None = None
+) -> None:
+    """
+    Update cached image URLs for a race based on its media assets.
+    If kind is specified, only update that specific image type (cover or banner).
+    Otherwise, update both.
+    """
+    race = session.get(Race, race_id)
+    if not race:
+        return
+
+    kinds_to_update = []
+    if kind in ["cover", "banner"]:
+        kinds_to_update = [kind]
+    else:
+        kinds_to_update = ["cover", "banner"]
+
+    for image_kind in kinds_to_update:
+        # Find the primary media asset of this kind
+        statement = select(MediaAsset).where(
+            MediaAsset.content_type == "race",
+            MediaAsset.content_id == race_id,
+            MediaAsset.kind == image_kind,
+            MediaAsset.is_primary == True,  # noqa: E712
+        )
+        media = session.exec(statement).first()
+
+        # Update the cached URL
+        if image_kind == "cover":
+            race.cover_image_url = media.file_url if media else None
+        elif image_kind == "banner":
+            race.banner_image_url = media.file_url if media else None
+
+    race.updated_at = datetime.now(timezone.utc)
+    session.add(race)
+    session.commit()
+
+
 def create_media_asset(*, session: Session, media_in: MediaAssetCreate) -> MediaAsset:
     """Create a media asset."""
     db_media = MediaAsset.model_validate(media_in)
     session.add(db_media)
     session.commit()
     session.refresh(db_media)
+    
+    # Update cached image URLs if this is a race cover or banner
+    if db_media.content_type == "race" and db_media.kind in ["cover", "banner"]:
+        _update_race_cached_image_urls(
+            session=session, race_id=db_media.content_id, kind=db_media.kind
+        )
+    
     return db_media
 
 
@@ -419,12 +526,29 @@ def update_media_asset(
     *, session: Session, db_media: MediaAsset, media_in: MediaAssetUpdate
 ) -> MediaAsset:
     """Update a media asset."""
+    # Store original values for comparison
+    original_content_type = db_media.content_type
+    original_content_id = db_media.content_id
+    original_kind = db_media.kind
+    
     media_data = media_in.model_dump(exclude_unset=True)
     media_data["updated_at"] = datetime.now(timezone.utc)
     db_media.sqlmodel_update(media_data)
     session.add(db_media)
     session.commit()
     session.refresh(db_media)
+    
+    # Update cached image URLs if this is a race cover or banner
+    if db_media.content_type == "race" and db_media.kind in ["cover", "banner"]:
+        _update_race_cached_image_urls(
+            session=session, race_id=db_media.content_id, kind=db_media.kind
+        )
+    # Also update if the content_id or kind changed from a race cover/banner
+    elif original_content_type == "race" and original_kind in ["cover", "banner"]:
+        _update_race_cached_image_urls(
+            session=session, race_id=original_content_id, kind=original_kind
+        )
+    
     return db_media
 
 
@@ -432,8 +556,20 @@ def delete_media_asset(*, session: Session, media_id: uuid.UUID) -> bool:
     """Delete a media asset."""
     media = session.get(MediaAsset, media_id)
     if media:
+        # Store values before deletion for cache update
+        content_type = media.content_type
+        content_id = media.content_id
+        kind = media.kind
+        
         session.delete(media)
         session.commit()
+        
+        # Update cached image URLs if this was a race cover or banner
+        if content_type == "race" and kind in ["cover", "banner"]:
+            _update_race_cached_image_urls(
+                session=session, race_id=content_id, kind=kind
+            )
+        
         return True
     return False
 

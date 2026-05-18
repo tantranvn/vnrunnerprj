@@ -75,6 +75,12 @@ export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
 
+export type ImageGenerationInput = {
+    race_name: string;
+    location?: (string | null);
+    image_type?: string;
+};
+
 export type InteractionTypeEnum = 'viewed' | 'saved' | 'unsaved' | 'registered' | 'shared';
 
 export type ItemCreate = {
@@ -364,6 +370,8 @@ export type RaceCreate = {
     is_certified?: boolean;
     gpx_file_url?: (string | null);
     website_url?: (string | null);
+    cover_image_url?: (string | null);
+    banner_image_url?: (string | null);
     default_language?: string;
     translations?: ({
     [key: string]: unknown;
@@ -405,6 +413,8 @@ export type RacePublic = {
     is_certified?: boolean;
     gpx_file_url?: (string | null);
     website_url?: (string | null);
+    cover_image_url?: (string | null);
+    banner_image_url?: (string | null);
     default_language?: string;
     translations?: ({
     [key: string]: unknown;
@@ -446,6 +456,8 @@ export type RacePublicWithDetails = {
     is_certified?: boolean;
     gpx_file_url?: (string | null);
     website_url?: (string | null);
+    cover_image_url?: (string | null);
+    banner_image_url?: (string | null);
     default_language?: string;
     translations?: ({
     [key: string]: unknown;
@@ -492,6 +504,8 @@ export type RacePublicWithDistance = {
     is_certified?: boolean;
     gpx_file_url?: (string | null);
     website_url?: (string | null);
+    cover_image_url?: (string | null);
+    banner_image_url?: (string | null);
     default_language?: string;
     translations?: ({
     [key: string]: unknown;
@@ -534,6 +548,8 @@ export type RacePublicWithExplanation = {
     is_certified?: boolean;
     gpx_file_url?: (string | null);
     website_url?: (string | null);
+    cover_image_url?: (string | null);
+    banner_image_url?: (string | null);
     default_language?: string;
     translations?: ({
     [key: string]: unknown;
@@ -732,6 +748,8 @@ export type RaceUpdate = {
     is_certified?: (boolean | null);
     gpx_file_url?: (string | null);
     website_url?: (string | null);
+    cover_image_url?: (string | null);
+    banner_image_url?: (string | null);
     tag_ids?: (Array<(string)> | null);
 };
 
@@ -1326,7 +1344,11 @@ export type RacesReadMyOrganizedRacesResponse = (RacesPublic);
 export type RacesReadRacesData = {
     limit?: number;
     organizerId?: (string | null);
+    search?: (string | null);
     skip?: number;
+    startDateFrom?: (string | null);
+    startDateTo?: (string | null);
+    status?: (string | null);
 };
 
 export type RacesReadRacesResponse = (RacesPublic);
@@ -1342,6 +1364,12 @@ export type RacesGenerateRaceDetailsData = {
 };
 
 export type RacesGenerateRaceDetailsResponse = (AIRaceSuggestion);
+
+export type RacesGenerateRaceImageEndpointData = {
+    requestBody: ImageGenerationInput;
+};
+
+export type RacesGenerateRaceImageEndpointResponse = (unknown);
 
 export type RacesReadRaceData = {
     raceId: string;

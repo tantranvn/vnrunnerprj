@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Calendar, Clock } from "lucide-react"
 import { Link } from "@tanstack/react-router"
-import { cn } from "@/lib/utils"
+import { cn, formatDate } from "@/lib/utils"
 
 export const Route = createFileRoute("/_layout/history")({
   component: RaceHistoryPage,
@@ -29,14 +29,6 @@ const PAYMENT_COLORS: Record<string, string> = {
   unpaid: "bg-yellow-100 text-yellow-800",
   refunded: "bg-gray-100 text-gray-800",
   partial: "bg-orange-100 text-orange-800",
-}
-
-function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  })
 }
 
 function RegistrationRow({ reg }: { reg: RaceRegistrationPublic }) {

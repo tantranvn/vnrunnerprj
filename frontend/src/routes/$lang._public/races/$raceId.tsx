@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { RaceCard } from "@/components/Races/RaceCard"
 import { useRaceSearch } from "@/hooks/useRaceSearch"
-import { cn } from "@/lib/utils"
+import { cn, formatDateLong } from "@/lib/utils"
 import { CourseMap } from "@/components/Races/CourseMap"
 import { RaceAssistant } from "@/components/Races/RaceAssistant"
 import { MapPin, Calendar, Mountain, Globe, Award } from "lucide-react"
@@ -79,14 +79,6 @@ const DIFFICULTY_COLORS: Record<string, string> = {
   moderate: "bg-amber-500/10 text-amber-500 border-amber-500/20",
   hard: "bg-orange-500/10 text-orange-500 border-orange-500/20",
   extreme: "bg-red-500/10 text-red-500 border-red-500/20",
-}
-
-function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  })
 }
 
 function InfoRow({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
@@ -215,13 +207,13 @@ function RaceDetailPage() {
             <InfoRow
               icon={<Calendar className="size-5" />}
               label="Race date"
-              value={formatDate(race.event_start_date)}
+              value={formatDateLong(race.event_start_date)}
             />
             {race.event_end_date && (
               <InfoRow
                 icon={<Calendar className="size-5" />}
                 label="End date"
-                value={formatDate(race.event_end_date)}
+                value={formatDateLong(race.event_end_date)}
               />
             )}
             <InfoRow
@@ -315,7 +307,7 @@ function RaceDetailPage() {
               </div>
               {race.registration_end && (
                 <div className="text-sm text-muted-foreground">
-                  Closes {formatDate(race.registration_end)}
+                  Closes {formatDateLong(race.registration_end)}
                 </div>
               )}
               {race.base_price != null && (

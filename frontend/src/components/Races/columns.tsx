@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge"
 import { format } from "date-fns"
 
 import type { RacePublic } from "@/client"
-import { cn } from "@/lib/utils"
+import { cn, formatStatus } from "@/lib/utils"
 import { RaceActionsMenu } from "./RaceActionsMenu"
 
 const statusColors = {
@@ -13,14 +13,6 @@ const statusColors = {
   registration_closed: "bg-yellow-500",
   completed: "bg-purple-500",
   cancelled: "bg-red-500",
-}
-
-const formatStatus = (status: string | undefined): string => {
-  if (!status) return "Draft"
-  return status
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ")
 }
 
 export const columns: ColumnDef<RacePublic>[] = [

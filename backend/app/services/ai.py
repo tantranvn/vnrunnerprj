@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import base64
 import logging
 from typing import TYPE_CHECKING
 
 import anthropic
+import httpx
 from openai import AsyncOpenAI
 
 from app.core.config import settings
@@ -266,6 +268,71 @@ async def generate_race_from_name(race_name: str) -> dict[str, str]:
         return data
     except json.JSONDecodeError:
         logger.warning("generate_race_from_name: failed to parse JSON response")
+        return {}
+    except Exception as e:
+        logger.error("generate_race_from_name: error generating race details: %s", e)
+        return {}
+
+
+async def generate_race_image(race_name: str, location: str | None, image_type: str = "cover") -> bytes:
+    """
+    Generate a race cover or banner image using OpenAI gpt-image-2.
+    Returns the image as bytes (PNG format).
+    
+    Args:
+        race_name: Name of the race
+        location: Location of the race (optional)
+        image_type: Either 'cover' (square) or 'banner' (landscape)
+    
+    Returns:
+        bytes: PNG image data
+    """
+    # gpt-image-2 supports 256x256, 512x512, 1024x1024
+    # Using 1024x1024 for both cover and banner for best quality
+    size = "1024x1024"
+    
+    location_text = f" in {location}" if location else " in Vietnam"
+    
+    # Build a descriptive prompt for the image
+    if image_type == "banner":
+        prompt = (
+            f"A wide panoramic view of a running race event '{race_name}'{location_text}. "
+            f"Professional sports photography showing runners on a scenic trail or road, "
+            f"beautiful Vietnamese landscape in background, dynamic action, vibrant colors, "
+            f"inspiring atmosphere, high quality, no text or words in image"
+        )
+    else:  # cover
+        prompt = (
+            f"A professional running race event poster for '{race_name}'{location_text}. "
+            f"Show runners in action on a scenic Vietnamese trail or road with beautiful nature. "
+            f"Dynamic motion, inspiring atmosphere, stunning landscape, square composition, "
+            f"professional sports photography style, high quality, no text or words in image"
+        )
+    
+    try:
+        # Use OpenAI SDK to generate image with gpt-image-2
+        result = await _openai().images.generate(
+            model="gpt-image-2",
+            prompt=prompt,
+            size=size,
+            output_format="jpeg",
+            quality="medium",
+            output_compression=80,     # type: ignore
+            n=1
+        )
+        
+        # Decode base64 image data
+        image_base64 = result.data[0].b64_json
+        if not image_base64:
+            raise ValueError("No image data returned from OpenAI")
+        
+        image_bytes = base64.b64decode(image_base64)
+        return image_bytes
+            
+    except Exception as e:
+        logger.error("generate_race_image: error generating image: %s", e)
+        raise
+
         return {}
     except Exception as e:
         logger.error("generate_race_from_name: error generating race details: %s", e)

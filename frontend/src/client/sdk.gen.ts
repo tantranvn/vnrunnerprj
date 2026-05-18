@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { AdminReindexRaceEmbeddingsData, AdminReindexRaceEmbeddingsResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, MediaReadMediaAssetsData, MediaReadMediaAssetsResponse, MediaUploadMediaAssetData, MediaUploadMediaAssetResponse, MediaReadMediaFileData, MediaReadMediaFileResponse, MediaUpdateMediaAssetData, MediaUpdateMediaAssetResponse, MediaDeleteMediaAssetData, MediaDeleteMediaAssetResponse, PrivateCreateUserData, PrivateCreateUserResponse, ProfilesGetMyProfileResponse, ProfilesUpsertMyProfileData, ProfilesUpsertMyProfileResponse, ProfilesDeleteMyProfileResponse, ProfilesUpdateMyProfileData, ProfilesUpdateMyProfileResponse, ProfilesGetMySavedRacesResponse, ProfilesSaveRaceData, ProfilesSaveRaceResponse, ProfilesUnsaveRaceData, ProfilesUnsaveRaceResponse, ProfilesTrackRaceViewData, ProfilesTrackRaceViewResponse, ProvincesReadAdministrativeRegionsResponse, ProvincesReadAdministrativeUnitsResponse, ProvincesReadProvincesData, ProvincesReadProvincesResponse, ProvincesReadProvinceData, ProvincesReadProvinceResponse, ProvincesReadWardsByProvinceData, ProvincesReadWardsByProvinceResponse, ProvincesReadWardData, ProvincesReadWardResponse, RaceAttributesReadRaceAttributesData, RaceAttributesReadRaceAttributesResponse, RaceAttributesCreateRaceAttributeData, RaceAttributesCreateRaceAttributeResponse, RaceAttributesReadRaceAttributeData, RaceAttributesReadRaceAttributeResponse, RaceAttributesUpdateRaceAttributeData, RaceAttributesUpdateRaceAttributeResponse, RaceAttributesDeleteRaceAttributeData, RaceAttributesDeleteRaceAttributeResponse, RaceCategoriesReadRaceCategoriesData, RaceCategoriesReadRaceCategoriesResponse, RaceCategoriesCreateRaceCategoryData, RaceCategoriesCreateRaceCategoryResponse, RaceCategoriesReadRaceCategoryData, RaceCategoriesReadRaceCategoryResponse, RaceCategoriesUpdateRaceCategoryData, RaceCategoriesUpdateRaceCategoryResponse, RaceCategoriesDeleteRaceCategoryData, RaceCategoriesDeleteRaceCategoryResponse, RaceCategoriesUpdateCategoryTranslationsData, RaceCategoriesUpdateCategoryTranslationsResponse, RaceCategoriesGetCategoryTranslationsData, RaceCategoriesGetCategoryTranslationsResponse, RaceRegistrationsReadRaceRegistrationsData, RaceRegistrationsReadRaceRegistrationsResponse, RaceRegistrationsCreateRaceRegistrationData, RaceRegistrationsCreateRaceRegistrationResponse, RaceRegistrationsReadMyRegistrationsData, RaceRegistrationsReadMyRegistrationsResponse, RaceRegistrationsReadRaceRegistrationData, RaceRegistrationsReadRaceRegistrationResponse, RaceRegistrationsUpdateRaceRegistrationData, RaceRegistrationsUpdateRaceRegistrationResponse, RaceRegistrationsDeleteRaceRegistrationData, RaceRegistrationsDeleteRaceRegistrationResponse, RaceResultsReadRaceResultsData, RaceResultsReadRaceResultsResponse, RaceResultsCreateRaceResultData, RaceResultsCreateRaceResultResponse, RaceResultsReadRaceResultData, RaceResultsReadRaceResultResponse, RaceResultsUpdateRaceResultData, RaceResultsUpdateRaceResultResponse, RaceResultsDeleteRaceResultData, RaceResultsDeleteRaceResultResponse, RaceResultsReadRaceResultByRegistrationData, RaceResultsReadRaceResultByRegistrationResponse, RacesSearchRacesData, RacesSearchRacesResponse, RacesGetNearbyRacesData, RacesGetNearbyRacesResponse, RacesGetTrendingRacesData, RacesGetTrendingRacesResponse, RacesGetRecommendedRacesData, RacesGetRecommendedRacesResponse, RacesReadMyOrganizedRacesData, RacesReadMyOrganizedRacesResponse, RacesReadRacesData, RacesReadRacesResponse, RacesCreateRaceData, RacesCreateRaceResponse, RacesGenerateRaceDetailsData, RacesGenerateRaceDetailsResponse, RacesReadRaceData, RacesReadRaceResponse, RacesUpdateRaceData, RacesUpdateRaceResponse, RacesDeleteRaceData, RacesDeleteRaceResponse, RacesGetSimilarRacesData, RacesGetSimilarRacesResponse, RacesAutoTagRaceData, RacesAutoTagRaceResponse, RacesEnhanceRaceDescriptionData, RacesEnhanceRaceDescriptionResponse, RacesAskRaceQuestionData, RacesAskRaceQuestionResponse, RacesUpdateRaceTranslationsData, RacesUpdateRaceTranslationsResponse, RacesGetRaceTranslationsData, RacesGetRaceTranslationsResponse, RolesReadRolesData, RolesReadRolesResponse, RolesCreateRoleData, RolesCreateRoleResponse, RolesReadRoleData, RolesReadRoleResponse, RolesUpdateRoleData, RolesUpdateRoleResponse, RolesDeleteRoleData, RolesDeleteRoleResponse, RolesAssignRoleToUserData, RolesAssignRoleToUserResponse, RolesRemoveRoleFromUserData, RolesRemoveRoleFromUserResponse, TagsListTagsResponse, TagsCreateTagData, TagsCreateTagResponse, TagsSetTagsForRaceData, TagsSetTagsForRaceResponse, TagsUpdateTagTranslationsData, TagsUpdateTagTranslationsResponse, TagsGetTagTranslationsData, TagsGetTagTranslationsResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { AdminReindexRaceEmbeddingsData, AdminReindexRaceEmbeddingsResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, MediaReadMediaAssetsData, MediaReadMediaAssetsResponse, MediaUploadMediaAssetData, MediaUploadMediaAssetResponse, MediaReadMediaFileData, MediaReadMediaFileResponse, MediaUpdateMediaAssetData, MediaUpdateMediaAssetResponse, MediaDeleteMediaAssetData, MediaDeleteMediaAssetResponse, PrivateCreateUserData, PrivateCreateUserResponse, ProfilesGetMyProfileResponse, ProfilesUpsertMyProfileData, ProfilesUpsertMyProfileResponse, ProfilesDeleteMyProfileResponse, ProfilesUpdateMyProfileData, ProfilesUpdateMyProfileResponse, ProfilesGetMySavedRacesResponse, ProfilesSaveRaceData, ProfilesSaveRaceResponse, ProfilesUnsaveRaceData, ProfilesUnsaveRaceResponse, ProfilesTrackRaceViewData, ProfilesTrackRaceViewResponse, ProvincesReadAdministrativeRegionsResponse, ProvincesReadAdministrativeUnitsResponse, ProvincesReadProvincesData, ProvincesReadProvincesResponse, ProvincesReadProvinceData, ProvincesReadProvinceResponse, ProvincesReadWardsByProvinceData, ProvincesReadWardsByProvinceResponse, ProvincesReadWardData, ProvincesReadWardResponse, RaceAttributesReadRaceAttributesData, RaceAttributesReadRaceAttributesResponse, RaceAttributesCreateRaceAttributeData, RaceAttributesCreateRaceAttributeResponse, RaceAttributesReadRaceAttributeData, RaceAttributesReadRaceAttributeResponse, RaceAttributesUpdateRaceAttributeData, RaceAttributesUpdateRaceAttributeResponse, RaceAttributesDeleteRaceAttributeData, RaceAttributesDeleteRaceAttributeResponse, RaceCategoriesReadRaceCategoriesData, RaceCategoriesReadRaceCategoriesResponse, RaceCategoriesCreateRaceCategoryData, RaceCategoriesCreateRaceCategoryResponse, RaceCategoriesReadRaceCategoryData, RaceCategoriesReadRaceCategoryResponse, RaceCategoriesUpdateRaceCategoryData, RaceCategoriesUpdateRaceCategoryResponse, RaceCategoriesDeleteRaceCategoryData, RaceCategoriesDeleteRaceCategoryResponse, RaceCategoriesUpdateCategoryTranslationsData, RaceCategoriesUpdateCategoryTranslationsResponse, RaceCategoriesGetCategoryTranslationsData, RaceCategoriesGetCategoryTranslationsResponse, RaceRegistrationsReadRaceRegistrationsData, RaceRegistrationsReadRaceRegistrationsResponse, RaceRegistrationsCreateRaceRegistrationData, RaceRegistrationsCreateRaceRegistrationResponse, RaceRegistrationsReadMyRegistrationsData, RaceRegistrationsReadMyRegistrationsResponse, RaceRegistrationsReadRaceRegistrationData, RaceRegistrationsReadRaceRegistrationResponse, RaceRegistrationsUpdateRaceRegistrationData, RaceRegistrationsUpdateRaceRegistrationResponse, RaceRegistrationsDeleteRaceRegistrationData, RaceRegistrationsDeleteRaceRegistrationResponse, RaceResultsReadRaceResultsData, RaceResultsReadRaceResultsResponse, RaceResultsCreateRaceResultData, RaceResultsCreateRaceResultResponse, RaceResultsReadRaceResultData, RaceResultsReadRaceResultResponse, RaceResultsUpdateRaceResultData, RaceResultsUpdateRaceResultResponse, RaceResultsDeleteRaceResultData, RaceResultsDeleteRaceResultResponse, RaceResultsReadRaceResultByRegistrationData, RaceResultsReadRaceResultByRegistrationResponse, RacesSearchRacesData, RacesSearchRacesResponse, RacesGetNearbyRacesData, RacesGetNearbyRacesResponse, RacesGetTrendingRacesData, RacesGetTrendingRacesResponse, RacesGetRecommendedRacesData, RacesGetRecommendedRacesResponse, RacesReadMyOrganizedRacesData, RacesReadMyOrganizedRacesResponse, RacesReadRacesData, RacesReadRacesResponse, RacesCreateRaceData, RacesCreateRaceResponse, RacesGenerateRaceDetailsData, RacesGenerateRaceDetailsResponse, RacesGenerateRaceImageEndpointData, RacesGenerateRaceImageEndpointResponse, RacesReadRaceData, RacesReadRaceResponse, RacesUpdateRaceData, RacesUpdateRaceResponse, RacesDeleteRaceData, RacesDeleteRaceResponse, RacesGetSimilarRacesData, RacesGetSimilarRacesResponse, RacesAutoTagRaceData, RacesAutoTagRaceResponse, RacesEnhanceRaceDescriptionData, RacesEnhanceRaceDescriptionResponse, RacesAskRaceQuestionData, RacesAskRaceQuestionResponse, RacesUpdateRaceTranslationsData, RacesUpdateRaceTranslationsResponse, RacesGetRaceTranslationsData, RacesGetRaceTranslationsResponse, RolesReadRolesData, RolesReadRolesResponse, RolesCreateRoleData, RolesCreateRoleResponse, RolesReadRoleData, RolesReadRoleResponse, RolesUpdateRoleData, RolesUpdateRoleResponse, RolesDeleteRoleData, RolesDeleteRoleResponse, RolesAssignRoleToUserData, RolesAssignRoleToUserResponse, RolesRemoveRoleFromUserData, RolesRemoveRoleFromUserResponse, TagsListTagsResponse, TagsCreateTagData, TagsCreateTagResponse, TagsSetTagsForRaceData, TagsSetTagsForRaceResponse, TagsUpdateTagTranslationsData, TagsUpdateTagTranslationsResponse, TagsGetTagTranslationsData, TagsGetTagTranslationsResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
 
 export class AdminService {
     /**
@@ -1356,12 +1356,15 @@ export class RacesService {
     
     /**
      * Read Races
-     * Retrieve races. Public endpoint - anyone can view races.
-     * Optionally filter by organizer_id.
+     * Retrieve races with optional filters. Public endpoint - anyone can view races.
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
      * @param data.organizerId
+     * @param data.status
+     * @param data.search
+     * @param data.startDateFrom
+     * @param data.startDateTo
      * @returns RacesPublic Successful Response
      * @throws ApiError
      */
@@ -1372,7 +1375,11 @@ export class RacesService {
             query: {
                 skip: data.skip,
                 limit: data.limit,
-                organizer_id: data.organizerId
+                organizer_id: data.organizerId,
+                status: data.status,
+                search: data.search,
+                start_date_from: data.startDateFrom,
+                start_date_to: data.startDateTo
             },
             errors: {
                 422: 'Validation Error'
@@ -1414,6 +1421,28 @@ export class RacesService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/v1/races/ai-assist',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Generate Race Image Endpoint
+     * Use AI to generate a race cover or banner image using gpt-image-2.
+     * Returns a 1024x1024 PNG image as base64-encoded data.
+     * Requires authentication.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static generateRaceImageEndpoint(data: RacesGenerateRaceImageEndpointData): CancelablePromise<RacesGenerateRaceImageEndpointResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/races/ai-generate-image',
             body: data.requestBody,
             mediaType: 'application/json',
             errors: {

@@ -442,6 +442,10 @@ class RaceBase(SQLModel):
     gpx_file_url: str | None = Field(default=None, max_length=1000)
     website_url: str | None = Field(default=None, max_length=1000)
     
+    # Cached media file paths for performance optimization
+    cover_image_url: str | None = Field(default=None, max_length=1000)
+    banner_image_url: str | None = Field(default=None, max_length=1000)
+    
     # Multi-language support
     default_language: str = Field(default="vi", max_length=10)
     translations: dict[str, Any] | None = Field(default=None, sa_column=Column(JSON))
@@ -480,6 +484,8 @@ class RaceUpdate(SQLModel):
     is_certified: bool | None = None
     gpx_file_url: str | None = None
     website_url: str | None = None
+    cover_image_url: str | None = None
+    banner_image_url: str | None = None
     tag_ids: list[uuid.UUID] | None = None
 
 

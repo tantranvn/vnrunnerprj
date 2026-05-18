@@ -1,4 +1,3 @@
-import asyncio
 import logging
 import uuid
 from datetime import datetime
@@ -42,26 +41,23 @@ async def _invalidate_race_caches() -> None:
     await cache_delete_pattern("tags:*")
 
 
-def _schedule_embedding(race_id: uuid.UUID) -> None:
+async def _schedule_embedding(race_id: uuid.UUID) -> None:
     """Fire-and-forget: compute and persist the race embedding asynchronously."""
     from app.core.db import engine
     from app.services.ai import embed_race
     from sqlmodel import Session
 
-    async def _run() -> None:
-        try:
-            with Session(engine) as session:
-                race = crud.get_race(session=session, race_id=race_id)
-                if race is None:
-                    return
-                vector = await embed_race(race)
-                crud.update_race_embedding(
-                    session=session, race_id=race_id, embedding=vector
-                )
-        except Exception:
-            logger.exception("Failed to embed race %s", race_id)
-
-    asyncio.create_task(_run())
+    try:
+        with Session(engine) as session:
+            race = crud.get_race(session=session, race_id=race_id)
+            if race is None:
+                return
+            vector = await embed_race(race)
+            crud.update_race_embedding(
+                session=session, race_id=race_id, embedding=vector
+            )
+    except Exception:
+        logger.exception("Failed to embed race %s", race_id)
 
 
 # ---------------------------------------------------------------------------
@@ -164,6 +160,9 @@ async def search_races(
             ward_code=ward_code,
         )
 
+    # Enrich races with cover URLs before returning
+    races = crud.enrich_races_with_cover_urls(session=session, races=races)
+
     return RacesPublic(data=[RacePublic.model_validate(r) for r in races], count=count)
 
 
@@ -179,9 +178,15 @@ def get_nearby_races(
     pairs = crud.get_nearby_races(
         session=session, lat=lat, lon=lon, radius_km=radius_km, limit=limit
     )
+    
+    # Extract races and enrich with cover URLs
+    races = [race for race, _ in pairs]
+    races = crud.enrich_races_with_cover_urls(session=session, races=races)
+    
+    # Rebuild pairs with enriched races
     data = [
-        RacePublicWithDistance(**race.model_dump(), distance_km=dist_km)
-        for race, dist_km in pairs
+        RacePublicWithDistance(**races[i].model_dump(), distance_km=pairs[i][1])
+        for i in range(len(pairs))
     ]
     return RacesPublicWithDistance(data=data, count=len(data))
 
@@ -201,6 +206,10 @@ async def get_trending_races(
         return cached
 
     races = crud.get_trending_races(session=session, days=days, limit=limit)
+    
+    # Enrich races with cover URLs
+    races = crud.enrich_races_with_cover_urls(session=session, races=races)
+    
     result = RacesPublic(
         data=[RacePublic.model_validate(r) for r in races], count=len(races)
     )
@@ -225,6 +234,10 @@ async def get_recommended_races(
     races = crud.get_recommended_races(
         session=session, user_id=current_user.id, limit=limit
     )
+    
+    # Enrich races with cover URLs
+    races = crud.enrich_races_with_cover_urls(session=session, races=races)
+    
     profile = crud.get_user_profile(session=session, user_id=current_user.id)
 
     results: list[RacePublicWithExplanation] = []
@@ -263,6 +276,10 @@ def read_my_organized_races(
     races = crud.get_races(
         session=session, skip=skip, limit=limit, organizer_id=current_user.id
     )
+    
+    # Enrich races with cover URLs
+    races = crud.enrich_races_with_cover_urls(session=session, races=races)
+    
     count = crud.get_races_count(session=session, organizer_id=current_user.id)
     races_public = [RacePublic.model_validate(race) for race in races]
     return RacesPublic(data=races_public, count=count)
@@ -279,15 +296,36 @@ def read_races(
     skip: int = 0,
     limit: int = 100,
     organizer_id: uuid.UUID | None = None,
+    status: str | None = None,
+    search: str | None = None,
+    start_date_from: datetime | None = None,
+    start_date_to: datetime | None = None,
 ) -> Any:
     """
-    Retrieve races. Public endpoint - anyone can view races.
-    Optionally filter by organizer_id.
+    Retrieve races with optional filters. Public endpoint - anyone can view races.
     """
     races = crud.get_races(
-        session=session, skip=skip, limit=limit, organizer_id=organizer_id
+        session=session,
+        skip=skip,
+        limit=limit,
+        organizer_id=organizer_id,
+        status=status,
+        search=search,
+        start_date_from=start_date_from,
+        start_date_to=start_date_to,
     )
-    count = crud.get_races_count(session=session, organizer_id=organizer_id)
+    
+    # Enrich races with cover URLs
+    races = crud.enrich_races_with_cover_urls(session=session, races=races)
+    
+    count = crud.get_races_count(
+        session=session,
+        organizer_id=organizer_id,
+        status=status,
+        search=search,
+        start_date_from=start_date_from,
+        start_date_to=start_date_to,
+    )
     races_public = [RacePublic.model_validate(race) for race in races]
     return RacesPublic(data=races_public, count=count)
 
@@ -328,6 +366,62 @@ async def generate_race_details(
     return AIRaceSuggestion(**details)
 
 
+class ImageGenerationInput(SQLModel):
+    race_name: str
+    location: str | None = None
+    image_type: str = "cover"  # 'cover' or 'banner'
+
+
+@router.post("/ai-generate-image")
+async def generate_race_image_endpoint(
+    *,
+    current_user: CurrentUser,
+    input_data: ImageGenerationInput,
+) -> Any:
+    """
+    Use AI to generate a race cover or banner image using gpt-image-2.
+    Returns a 1024x1024 PNG image as base64-encoded data.
+    Requires authentication.
+    """
+    from app.services.ai import generate_race_image
+    from app.core.config import settings
+    import base64
+
+    if not settings.OPENAI_API_KEY:
+        raise HTTPException(
+            status_code=503,
+            detail="AI image generation is not configured. Please set OPENAI_API_KEY.",
+        )
+    
+    if input_data.image_type not in ["cover", "banner"]:
+        raise HTTPException(
+            status_code=400,
+            detail="image_type must be either 'cover' or 'banner'",
+        )
+
+    try:
+        image_bytes = await generate_race_image(
+            race_name=input_data.race_name,
+            location=input_data.location,
+            image_type=input_data.image_type,
+        )
+        
+        # Encode to base64 for JSON response
+        image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+        
+        return {
+            "image_data": image_base64,
+            "mime_type": "image/png",
+            "size": len(image_bytes),
+        }
+    except Exception as e:
+        logger.error("Error generating race image: %s", e)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate image: {str(e)}",
+        )
+
+
 @router.post("/", response_model=RacePublic)
 def create_race(
     *,
@@ -364,6 +458,9 @@ def read_race(session: SessionDep, race_id: uuid.UUID) -> Any:
     if not race:
         raise HTTPException(status_code=404, detail="Race not found")
 
+    # Enrich race with cover URL
+    crud.enrich_races_with_cover_urls(session=session, races=[race])
+
     categories = crud.get_race_categories(session=session, race_id=race_id)
     categories_public = [RaceCategoryPublic.model_validate(cat) for cat in categories]
     registration_count = crud.get_race_registrations_count(
@@ -391,6 +488,10 @@ def get_similar_races(
         raise HTTPException(status_code=404, detail="Race not found")
 
     races = crud.get_similar_races(session=session, race=race, limit=limit)
+    
+    # Enrich races with cover URLs
+    races = crud.enrich_races_with_cover_urls(session=session, races=races)
+    
     return RacesPublic(
         data=[RacePublic.model_validate(r) for r in races], count=len(races)
     )

@@ -42,20 +42,36 @@ This workspace uses the [FastAPI Full-Stack Template](https://github.com/fastapi
   - `roles.py` - Role management endpoints (admin-only)
   - `users.py` - User management with role assignment
   - `items.py` - Example resource endpoints
+  - `races.py` - Race management with filtering and AI features
 - `app/api/deps.py` - FastAPI dependencies (auth, database sessions, RBAC)
 - `app/core/config.py` - Settings via Pydantic BaseSettings
 - `app/core/security.py` - Password hashing and JWT token handling
 - `app/core/db.py` - Database engine, session management, and role initialization
+- `app/services/` - Business logic services
+  - `ai.py` - OpenAI integration for image generation and content
+  - `media_storage.py` - Media asset management
+  - `cache.py` - Redis caching service
 - `tests/` - Pytest test suite
 
 ### Frontend - Admin Portal (`/frontend`)
 - `src/routes/` - TanStack Router route definitions
+  - `_layout/` - Protected routes (authenticated users)
+  - `$lang._public/` - Public routes with language parameter
+  - `admin/` - Admin-only routes
 - `src/components/` - React components (organized by feature)
-  - `Admin/` - Admin-specific components
-  - `Items/` - Resource management
-  - `UserSettings/` - User profile management
+  - `Admin/` - Admin-specific components (RaceFilters, RaceTranslationManager)
+  - `Races/` - Race management components
+  - `Media/` - Media gallery and upload components
+  - `Public/` - Public-facing components
+  - `ui/` - shadcn/ui base components
 - `src/client/` - Auto-generated API client from OpenAPI spec
-- `src/hooks/` - Custom React hooks (useAuth, etc.)
+- `src/hooks/` - Custom React hooks (useAuth, useCustomToast, useRaceSearch)
+- `src/lib/` - Shared utilities and helpers
+  - `utils.ts` - Common utility functions (date, price, status formatting)
+  - `seo.ts` - SEO and meta tag utilities
+- `src/i18n/` - Internationalization (i18next)
+  - `locales/en.json` - English translations
+  - `locales/vi.json` - Vietnamese translations
 - `tests/` - Playwright end-to-end tests
 - **Purpose**: Admin dashboard for system management
 
@@ -252,6 +268,33 @@ statement = (
 items = session.exec(statement).all()
 ```
 
+#### 8. AI Services Integration
+- **OpenAI Integration** in `app/services/ai.py`
+- Use `AsyncOpenAI` client for async operations
+- Image generation with `gpt-image-2` model:
+  ```python
+  result = await client.images.generate(
+      model="gpt-image-2",
+      prompt=prompt,
+      size="1024x1024",
+      response_format="b64_json",  # Returns base64-encoded image
+  )
+  ```
+- Decode base64 images: `base64.b64decode(result.data[0].b64_json)`
+- Store generated images via media storage service
+
+#### 9. Media Asset Management
+- Media assets organized by type: `cover`, `banner`, `gallery`
+- Use `MediaAssetPublic` model for API responses
+- **Enrich data helpers** in CRUD:
+  ```python
+  def enrich_races_with_cover_urls(*, session: Session, races: list[Race]) -> list[Race]:
+      # Efficiently fetch cover images for multiple races
+      # Populates race_metadata["cover_url"] field
+  ```
+- Call enrichment helpers before returning list responses
+- Frontend uses `getMediaUrl()` to construct proper URLs
+
 ### Frontend Patterns
 
 #### 1. API Client
@@ -261,16 +304,22 @@ items = session.exec(statement).all()
 - Import from `@/client` for type-safe API calls
 
 #### 2. React Components
-- Organized by feature in `src/components/` (Admin, Items, UserSettings, etc.)
+- Organized by feature in `src/components/` (Admin, Items, UserSettings, Races, etc.)
 - Use shadcn/ui components from `src/components/ui/`
 - Functional components with TypeScript
 - Use custom hooks from `src/hooks/`
 
-#### 3. Routing
-- TanStack Router for type-safe routing
+#### 3. Routing (TanStack Router)
+- **IMPORTANT**: Route files must NOT export components as default exports
+- Define routes using `createFileRoute()` with component in config:
+  ```typescript
+  export const Route = createFileRoute("/path")({component: MyComponent})
+  function MyComponent() { /* component code */ }
+  ```
 - Route files in `src/routes/`
 - Auto-generated route tree in `routeTree.gen.ts`
 - Use layouts (`_layout.tsx`) for shared UI structure
+- Language-aware routes use `$lang` parameter (e.g., `/$lang._public/races`)
 
 #### 4. State Management
 - TanStack Query for server state (data fetching, caching, mutations)
@@ -279,9 +328,46 @@ items = session.exec(statement).all()
 
 #### 5. Styling
 - Tailwind CSS utility classes
+- Responsive design with breakpoints: `sm:640px`, `md:768px`, `lg:1024px`, `xl:1280px`
 - Theme support via `theme-provider.tsx`
 - Dark mode compatible components
 - shadcn/ui for pre-built accessible components
+- Custom fonts loaded via Google Fonts (e.g., Anton for headings)
+
+#### 6. Internationalization (i18n)
+- **react-i18next** for translations
+- Translation files in `src/i18n/locales/` (en.json, vi.json)
+- Use `useTranslation()` hook: `const { t } = useTranslation()`
+- Access nested translations: `t('home.hero.title')`
+- Language switching via `$lang` route parameter
+
+#### 7. Utility Functions (`src/lib/utils.ts`)
+**ALWAYS use these centralized utilities instead of creating duplicates:**
+
+```typescript
+// Date formatting
+formatDate(dateStr, locale = "en-GB") // "21 Sep 2024"
+formatDateLong(dateStr, locale = "en-GB") // "21 September 2024"
+formatShortDate(dateStr) // "SEP 21" (uppercase for cards)
+toDateTimeLocalString(dateStr) // "2024-09-21T14:30" (for datetime-local inputs)
+
+// Currency formatting
+formatPrice(price, currency = "VND") // "1,000,000 VND"
+
+// Status formatting
+formatStatus(status) // "Registration Open" (title case)
+
+// Media URLs
+getMediaUrl(fileUrl) // Handles relative/absolute URLs and CDN
+
+// Tailwind utilities
+cn(...classes) // Merge Tailwind classes with conflict resolution
+```
+
+**Import pattern:**
+```typescript
+import { formatDate, formatPrice, getMediaUrl } from "@/lib/utils"
+```
 
 ## Development Workflow
 
@@ -463,8 +549,13 @@ Key variables (in `.env` file at project root):
 3. **Commit & Refresh**: Always commit changes and refresh objects to get updated data
 4. **Response Models**: Specify `response_model` on all endpoints to ensure proper serialization
 5. **UUID Types**: Use `uuid.UUID` type, not strings, for ID fields
-6. **Frontend Client**: Regenerate after backend API changes
+6. **Frontend Client**: Regenerate after backend API changes using `bash scripts/generate-client.sh`
 7. **Pre-commit Hooks**: Install with `pre-commit install` to auto-format on commit
+8. **TanStack Router**: NEVER use `export default` in route files - causes code-splitting warnings
+9. **Utility Functions**: ALWAYS use centralized functions from `@/lib/utils` instead of duplicating
+10. **Date Formatting**: Use `toDateTimeLocalString()` for HTML datetime-local inputs, not `.toISOString().slice(0, 16)`
+11. **i18n Keys**: Keep translation keys organized and nested (e.g., `home.hero.title`, not flat keys)
+12. **Media URLs**: Always use `getMediaUrl()` helper to handle relative/absolute paths correctly
 
 ## Additional Resources
 

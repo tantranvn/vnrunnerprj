@@ -47,6 +47,7 @@ import {
 } from "@/components/ui/table"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
+import { formatPrice, toDateTimeLocalString } from "@/lib/utils"
 
 const categoryFormSchema = z.object({
   name: z.string().min(1, { message: "Category name is required" }),
@@ -183,14 +184,14 @@ const RaceCategoryManager = ({
       name: category.name,
       distance_km: String(category.distance_km),
       distance_unit: category.distance_unit,
-      start_time: category.start_time ? new Date(category.start_time).toISOString().slice(0, 16) : "",
-      end_time: category.end_time ? new Date(category.end_time).toISOString().slice(0, 16) : "",
+      start_time: toDateTimeLocalString(category.start_time),
+      end_time: toDateTimeLocalString(category.end_time),
       cutoff_time_minutes: category.cutoff_time_minutes ? String(category.cutoff_time_minutes) : "",
-      registration_start: category.registration_start ? new Date(category.registration_start).toISOString().slice(0, 16) : "",
-      registration_end: category.registration_end ? new Date(category.registration_end).toISOString().slice(0, 16) : "",
+      registration_start: toDateTimeLocalString(category.registration_start),
+      registration_end: toDateTimeLocalString(category.registration_end),
       price: category.price ? String(category.price) : "",
       early_bird_price: category.early_bird_price ? String(category.early_bird_price) : "",
-      early_bird_deadline: category.early_bird_deadline ? new Date(category.early_bird_deadline).toISOString().slice(0, 16) : "",
+      early_bird_deadline: toDateTimeLocalString(category.early_bird_deadline),
       max_participants: category.max_participants ? String(category.max_participants) : "",
       min_age: category.min_age ? String(category.min_age) : "",
       max_age: category.max_age ? String(category.max_age) : "",
@@ -205,10 +206,6 @@ const RaceCategoryManager = ({
     if (confirm("Are you sure you want to delete this category?")) {
       deleteMutation.mutate(categoryId)
     }
-  }
-
-  const formatPrice = (price: number | null | undefined) => {
-    return price ? `${price.toLocaleString()} VND` : "—"
   }
 
   return (

@@ -195,6 +195,49 @@ const AddRace = () => {
     },
   })
 
+  const aiImageMutation = useMutation({
+    mutationFn: async ({ imageType }: { imageType: 'cover' | 'banner' }) => {
+      const raceName = form.getValues("name")
+      const location = form.getValues("location")
+      return RacesService.generateRaceImageEndpoint({
+        requestBody: {
+          race_name: raceName,
+          location: location || undefined,
+          image_type: imageType,
+        },
+      })
+    },
+    onSuccess: (data, variables) => {
+      showSuccessToast(`AI has generated ${variables.imageType} image!`)
+      
+      // Type guard to ensure data has the expected shape
+      if (typeof data === 'object' && data !== null && 'image_data' in data) {
+        const responseData = data as { image_data: string; mime_type: string; size: number }
+        
+        // Convert base64 to File
+        const byteString = atob(responseData.image_data)
+        const ab = new ArrayBuffer(byteString.length)
+        const ia = new Uint8Array(ab)
+        for (let i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i)
+        }
+        const blob = new Blob([ab], { type: 'image/png' })
+        const file = new File([blob], `ai-${variables.imageType}.png`, { type: 'image/png' })
+        
+        // Set the file
+        if (variables.imageType === 'cover') {
+          setCoverFile(file)
+        } else {
+          setBannerFile(file)
+        }
+      }
+    },
+    onError: (error, variables) => {
+      showErrorToast(`Failed to generate ${variables.imageType} image. Please try again.`)
+      console.error("AI image generation error:", error)
+    },
+  })
+
   const handleAIAssist = () => {
     const raceName = form.getValues("name")
     if (!raceName) {
@@ -202,6 +245,15 @@ const AddRace = () => {
       return
     }
     aiAssistMutation.mutate(raceName)
+  }
+
+  const handleGenerateImage = (imageType: 'cover' | 'banner') => {
+    const raceName = form.getValues("name")
+    if (!raceName) {
+      showErrorToast("Please enter a race name first.")
+      return
+    }
+    aiImageMutation.mutate({ imageType })
   }
 
   const onSubmit = (data: FormData) => {
@@ -487,7 +539,20 @@ const AddRace = () => {
                 <h3 className="text-sm font-semibold">Images (saved on race creation)</h3>
 
                 <div className="space-y-2">
-                  <FormLabel>Cover Image</FormLabel>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Cover Image</FormLabel>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleGenerateImage('cover')}
+                      disabled={aiImageMutation.isPending}
+                      className="gap-2"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      {aiImageMutation.isPending ? "Generating..." : "AI Generate"}
+                    </Button>
+                  </div>
                   <Input
                     type="file"
                     accept="image/*"
@@ -497,12 +562,32 @@ const AddRace = () => {
                     }}
                   />
                   {coverFile ? (
-                    <p className="text-xs text-muted-foreground">Selected: {coverFile.name}</p>
+                    <div className="space-y-2">
+                      <p className="text-xs text-muted-foreground">Selected: {coverFile.name}</p>
+                      <img
+                        src={URL.createObjectURL(coverFile)}
+                        alt="Cover preview"
+                        className="w-full max-w-xs rounded-lg border"
+                      />
+                    </div>
                   ) : null}
                 </div>
 
                 <div className="space-y-2">
-                  <FormLabel>Banner Image</FormLabel>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Banner Image</FormLabel>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleGenerateImage('banner')}
+                      disabled={aiImageMutation.isPending}
+                      className="gap-2"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      {aiImageMutation.isPending ? "Generating..." : "AI Generate"}
+                    </Button>
+                  </div>
                   <Input
                     type="file"
                     accept="image/*"
@@ -512,7 +597,14 @@ const AddRace = () => {
                     }}
                   />
                   {bannerFile ? (
-                    <p className="text-xs text-muted-foreground">Selected: {bannerFile.name}</p>
+                    <div className="space-y-2">
+                      <p className="text-xs text-muted-foreground">Selected: {bannerFile.name}</p>
+                      <img
+                        src={URL.createObjectURL(bannerFile)}
+                        alt="Banner preview"
+                        className="w-full max-w-md rounded-lg border"
+                      />
+                    </div>
                   ) : null}
                 </div>
 

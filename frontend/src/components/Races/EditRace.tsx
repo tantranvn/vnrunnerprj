@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
+import { Sparkles } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -10,6 +11,7 @@ import RaceCategoryManager from "@/components/Races/RaceCategoryManager"
 import { RaceTranslationManager } from "@/components/Admin/RaceTranslationManager"
 import { Button } from "@/components/ui/button"
 import { RichTextEditor } from "@/components/ui/rich-text-editor"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Form,
   FormControl,
@@ -29,6 +31,8 @@ import {
 import { LoadingButton } from "@/components/ui/loading-button"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
+import { toDateTimeLocalString } from "@/lib/utils"
+import { uploadMediaAsset } from "@/lib/media-api"
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Race name is required" }),
@@ -64,14 +68,14 @@ const EditRace = ({ race }: EditRaceProps) => {
     defaultValues: {
       name: race.name,
       description: race.description || "",
-      event_start_date: race.event_start_date ? new Date(race.event_start_date).toISOString().slice(0, 16) : "",
-      event_end_date: race.event_end_date ? new Date(race.event_end_date).toISOString().slice(0, 16) : "",
+      event_start_date: toDateTimeLocalString(race.event_start_date),
+      event_end_date: toDateTimeLocalString(race.event_end_date),
       location: race.location || "",
       country: race.country || "Vietnam",
       province_code: race.province_code || "",
       ward_code: race.ward_code || "",
-      registration_start: race.registration_start ? new Date(race.registration_start).toISOString().slice(0, 16) : "",
-      registration_end: race.registration_end ? new Date(race.registration_end).toISOString().slice(0, 16) : "",
+      registration_start: toDateTimeLocalString(race.registration_start),
+      registration_end: toDateTimeLocalString(race.registration_end),
       base_price: race.base_price || undefined,
       currency: race.currency || "VND",
       status: race.status,
@@ -113,6 +117,94 @@ const EditRace = ({ race }: EditRaceProps) => {
     },
   })
 
+  const aiAssistMutation = useMutation({
+    mutationFn: async (raceName: string) => {
+      return RacesService.generateRaceDetails({ requestBody: { name: raceName } })
+    },
+    onSuccess: (data) => {
+      showSuccessToast("AI has generated race details!")
+      
+      // Populate form fields with AI-generated data
+      if (data.description) {
+        form.setValue("description", data.description)
+      }
+      if (data.location) {
+        form.setValue("location", data.location)
+      }
+    },
+    onError: (error) => {
+      showErrorToast("Failed to generate race details. Please try again.")
+      console.error("AI assist error:", error)
+    },
+  })
+
+  const aiImageMutation = useMutation({
+    mutationFn: async ({ imageType }: { imageType: 'cover' | 'banner' }) => {
+      const raceName = form.getValues("name")
+      const location = form.getValues("location")
+      return RacesService.generateRaceImageEndpoint({
+        requestBody: {
+          race_name: raceName,
+          location: location || undefined,
+          image_type: imageType,
+        },
+      })
+    },
+    onSuccess: async (data, variables) => {
+      showSuccessToast(`AI has generated ${variables.imageType} image!`)
+      
+      // Type guard to ensure data has the expected shape
+      if (typeof data === 'object' && data !== null && 'image_data' in data) {
+        const responseData = data as { image_data: string; mime_type: string; size: number }
+        
+        // Convert base64 to File
+        const byteString = atob(responseData.image_data)
+        const ab = new ArrayBuffer(byteString.length)
+        const ia = new Uint8Array(ab)
+        for (let i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i)
+        }
+        const blob = new Blob([ab], { type: 'image/png' })
+        const file = new File([blob], `ai-${variables.imageType}-${Date.now()}.png`, { type: 'image/png' })
+        
+        // Upload the file directly to the race media
+        await uploadMediaAsset({
+          file,
+          contentType: "race",
+          contentId: race.id,
+          kind: variables.imageType,
+          isPrimary: true,
+          displayOrder: 0,
+        })
+        
+        // Invalidate media query to refresh the gallery
+        queryClient.invalidateQueries({ queryKey: ["media", "race", race.id] })
+      }
+    },
+    onError: (error, variables) => {
+      showErrorToast(`Failed to generate ${variables.imageType} image. Please try again.`)
+      console.error("AI image generation error:", error)
+    },
+  })
+
+  const handleAIAssist = () => {
+    const raceName = form.getValues("name")
+    if (!raceName) {
+      showErrorToast("Please enter a race name first.")
+      return
+    }
+    aiAssistMutation.mutate(raceName)
+  }
+
+  const handleGenerateImage = (imageType: 'cover' | 'banner') => {
+    const raceName = form.getValues("name")
+    if (!raceName) {
+      showErrorToast("Please enter a race name first.")
+      return
+    }
+    aiImageMutation.mutate({ imageType })
+  }
+
   const onSubmit = (data: FormData) => {
     // Transform empty datetime strings to undefined for proper validation
     const cleanedData = {
@@ -141,7 +233,20 @@ const EditRace = ({ race }: EditRaceProps) => {
                 name="name"
                 render={({ field }) => (
                   <FormItem className="md:col-span-2">
-                    <FormLabel>Race Name *</FormLabel>
+                    <div className="flex items-center justify-between">
+                      <FormLabel>Race Name *</FormLabel>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleAIAssist}
+                        disabled={aiAssistMutation.isPending}
+                        className="gap-2"
+                      >
+                        <Sparkles className="h-4 w-4" />
+                        {aiAssistMutation.isPending ? "Generating..." : "AI Assist"}
+                      </Button>
+                    </div>
                     <FormControl>
                       <Input placeholder="City Marathon 2026" {...field} />
                     </FormControl>
@@ -401,6 +506,39 @@ const EditRace = ({ race }: EditRaceProps) => {
       />
 
       <RaceTranslationManager raceId={race.id} race={race} />
+
+      <Card>
+        <CardHeader>
+          <CardTitle>AI Image Generation</CardTitle>
+          <CardDescription>
+            Generate cover and banner images using AI based on the race name and location.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleGenerateImage('cover')}
+              disabled={aiImageMutation.isPending}
+              className="gap-2"
+            >
+              <Sparkles className="h-4 w-4" />
+              {aiImageMutation.isPending ? "Generating..." : "Generate Cover Image"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleGenerateImage('banner')}
+              disabled={aiImageMutation.isPending}
+              className="gap-2"
+            >
+              <Sparkles className="h-4 w-4" />
+              {aiImageMutation.isPending ? "Generating..." : "Generate Banner Image"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       <MediaGalleryManager
         contentType="race"

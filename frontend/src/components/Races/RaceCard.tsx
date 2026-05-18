@@ -1,6 +1,7 @@
 import { Link, useParams } from "@tanstack/react-router"
 import { Bookmark, Plus } from "lucide-react"
 import type { RacePublic } from "@/client"
+import { getMediaUrl, formatShortDate } from "@/lib/utils"
 
 interface RaceCardProps {
   race: RacePublic & { ai_explanation?: string | null }
@@ -28,10 +29,7 @@ export function RaceCard({ race }: RaceCardProps) {
   
   // Format date to short format like "SEP 21"
   const eventDate = race.event_start_date
-    ? new Date(race.event_start_date).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      }).toUpperCase()
+    ? formatShortDate(race.event_start_date)
     : null
 
   const location = [race.city, race.state].filter(Boolean).join(", ").toUpperCase()
@@ -53,11 +51,30 @@ export function RaceCard({ race }: RaceCardProps) {
     ? race.race_metadata.participant_count
     : 97
 
+  // Get cover image URL from race_metadata if available
+  const coverUrl = typeof race.race_metadata?.cover_url === 'string' 
+    ? race.race_metadata.cover_url 
+    : null
+
   return (
     <Link to="/$lang/races/$raceId" params={{ lang, raceId: race.id }} className="block group">
       <div className="overflow-hidden rounded-[22px] bg-white border border-[#E6E1D7] transition-all duration-200 hover:shadow-lg hover:border-[#0F0E0C]/20">
         {/* Image/Header Area */}
         <div className="relative h-[200px] bg-gradient-to-br from-[#5D3A2E] to-[#3D2520] overflow-hidden">
+          {/* Cover Image if available */}
+          {coverUrl && (
+            <img 
+              src={getMediaUrl(coverUrl)} 
+              alt={race.name}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          )}
+          
+          {/* Gradient overlay for better text visibility when image is present */}
+          {coverUrl && (
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40" />
+          )}
+          
           {/* Bookmark Icon - Top Left */}
           <button
             onClick={(e) => {

@@ -15,6 +15,7 @@ import {
   updateMediaAsset,
   uploadMediaAsset,
 } from "@/lib/media-api"
+import { getMediaUrl } from "@/lib/utils"
 
 interface MediaGalleryManagerProps {
   contentType: string
@@ -30,14 +31,6 @@ interface UploadProgressItem {
   kind: MediaKind
   fileName: string
   progress: number
-}
-
-function getMediaUrl(fileUrl: string) {
-  if (fileUrl.startsWith("http://") || fileUrl.startsWith("https://")) {
-    return fileUrl
-  }
-  const base = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "")
-  return `${base}${fileUrl}`
 }
 
 export default function MediaGalleryManager({

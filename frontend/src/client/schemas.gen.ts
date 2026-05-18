@@ -392,6 +392,34 @@ export const HTTPValidationErrorSchema = {
     title: 'HTTPValidationError'
 } as const;
 
+export const ImageGenerationInputSchema = {
+    properties: {
+        race_name: {
+            type: 'string',
+            title: 'Race Name'
+        },
+        location: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Location'
+        },
+        image_type: {
+            type: 'string',
+            title: 'Image Type',
+            default: 'cover'
+        }
+    },
+    type: 'object',
+    required: ['race_name'],
+    title: 'ImageGenerationInput'
+} as const;
+
 export const InteractionTypeEnumSchema = {
     type: 'string',
     enum: ['viewed', 'saved', 'unsaved', 'registered', 'shared'],
@@ -2389,6 +2417,30 @@ export const RaceCreateSchema = {
             ],
             title: 'Website Url'
         },
+        cover_image_url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 1000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Cover Image Url'
+        },
+        banner_image_url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 1000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Banner Image Url'
+        },
         default_language: {
             type: 'string',
             maxLength: 10,
@@ -2706,6 +2758,30 @@ export const RacePublicSchema = {
                 }
             ],
             title: 'Website Url'
+        },
+        cover_image_url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 1000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Cover Image Url'
+        },
+        banner_image_url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 1000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Banner Image Url'
         },
         default_language: {
             type: 'string',
@@ -3032,6 +3108,30 @@ export const RacePublicWithDetailsSchema = {
                 }
             ],
             title: 'Website Url'
+        },
+        cover_image_url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 1000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Cover Image Url'
+        },
+        banner_image_url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 1000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Banner Image Url'
         },
         default_language: {
             type: 'string',
@@ -3400,6 +3500,30 @@ export const RacePublicWithDistanceSchema = {
             ],
             title: 'Website Url'
         },
+        cover_image_url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 1000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Cover Image Url'
+        },
+        banner_image_url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 1000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Banner Image Url'
+        },
         default_language: {
             type: 'string',
             maxLength: 10,
@@ -3729,6 +3853,30 @@ export const RacePublicWithExplanationSchema = {
                 }
             ],
             title: 'Website Url'
+        },
+        cover_image_url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 1000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Cover Image Url'
+        },
+        banner_image_url: {
+            anyOf: [
+                {
+                    type: 'string',
+                    maxLength: 1000
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Banner Image Url'
         },
         default_language: {
             type: 'string',
@@ -5024,6 +5172,28 @@ export const RaceUpdateSchema = {
                 }
             ],
             title: 'Website Url'
+        },
+        cover_image_url: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Cover Image Url'
+        },
+        banner_image_url: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Banner Image Url'
         },
         tag_ids: {
             anyOf: [
