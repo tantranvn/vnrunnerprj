@@ -6,11 +6,13 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { type RaceCreate, type RacePublic, RacesService, ProvincesService } from "@/client"
+import { type RaceCreate, RacesService, ProvincesService } from "@/client"
 import MediaGalleryManager from "@/components/Media/MediaGalleryManager"
 import RaceCategoryManager from "@/components/Races/RaceCategoryManager"
 import { Button } from "@/components/ui/button"
 import { RichTextEditor } from "@/components/ui/rich-text-editor"
+import { Card, CardContent } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Form,
   FormControl,
@@ -29,8 +31,8 @@ import {
 } from "@/components/ui/select"
 import { LoadingButton } from "@/components/ui/loading-button"
 import useCustomToast from "@/hooks/useCustomToast"
-import { uploadMediaAsset } from "@/lib/media-api"
 import { handleError } from "@/utils"
+import { uploadMediaAsset } from "@/lib/media-api"
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Race name is required" }),
@@ -54,9 +56,7 @@ const AddRace = () => {
   const navigate = useNavigate()
   const [createdRaceId, setCreatedRaceId] = useState<string | null>(null)
   const [createdRaceName, setCreatedRaceName] = useState<string>("")
-  const [coverFile, setCoverFile] = useState<File | null>(null)
-  const [bannerFile, setBannerFile] = useState<File | null>(null)
-  const [galleryFiles, setGalleryFiles] = useState<File[]>([])
+  const [activeTab, setActiveTab] = useState("details")
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
 
@@ -99,72 +99,12 @@ const AddRace = () => {
   })
 
   const mutation = useMutation({
-    mutationFn: async (
-      data: RaceCreate
-    ): Promise<{ race: RacePublic; mediaUploadFailed: boolean }> => {
-      const race = await RacesService.createRace({ requestBody: data })
-      let mediaUploadFailed = false
-
-      try {
-        const uploads: Promise<unknown>[] = []
-
-        if (coverFile) {
-          uploads.push(
-            uploadMediaAsset({
-              file: coverFile,
-              contentType: "race",
-              contentId: race.id,
-              kind: "cover",
-              isPrimary: true,
-            })
-          )
-        }
-
-        if (bannerFile) {
-          uploads.push(
-            uploadMediaAsset({
-              file: bannerFile,
-              contentType: "race",
-              contentId: race.id,
-              kind: "banner",
-              isPrimary: true,
-            })
-          )
-        }
-
-        galleryFiles.forEach((file, index) => {
-          uploads.push(
-            uploadMediaAsset({
-              file,
-              contentType: "race",
-              contentId: race.id,
-              kind: "gallery",
-              displayOrder: index,
-            })
-          )
-        })
-
-        if (uploads.length > 0) {
-          await Promise.all(uploads)
-        }
-      } catch {
-        mediaUploadFailed = true
-      }
-
-      return { race, mediaUploadFailed }
-    },
-    onSuccess: ({ race, mediaUploadFailed }) => {
-      if (mediaUploadFailed) {
-        showErrorToast("Race was created, but some images could not be uploaded.")
-      } else {
-        showSuccessToast("Race and images saved successfully.")
-      }
-
+    mutationFn: (data: RaceCreate) => RacesService.createRace({ requestBody: data }),
+    onSuccess: (race) => {
+      showSuccessToast("Race created successfully!")
       setCreatedRaceId(race.id)
       setCreatedRaceName(race.name)
-      setCoverFile(null)
-      setBannerFile(null)
-      setGalleryFiles([])
+      setActiveTab("images")
     },
     onError: handleError.bind(showErrorToast),
     onSettled: () => {
@@ -207,8 +147,13 @@ const AddRace = () => {
         },
       })
     },
-    onSuccess: (data, variables) => {
+    onSuccess: async (data, variables) => {
       showSuccessToast(`AI has generated ${variables.imageType} image!`)
+      
+      if (!createdRaceId) {
+        showErrorToast("Race must be created first to upload images.")
+        return
+      }
       
       // Type guard to ensure data has the expected shape
       if (typeof data === 'object' && data !== null && 'image_data' in data) {
@@ -222,14 +167,20 @@ const AddRace = () => {
           ia[i] = byteString.charCodeAt(i)
         }
         const blob = new Blob([ab], { type: 'image/png' })
-        const file = new File([blob], `ai-${variables.imageType}.png`, { type: 'image/png' })
+        const file = new File([blob], `ai-${variables.imageType}-${Date.now()}.png`, { type: 'image/png' })
         
-        // Set the file
-        if (variables.imageType === 'cover') {
-          setCoverFile(file)
-        } else {
-          setBannerFile(file)
-        }
+        // Upload the file directly to the race media
+        await uploadMediaAsset({
+          file,
+          contentType: "race",
+          contentId: createdRaceId,
+          kind: variables.imageType,
+          isPrimary: true,
+          displayOrder: 0,
+        })
+        
+        // Invalidate media query to refresh the gallery
+        queryClient.invalidateQueries({ queryKey: ["media", "race", createdRaceId] })
       }
     },
     onError: (error, variables) => {
@@ -253,6 +204,10 @@ const AddRace = () => {
       showErrorToast("Please enter a race name first.")
       return
     }
+    if (!createdRaceId) {
+      showErrorToast("Please create the race first before generating images.")
+      return
+    }
     aiImageMutation.mutate({ imageType })
   }
 
@@ -270,13 +225,26 @@ const AddRace = () => {
   }
 
   return (
-    <div className="max-w-4xl">
+    <div className="max-w-5xl">
       <div className="mb-6">
         <h2 className="text-2xl font-bold tracking-tight">Add New Race</h2>
         <p className="text-muted-foreground">
-          Create a new race event. Fill in the details below.
+          Create a new race event using the organized workflow below.
         </p>
       </div>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="details">Race Details</TabsTrigger>
+          <TabsTrigger value="images" disabled={!createdRaceId}>
+            Images & Media
+          </TabsTrigger>
+          <TabsTrigger value="categories" disabled={!createdRaceId}>
+            Categories
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="details" className="mt-6">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -534,117 +502,9 @@ const AddRace = () => {
                   </FormItem>
                 )}
               />
-
-              <div className="md:col-span-2 space-y-4 rounded-lg border p-4">
-                <h3 className="text-sm font-semibold">Images (saved on race creation)</h3>
-
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <FormLabel>Cover Image</FormLabel>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleGenerateImage('cover')}
-                      disabled={aiImageMutation.isPending}
-                      className="gap-2"
-                    >
-                      <Sparkles className="h-4 w-4" />
-                      {aiImageMutation.isPending ? "Generating..." : "AI Generate"}
-                    </Button>
-                  </div>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(event) => {
-                      const file = event.target.files?.[0] || null
-                      setCoverFile(file)
-                    }}
-                  />
-                  {coverFile ? (
-                    <div className="space-y-2">
-                      <p className="text-xs text-muted-foreground">Selected: {coverFile.name}</p>
-                      <img
-                        src={URL.createObjectURL(coverFile)}
-                        alt="Cover preview"
-                        className="w-full max-w-xs rounded-lg border"
-                      />
-                    </div>
-                  ) : null}
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <FormLabel>Banner Image</FormLabel>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleGenerateImage('banner')}
-                      disabled={aiImageMutation.isPending}
-                      className="gap-2"
-                    >
-                      <Sparkles className="h-4 w-4" />
-                      {aiImageMutation.isPending ? "Generating..." : "AI Generate"}
-                    </Button>
-                  </div>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(event) => {
-                      const file = event.target.files?.[0] || null
-                      setBannerFile(file)
-                    }}
-                  />
-                  {bannerFile ? (
-                    <div className="space-y-2">
-                      <p className="text-xs text-muted-foreground">Selected: {bannerFile.name}</p>
-                      <img
-                        src={URL.createObjectURL(bannerFile)}
-                        alt="Banner preview"
-                        className="w-full max-w-md rounded-lg border"
-                      />
-                    </div>
-                  ) : null}
-                </div>
-
-                <div className="space-y-2">
-                  <FormLabel>Gallery Images</FormLabel>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={(event) => {
-                      const files = Array.from(event.target.files || [])
-                      setGalleryFiles(files)
-                    }}
-                  />
-                  {galleryFiles.length > 0 ? (
-                    <p className="text-xs text-muted-foreground">
-                      {galleryFiles.length} file(s) selected
-                    </p>
-                  ) : null}
-                </div>
-              </div>
           </div>
 
           <div className="flex justify-end gap-2">
-            {createdRaceId ? (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  form.reset()
-                  setCreatedRaceId(null)
-                  setCreatedRaceName("")
-                  setCoverFile(null)
-                  setBannerFile(null)
-                  setGalleryFiles([])
-                }}
-              >
-                Create Another Race
-              </Button>
-            ) : null}
             <Button
               type="button"
               variant="outline"
@@ -652,26 +512,111 @@ const AddRace = () => {
             >
               Cancel
             </Button>
-            <LoadingButton type="submit" loading={mutation.isPending}>
-              Create Race
+            <LoadingButton type="submit" loading={mutation.isPending} disabled={createdRaceId !== null}>
+              {createdRaceId ? "Race Created" : "Create Race"}
             </LoadingButton>
           </div>
         </form>
       </Form>
+        </TabsContent>
+
+        <TabsContent value="images" className="mt-6">
+          {createdRaceId ? (
+            <div className="space-y-6">
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">AI Image Generation</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Generate professional cover and banner images using AI based on the race name and location.
+                      </p>
+                    </div>
+                    <div className="flex gap-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => handleGenerateImage('cover')}
+                        disabled={aiImageMutation.isPending}
+                        className="gap-2"
+                      >
+                        <Sparkles className="h-4 w-4" />
+                        {aiImageMutation.isPending ? "Generating..." : "Generate Cover Image"}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => handleGenerateImage('banner')}
+                        disabled={aiImageMutation.isPending}
+                        className="gap-2"
+                      >
+                        <Sparkles className="h-4 w-4" />
+                        {aiImageMutation.isPending ? "Generating..." : "Generate Banner Image"}
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <MediaGalleryManager
+                contentType="race"
+                contentId={createdRaceId}
+                title={`Race Media${createdRaceName ? `: ${createdRaceName}` : ""}`}
+                description="Upload and manage cover, banner, and gallery images for this race."
+              />
+            </div>
+          ) : (
+            <Card>
+              <CardContent className="pt-6">
+                <p className="text-muted-foreground text-center">Create the race first to manage images.</p>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        <TabsContent value="categories" className="mt-6">
+          {createdRaceId ? (
+            <RaceCategoryManager
+              raceId={createdRaceId}
+              title={`Race Categories${createdRaceName ? ` for ${createdRaceName}` : ""}`}
+              description="Add distance categories (e.g., 5K, 10K, Half Marathon, Marathon) for runners to register."
+            />
+          ) : (
+            <Card>
+              <CardContent className="pt-6">
+                <p className="text-muted-foreground text-center">Create the race first to add categories.</p>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+      </Tabs>
 
       {createdRaceId ? (
-        <div className="mt-8 space-y-8">
-          <RaceCategoryManager
-            raceId={createdRaceId}
-            title={`Categories${createdRaceName ? ` for ${createdRaceName}` : ""}`}
-            description="Add distance categories (e.g., 5K, 10K, Marathon) for runners to register."
-          />
-          <MediaGalleryManager
-            contentType="race"
-            contentId={createdRaceId}
-            title={`Race Media${createdRaceName ? `: ${createdRaceName}` : ""}`}
-            description="Manage cover, banner, and gallery images for this new race."
-          />
+        <div className="mt-6 p-4 border rounded-lg bg-muted/50">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium">Race Created Successfully!</p>
+              <p className="text-sm text-muted-foreground">
+                Continue to manage images and categories, or create another race.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  form.reset()
+                  setCreatedRaceId(null)
+                  setCreatedRaceName("")
+                  setActiveTab("details")
+                }}
+              >
+                Create Another Race
+              </Button>
+              <Button onClick={() => navigate({ to: "/admin/races" })}>
+                View All Races
+              </Button>
+            </div>
+          </div>
         </div>
       ) : null}
     </div>

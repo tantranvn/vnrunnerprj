@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { Sparkles } from "lucide-react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -12,6 +13,7 @@ import { RaceTranslationManager } from "@/components/Admin/RaceTranslationManage
 import { Button } from "@/components/ui/button"
 import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Form,
   FormControl,
@@ -60,6 +62,7 @@ const EditRace = ({ race }: EditRaceProps) => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
+  const [activeTab, setActiveTab] = useState("details")
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -220,11 +223,23 @@ const EditRace = ({ race }: EditRaceProps) => {
   }
 
   return (
-    <div className="max-w-4xl space-y-8">
+    <div className="max-w-5xl">
       <div className="mb-6">
         <h2 className="text-2xl font-bold tracking-tight">Edit Race</h2>
-        <p className="text-muted-foreground">Update the race details below.</p>
+        <p className="text-muted-foreground">
+          Update race details using the organized tabs below.
+        </p>
       </div>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="details">Details</TabsTrigger>
+          <TabsTrigger value="images">Images & Media</TabsTrigger>
+          <TabsTrigger value="categories">Categories</TabsTrigger>
+          <TabsTrigger value="translations">Translations</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="details" className="mt-6">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -498,54 +513,62 @@ const EditRace = ({ race }: EditRaceProps) => {
           </div>
         </form>
       </Form>
+        </TabsContent>
 
-      <RaceCategoryManager
-        raceId={race.id}
-        title="Race Categories"
-        description="Manage distance categories for this race (e.g., 5K, 10K, Half Marathon, Full Marathon)."
-      />
+        <TabsContent value="images" className="mt-6 space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>AI Image Generation</CardTitle>
+              <CardDescription>
+                Generate cover and banner images using AI based on the race name and location.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleGenerateImage('cover')}
+                  disabled={aiImageMutation.isPending}
+                  className="gap-2"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  {aiImageMutation.isPending ? "Generating..." : "Generate Cover Image"}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleGenerateImage('banner')}
+                  disabled={aiImageMutation.isPending}
+                  className="gap-2"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  {aiImageMutation.isPending ? "Generating..." : "Generate Banner Image"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
-      <RaceTranslationManager raceId={race.id} race={race} />
+          <MediaGalleryManager
+            contentType="race"
+            contentId={race.id}
+            title="Race Media"
+            description="Upload and manage cover, banner, and gallery images for this race."
+          />
+        </TabsContent>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>AI Image Generation</CardTitle>
-          <CardDescription>
-            Generate cover and banner images using AI based on the race name and location.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleGenerateImage('cover')}
-              disabled={aiImageMutation.isPending}
-              className="gap-2"
-            >
-              <Sparkles className="h-4 w-4" />
-              {aiImageMutation.isPending ? "Generating..." : "Generate Cover Image"}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleGenerateImage('banner')}
-              disabled={aiImageMutation.isPending}
-              className="gap-2"
-            >
-              <Sparkles className="h-4 w-4" />
-              {aiImageMutation.isPending ? "Generating..." : "Generate Banner Image"}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+        <TabsContent value="categories" className="mt-6">
+          <RaceCategoryManager
+            raceId={race.id}
+            title="Race Categories"
+            description="Manage distance categories for this race (e.g., 5K, 10K, Half Marathon, Full Marathon)."
+          />
+        </TabsContent>
 
-      <MediaGalleryManager
-        contentType="race"
-        contentId={race.id}
-        title="Race Media"
-        description="Manage cover, banner, and gallery images for this race."
-      />
+        <TabsContent value="translations" className="mt-6">
+          <RaceTranslationManager raceId={race.id} race={race} />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
