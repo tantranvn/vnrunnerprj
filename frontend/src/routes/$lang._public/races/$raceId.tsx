@@ -1,12 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
+import { useTranslation } from "react-i18next"
+import { useEffect } from "react"
 import { RacesService } from "@/client"
 import type { RacePublicWithDetails } from "@/client"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { RaceCard } from "@/components/Races/RaceCard"
 import { useRaceSearch } from "@/hooks/useRaceSearch"
-import { cn, formatDateLong } from "@/lib/utils"
+import { cn, formatDateLong, getMediaUrl } from "@/lib/utils"
 import { CourseMap } from "@/components/Races/CourseMap"
 import { RaceAssistant } from "@/components/Races/RaceAssistant"
 import { MapPin, Calendar, Mountain, Globe, Award } from "lucide-react"
@@ -67,18 +69,21 @@ export const Route = createFileRoute("/$lang/_public/races/$raceId")({
   },
 })
 
-const TERRAIN_LABELS: Record<string, string> = {
-  road: "Road",
-  trail: "Trail",
-  track: "Track",
-  mixed: "Mixed",
-}
-
 const DIFFICULTY_COLORS: Record<string, string> = {
   easy: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
   moderate: "bg-amber-500/10 text-amber-500 border-amber-500/20",
   hard: "bg-orange-500/10 text-orange-500 border-orange-500/20",
   extreme: "bg-red-500/10 text-red-500 border-red-500/20",
+}
+
+function getTerrainLabel(terrainType: string, t: (key: string) => string): string {
+  const key = `races.terrain.${terrainType}`
+  return t(key)
+}
+
+function getDifficultyLabel(difficulty: string, t: (key: string) => string): string {
+  const key = `races.difficulty.${difficulty}`
+  return t(key)
 }
 
 function InfoRow({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
@@ -106,6 +111,17 @@ function RaceDetailSkeleton() {
 
 function RaceDetailPage() {
   const { raceId, lang } = Route.useParams()
+  const { t, i18n } = useTranslation()
+
+  // Sync i18n language with route parameter
+  useEffect(() => {
+    if (lang && i18n.language !== lang) {
+      i18n.changeLanguage(lang)
+    }
+  }, [lang, i18n])
+
+  // Map language code to locale for date formatting
+  const locale = lang === 'vi' ? 'vi-VN' : 'en-GB'
 
   const { data: race, isLoading } = useQuery<RacePublicWithDetails>({
     queryKey: ["race", raceId],
@@ -120,7 +136,7 @@ function RaceDetailPage() {
   const similarRaces = (similarData?.data ?? []).filter((r) => r.id !== raceId)
 
   if (isLoading) return <div className="container py-12"><RaceDetailSkeleton /></div>
-  if (!race) return <div className="container py-12 text-center text-muted-foreground">Race not found.</div>
+  if (!race) return <div className="container py-12 text-center text-muted-foreground">{t('races.detail.raceNotFound')}</div>
 
   const registrationOpen = race.status === "registration_open"
   const location = [race.city, race.state, race.country].filter(Boolean).join(", ") || race.location
@@ -167,38 +183,109 @@ function RaceDetailPage() {
     }] : undefined),
   })
 
+  const metadata = race.race_metadata as { cover_url?: string } | null | undefined
+  const coverUrl = metadata?.cover_url ? getMediaUrl(metadata.cover_url) : null
+
   return (
-    <div className="w-full py-12 md:py-16 lg:py-20">
+    <div className="w-full">
       <StructuredData data={breadcrumbSchema} />
       <StructuredData data={eventSchema} />
-      <div className="container">
+      
+      {/* Hero Banner */}
+      <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
+        {/* Background Image or Gradient */}
+        {coverUrl ? (
+          <img
+            src={coverUrl}
+            alt={race.name}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/70 to-primary/50" />
+        )}
+        
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+        
+        {/* Content */}
+        <div className="relative h-full flex items-end">
+          <div className="container pb-8 md:pb-12 lg:pb-16">
+            <div className="max-w-5xl space-y-4 md:space-y-6">
+              {/* Badges */}
+              <div className="flex flex-wrap gap-2">
+                {race.terrain_type && (
+                  <Badge variant="secondary" className="rounded-full backdrop-blur-sm bg-white/90 text-gray-900">
+                    {getTerrainLabel(race.terrain_type, t)}
+                  </Badge>
+                )}
+                {race.difficulty_level && (
+                  <span className={cn(
+                    "inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium backdrop-blur-sm",
+                    DIFFICULTY_COLORS[race.difficulty_level] ?? "bg-white/90 text-gray-900"
+                  )}>
+                    {getDifficultyLabel(race.difficulty_level, t)}
+                  </span>
+                )}
+                {race.is_certified && (
+                  <Badge className="gap-1.5 rounded-full backdrop-blur-sm bg-white/90 text-gray-900">
+                    <Award className="size-3.5" /> {t('races.card.certified')}
+                  </Badge>
+                )}
+              </div>
+
+              {/* Title */}
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight text-white drop-shadow-lg">
+                {race.name}
+              </h1>
+
+              {/* Location and Date */}
+              <div className="flex flex-wrap gap-4 md:gap-6 text-white/90">
+                <div className="flex items-center gap-2">
+                  <MapPin className="size-5" />
+                  <span className="text-sm md:text-base font-medium">{location}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Calendar className="size-5" />
+                  <span className="text-sm md:text-base font-medium">{formatDateLong(race.event_start_date, locale)}</span>
+                </div>
+              </div>
+
+              {/* Registration CTA on Banner */}
+              {race.website_url && registrationOpen && (
+                <div className="pt-2">
+                  <a
+                    href={race.website_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-base font-semibold text-gray-900 hover:bg-white/90 transition-colors shadow-lg"
+                  >
+                    {t('races.detail.registerNow')}
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="container py-12 md:py-16 lg:py-20">
         <article className="mx-auto max-w-5xl space-y-12" itemScope itemType="https://schema.org/SportsEvent">
           <meta itemProp="name" content={race.name} />
           <meta itemProp="startDate" content={race.event_start_date} />
           {race.event_end_date && <meta itemProp="endDate" content={race.event_end_date} />}
-          {/* Hero */}
+          
+          {/* Description */}
           <div className="space-y-6">
-            <div className="flex flex-wrap gap-2">
-              {race.terrain_type && (
-                <Badge variant="secondary" className="rounded-full">{TERRAIN_LABELS[race.terrain_type] ?? race.terrain_type}</Badge>
-              )}
-              {race.difficulty_level && (
-                <span className={cn("inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium", DIFFICULTY_COLORS[race.difficulty_level] ?? "bg-gray-100 text-gray-800")}>
-                  {race.difficulty_level.charAt(0).toUpperCase() + race.difficulty_level.slice(1)}
-                </span>
-              )}
-              {race.is_certified && (
-                <Badge className="gap-1.5 rounded-full"><Award className="size-3.5" /> Certified</Badge>
-              )}
-            </div>
-
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">{race.name}</h1>
 
             {race.description && (
-              <div
-                className="prose prose-lg max-w-none text-muted-foreground leading-relaxed [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-3 [&_h2]:text-foreground [&_p]:leading-relaxed [&_p]:mb-4 [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:my-4 [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:my-4 [&_li]:my-2 [&_a]:text-primary [&_a]:underline [&_a]:transition-colors [&_a:hover]:text-primary/80 [&_strong]:font-semibold [&_strong]:text-foreground [&_em]:italic"
-                dangerouslySetInnerHTML={{ __html: race.description }}
-              />
+              <div>
+                <h2 className="text-2xl font-bold mb-4">{t('races.detail.aboutRace')}</h2>
+                <div
+                  className="prose prose-lg max-w-none text-muted-foreground leading-relaxed [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-3 [&_h2]:text-foreground [&_p]:leading-relaxed [&_p]:mb-4 [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:my-4 [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:my-4 [&_li]:my-2 [&_a]:text-primary [&_a]:underline [&_a]:transition-colors [&_a:hover]:text-primary/80 [&_strong]:font-semibold [&_strong]:text-foreground [&_em]:italic"
+                  dangerouslySetInnerHTML={{ __html: race.description }}
+                />
+              </div>
             )}
           </div>
 
@@ -206,39 +293,39 @@ function RaceDetailPage() {
           <div className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-8 divide-y divide-border/50">
             <InfoRow
               icon={<Calendar className="size-5" />}
-              label="Race date"
-              value={formatDateLong(race.event_start_date)}
+              label={t('races.detail.raceDate')}
+              value={formatDateLong(race.event_start_date, locale)}
             />
             {race.event_end_date && (
               <InfoRow
                 icon={<Calendar className="size-5" />}
-                label="End date"
-                value={formatDateLong(race.event_end_date)}
+                label={t('races.detail.endDate')}
+                value={formatDateLong(race.event_end_date, locale)}
               />
             )}
             <InfoRow
               icon={<MapPin className="size-5" />}
-              label="Location"
+              label={t('races.detail.location')}
               value={[race.city, race.state, race.country].filter(Boolean).join(", ") || race.location}
             />
             {race.elevation_gain_m && (
               <InfoRow
                 icon={<Mountain className="size-5" />}
-                label="Elevation gain"
-                value={`${race.elevation_gain_m.toLocaleString()} m`}
+                label={t('races.detail.elevationGain')}
+                value={`${race.elevation_gain_m.toLocaleString()} ${t('races.detail.meters')}`}
               />
             )}
             {race.website_url && (
               <div className="flex items-center gap-4 py-3">
                 <Globe className="size-5 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground w-32 shrink-0">Website</span>
+                <span className="text-sm text-muted-foreground w-32 shrink-0">{t('races.detail.website')}</span>
                 <a
                   href={race.website_url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
                 >
-                  Official site
+                  {t('races.detail.officialSite')}
                 </a>
               </div>
             )}
@@ -247,15 +334,15 @@ function RaceDetailPage() {
           {/* Categories */}
           {race.categories && race.categories.length > 0 && (
             <section className="space-y-4">
-              <h2 className="text-xl font-semibold">Race Categories</h2>
+              <h2 className="text-xl font-semibold">{t('races.detail.categories')}</h2>
               <div className="overflow-x-auto rounded-lg border">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="bg-muted/50">
-                      <th className="px-4 py-2 text-left font-medium">Category</th>
-                      <th className="px-4 py-2 text-left font-medium">Distance</th>
-                      <th className="px-4 py-2 text-left font-medium">Price</th>
-                      <th className="px-4 py-2 text-left font-medium">Cutoff time</th>
+                      <th className="px-4 py-2 text-left font-medium">{t('races.detail.category')}</th>
+                      <th className="px-4 py-2 text-left font-medium">{t('races.detail.distance')}</th>
+                      <th className="px-4 py-2 text-left font-medium">{t('races.detail.price')}</th>
+                      <th className="px-4 py-2 text-left font-medium">{t('races.detail.cutoffTime')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y">
@@ -266,7 +353,7 @@ function RaceDetailPage() {
                         <td className="px-4 py-2">
                           {cat.price != null ? `${cat.price} ${race.currency ?? "VND"}` : "—"}
                         </td>
-                        <td className="px-4 py-2">{cat.cutoff_time_minutes ? `${cat.cutoff_time_minutes} min` : "—"}</td>
+                        <td className="px-4 py-2">{cat.cutoff_time_minutes ? `${cat.cutoff_time_minutes} ${t('races.detail.min')}` : "—"}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -278,7 +365,7 @@ function RaceDetailPage() {
           {/* Course map */}
           {race.latitude != null && race.longitude != null && (
             <section className="space-y-3">
-              <h2 className="text-xl font-semibold">Course Location</h2>
+              <h2 className="text-xl font-semibold">{t('races.detail.courseLocation')}</h2>
               <CourseMap
                 latitude={race.latitude}
                 longitude={race.longitude}
@@ -290,7 +377,7 @@ function RaceDetailPage() {
           {/* Tags */}
           {race.tags && race.tags.length > 0 && (
             <section className="space-y-3">
-              <h2 className="text-xl font-semibold">Tags</h2>
+              <h2 className="text-xl font-semibold">{t('races.detail.tags')}</h2>
               <div className="flex flex-wrap gap-2">
                 {race.tags.map((tag) => (
                   <Badge key={tag.id} variant="outline">{tag.name}</Badge>
@@ -299,39 +386,26 @@ function RaceDetailPage() {
             </section>
           )}
 
-          {/* Registration CTA */}
-          <section className="rounded-lg border bg-muted/20 p-6 flex items-center justify-between gap-4 flex-wrap">
-            <div>
-              <div className="font-semibold text-lg">
-                {registrationOpen ? "Registration is open!" : "Registration not available"}
+          {/* Registration Info */}
+          {!registrationOpen && (
+            <section className="rounded-lg border bg-muted/20 p-6">
+              <div>
+                <div className="font-semibold text-lg">
+                  {t('races.detail.registrationNotAvailable')}
+                </div>
+                {race.registration_end && (
+                  <div className="text-sm text-muted-foreground mt-1">
+                    {t('races.detail.registrationClosedOn')} {formatDateLong(race.registration_end, locale)}
+                  </div>
+                )}
               </div>
-              {race.registration_end && (
-                <div className="text-sm text-muted-foreground">
-                  Closes {formatDateLong(race.registration_end)}
-                </div>
-              )}
-              {race.base_price != null && (
-                <div className="text-sm text-muted-foreground">
-                  From {race.base_price.toLocaleString()} {race.currency ?? "VND"}
-                </div>
-              )}
-            </div>
-            {race.website_url && registrationOpen && (
-              <a
-                href={race.website_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-              >
-                Register now
-              </a>
-            )}
-          </section>
+            </section>
+          )}
 
           {/* Similar races */}
           {similarRaces.length > 0 && (
             <section className="space-y-4">
-              <h2 className="text-xl font-semibold">Similar Races</h2>
+              <h2 className="text-xl font-semibold">{t('races.detail.similarRaces')}</h2>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {similarRaces.map((r) => (
                   <RaceCard key={r.id} race={r} />
@@ -342,7 +416,7 @@ function RaceDetailPage() {
 
           <div className="pt-4">
             <Link to="/$lang/races" params={{ lang }} className="text-sm text-primary hover:underline">
-              ← Back to all races
+              {t('races.backToAll')}
             </Link>
           </div>
         </article>
