@@ -96,7 +96,7 @@ function HomePage() {
             </div>
 
             {/* Large bold heading - Anton-style */}
-            <h1 className="text-4xl md:text-5xl lg:text-7xl xl:text-[100px] font-black tracking-[-0.01em] leading-[0.9] uppercase">
+            <h1 className="text-4xl md:text-5xl lg:text-7xl xl:text-[100px] font-black tracking-[-0.01em] leading-[1.1] uppercase">
               {t("home.hero.titleLine1")}
               <br />
               <span className="text-[#FF5A1F]">
@@ -223,7 +223,7 @@ function HomePage() {
                 <p className="text-xs tracking-[0.14em] uppercase text-white/70 font-mono">
                   {t("home.cta.freeForever")}
                 </p>
-                <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-[80px] font-black tracking-tight leading-[0.95] uppercase text-white">
+                <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-[80px] font-black tracking-tight leading-[1.1] uppercase text-white">
                   {t("home.cta.titleLine1")}
                   <br />
                   {t("home.cta.titleLine2")}
