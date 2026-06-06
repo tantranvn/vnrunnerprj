@@ -1235,10 +1235,12 @@ def search_races(
 
     statement = select(Race)
 
-    # Full-text search via tsvector
+    # Full-text search on name, description, and location
     if q:
         statement = statement.where(
-            text("race.search_vector @@ plainto_tsquery('english', :q)").bindparams(q=q)
+            text(
+                "to_tsvector('english', COALESCE(race.name, '') || ' ' || COALESCE(race.description, '') || ' ' || COALESCE(race.location, '')) @@ plainto_tsquery('english', :q)"
+            ).bindparams(q=q)
         )
 
     # Geo radius filter
@@ -1338,7 +1340,9 @@ def search_races_count(
 
     if q:
         statement = statement.where(
-            text("race.search_vector @@ plainto_tsquery('english', :q)").bindparams(q=q)
+            text(
+                "to_tsvector('english', COALESCE(race.name, '') || ' ' || COALESCE(race.description, '') || ' ' || COALESCE(race.location, '')) @@ plainto_tsquery('english', :q)"
+            ).bindparams(q=q)
         )
     if lat is not None and lon is not None and radius_km is not None:
         dist_expr = haversine_sql_expr(lat, lon)

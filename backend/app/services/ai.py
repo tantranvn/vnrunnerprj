@@ -53,9 +53,9 @@ async def embed_race(race: "Race") -> list[float]:
     if race.location:
         parts.append(f"Location: {race.location}")
     if race.terrain_type:
-        parts.append(f"Terrain: {race.terrain_type.value}")
+        parts.append(f"Terrain: {race.terrain_type}")
     if race.difficulty_level:
-        parts.append(f"Difficulty: {race.difficulty_level.value}")
+        parts.append(f"Difficulty: {race.difficulty_level}")
     if race.elevation_gain_m:
         parts.append(f"Elevation gain: {race.elevation_gain_m}m")
     text = " | ".join(parts)
@@ -69,9 +69,9 @@ def _race_summary_block(race: "Race") -> str:
     if race.location:
         lines.append(f"Location: {race.location}")
     if race.terrain_type:
-        lines.append(f"Terrain: {race.terrain_type.value}")
+        lines.append(f"Terrain: {race.terrain_type}")
     if race.difficulty_level:
-        lines.append(f"Difficulty: {race.difficulty_level.value}")
+        lines.append(f"Difficulty: {race.difficulty_level}")
     if race.elevation_gain_m:
         lines.append(f"Elevation gain: {race.elevation_gain_m}m")
     return "\n".join(lines)
