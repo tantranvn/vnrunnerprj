@@ -14,12 +14,25 @@ const languages = [
   { code: "en", name: "English", nativeName: "English" },
 ]
 
-export function LanguageSwitcher() {
+interface LanguageSwitcherProps {
+  /**
+   * If true, only changes i18n language without URL navigation.
+   * Useful for auth pages without language prefix in URL.
+   */
+  noUrlChange?: boolean
+}
+
+export function LanguageSwitcher({ noUrlChange = false }: LanguageSwitcherProps) {
   const { i18n } = useTranslation()
   const params = useParams({ strict: false }) as Record<string, any>
 
   const changeLanguage = (languageCode: string) => {
     i18n.changeLanguage(languageCode)
+    
+    // If noUrlChange is true, just change the language in i18n without navigation
+    if (noUrlChange) {
+      return
+    }
     
     // Navigate to the same route with different language
     const currentPath = window.location.pathname

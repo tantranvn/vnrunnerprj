@@ -1,11 +1,12 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router"
 
-export const Route = createFileRoute(
-  '/_layout/admin/cms/blog/posts/$postId/edit',
-)({
-  component: RouteComponent,
+import { BlogPostEditor } from "@/components/Admin/CMS/BlogPostEditor"
+
+export const Route = createFileRoute("/_layout/admin/cms/blog/posts/$postId/edit")({
+  component: CMSBlogPostEdit,
 })
 
-function RouteComponent() {
-  return <div>Hello "/_layout/admin/cms/blog/posts/$postId/edit"!</div>
+function CMSBlogPostEdit() {
+  const { postId } = Route.useParams()
+  return <BlogPostEditor postId={postId} />
 }

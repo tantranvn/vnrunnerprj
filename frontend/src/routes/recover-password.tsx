@@ -7,9 +7,9 @@ import {
 } from "@tanstack/react-router"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { Sparkles } from "lucide-react"
 
 import { LoginService } from "@/client"
-import { AuthLayout } from "@/components/Common/AuthLayout"
 import {
   Form,
   FormControl,
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { LoadingButton } from "@/components/ui/loading-button"
+import { PublicFooter } from "@/components/Public/PublicFooter"
 import { isLoggedIn } from "@/hooks/useAuth"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
@@ -42,7 +43,7 @@ export const Route = createFileRoute("/recover-password")({
   head: () => ({
     meta: [
       {
-        title: "Recover Password - FastAPI Template",
+        title: "Recover Password - VNRunner",
       },
     ],
   }),
@@ -78,53 +79,70 @@ function RecoverPassword() {
   }
 
   return (
-    <AuthLayout>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-6"
-        >
-          <div className="flex flex-col items-center gap-2 text-center">
-            <h1 className="text-2xl font-bold">Password Recovery</h1>
-          </div>
+    <div className="flex min-h-screen flex-col">
+      <div className="flex-1 flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md space-y-8">
+          {/* Logo */}
+          <RouterLink to="/" className="flex items-center justify-center gap-2">
+            <Sparkles className="size-6" />
+            <span className="text-2xl font-black tracking-wide uppercase">VNRUNNER</span>
+          </RouterLink>
 
-          <div className="grid gap-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      data-testid="email-input"
-                      placeholder="user@example.com"
-                      type="email"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          {/* Form */}
+          <div className="bg-card rounded-lg border p-8 shadow-sm">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="flex flex-col gap-6"
+              >
+                <div className="flex flex-col items-center gap-2 text-center">
+                  <h1 className="text-2xl font-bold">Forgot your password?</h1>
+                  <p className="text-sm text-muted-foreground">
+                    Enter your email to receive a reset link
+                  </p>
+                </div>
 
-            <LoadingButton
-              type="submit"
-              className="w-full"
-              loading={mutation.isPending}
-            >
-              Continue
-            </LoadingButton>
-          </div>
+                <div className="grid gap-4">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            data-testid="email-input"
+                            placeholder="john@example.com"
+                            type="email"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-          <div className="text-center text-sm">
-            Remember your password?{" "}
-            <RouterLink to="/login" className="underline underline-offset-4">
-              Log in
-            </RouterLink>
+                  <LoadingButton
+                    type="submit"
+                    className="w-full"
+                    loading={mutation.isPending}
+                  >
+                    Send Reset Link
+                  </LoadingButton>
+                </div>
+
+                <div className="text-center text-sm">
+                  Remember your password?{" "}
+                  <RouterLink to="/login" className="underline underline-offset-4 hover:text-primary">
+                    Log in
+                  </RouterLink>
+                </div>
+              </form>
+            </Form>
           </div>
-        </form>
-      </Form>
-    </AuthLayout>
+        </div>
+      </div>
+      <PublicFooter />
+    </div>
   )
 }

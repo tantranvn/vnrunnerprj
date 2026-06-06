@@ -246,5 +246,73 @@
     "select": "Select Language",
     "english": "English",
     "vietnamese": "Tiếng Việt"
+  },
+  "auth": {
+    "signup": {
+      "title": "Create an account",
+      "subtitle": "Enter your information to get started",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "John Doe",
+      "email": "Email",
+      "emailPlaceholder": "john@example.com",
+      "password": "Password",
+      "passwordPlaceholder": "••••••••",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordPlaceholder": "••••••••",
+      "signupButton": "Sign Up",
+      "alreadyHaveAccount": "Already have an account?",
+      "loginLink": "Log in",
+      "errors": {
+        "fullNameRequired": "Full Name is required",
+        "passwordRequired": "Password is required",
+        "passwordMinLength": "Password must be at least 8 characters",
+        "confirmPasswordRequired": "Password confirmation is required",
+        "passwordMismatch": "The passwords don't match"
+      }
+    },
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Enter your credentials to continue",
+      "email": "Email",
+      "emailPlaceholder": "john@example.com",
+      "password": "Password",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "Forgot password?",
+      "loginButton": "Log In",
+      "noAccount": "Don't have an account?",
+      "signupLink": "Sign up",
+      "errors": {
+        "passwordRequired": "Password is required",
+        "passwordMinLength": "Password must be at least 8 characters"
+      }
+    },
+    "recoverPassword": {
+      "title": "Forgot your password?",
+      "subtitle": "Enter your email to receive a reset link",
+      "email": "Email",
+      "emailPlaceholder": "john@example.com",
+      "sendButton": "Send Reset Link",
+      "rememberPassword": "Remember your password?",
+      "loginLink": "Log in",
+      "successMessage": "Password recovery email sent successfully"
+    },
+    "resetPassword": {
+      "title": "Create new password",
+      "subtitle": "Enter your new password below",
+      "newPassword": "New Password",
+      "newPasswordPlaceholder": "••••••••",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordPlaceholder": "••••••••",
+      "resetButton": "Reset Password",
+      "rememberPassword": "Remember your password?",
+      "loginLink": "Log in",
+      "successMessage": "Password updated successfully",
+      "errors": {
+        "passwordRequired": "Password is required",
+        "passwordMinLength": "Password must be at least 8 characters",
+        "confirmPasswordRequired": "Password confirmation is required",
+        "passwordMismatch": "The passwords don't match"
+      }
+    }
   }
 }

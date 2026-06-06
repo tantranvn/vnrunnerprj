@@ -246,5 +246,73 @@
     "select": "Chọn ngôn ngữ",
     "english": "English",
     "vietnamese": "Tiếng Việt"
+  },
+  "auth": {
+    "signup": {
+      "title": "Tạo tài khoản",
+      "subtitle": "Nhập thông tin của bạn để bắt đầu",
+      "fullName": "Họ và tên",
+      "fullNamePlaceholder": "Nguyễn Văn A",
+      "email": "Email",
+      "emailPlaceholder": "nguyen@example.com",
+      "password": "Mật khẩu",
+      "passwordPlaceholder": "••••••••",
+      "confirmPassword": "Xác nhận mật khẩu",
+      "confirmPasswordPlaceholder": "••••••••",
+      "signupButton": "Đăng ký",
+      "alreadyHaveAccount": "Đã có tài khoản?",
+      "loginLink": "Đăng nhập",
+      "errors": {
+        "fullNameRequired": "Họ và tên là bắt buộc",
+        "passwordRequired": "Mật khẩu là bắt buộc",
+        "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự",
+        "confirmPasswordRequired": "Xác nhận mật khẩu là bắt buộc",
+        "passwordMismatch": "Mật khẩu không khớp"
+      }
+    },
+    "login": {
+      "title": "Chào mừng trở lại",
+      "subtitle": "Nhập thông tin đăng nhập để tiếp tục",
+      "email": "Email",
+      "emailPlaceholder": "nguyen@example.com",
+      "password": "Mật khẩu",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "Quên mật khẩu?",
+      "loginButton": "Đăng nhập",
+      "noAccount": "Chưa có tài khoản?",
+      "signupLink": "Đăng ký",
+      "errors": {
+        "passwordRequired": "Mật khẩu là bắt buộc",
+        "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự"
+      }
+    },
+    "recoverPassword": {
+      "title": "Quên mật khẩu?",
+      "subtitle": "Nhập email của bạn để nhận liên kết đặt lại",
+      "email": "Email",
+      "emailPlaceholder": "nguyen@example.com",
+      "sendButton": "Gửi liên kết đặt lại",
+      "rememberPassword": "Đã nhớ mật khẩu?",
+      "loginLink": "Đăng nhập",
+      "successMessage": "Email khôi phục mật khẩu đã được gửi thành công"
+    },
+    "resetPassword": {
+      "title": "Tạo mật khẩu mới",
+      "subtitle": "Nhập mật khẩu mới của bạn bên dưới",
+      "newPassword": "Mật khẩu mới",
+      "newPasswordPlaceholder": "••••••••",
+      "confirmPassword": "Xác nhận mật khẩu",
+      "confirmPasswordPlaceholder": "••••••••",
+      "resetButton": "Đặt lại mật khẩu",
+      "rememberPassword": "Đã nhớ mật khẩu?",
+      "loginLink": "Đăng nhập",
+      "successMessage": "Mật khẩu đã được cập nhật thành công",
+      "errors": {
+        "passwordRequired": "Mật khẩu là bắt buộc",
+        "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự",
+        "confirmPasswordRequired": "Xác nhận mật khẩu là bắt buộc",
+        "passwordMismatch": "Mật khẩu không khớp"
+      }
+    }
   }
 }
