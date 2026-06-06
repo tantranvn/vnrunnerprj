@@ -57,8 +57,8 @@ const useAuth = () => {
       if (user?.is_superuser) {
         navigate({ to: "/admin/dashboard" })
       } else {
-        // Regular users (runners) go to saved races or home
-        navigate({ to: "/saved" })
+        // Regular users (runners) go to homepage
+        navigate({ to: "/" })
       }
     },
     onError: (error: any) => {

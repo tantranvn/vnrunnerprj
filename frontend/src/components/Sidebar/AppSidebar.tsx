@@ -1,12 +1,14 @@
 import {
   Bookmark,
   Briefcase,
+  Calendar,
   FileText,
   Flag,
   Home,
   Menu,
   PenTool,
   Settings,
+  Tags,
   User as UserIcon,
   Users,
 } from "lucide-react"
@@ -26,16 +28,18 @@ import { User } from "./User"
 const adminItems: Item[] = [
   { icon: Home, title: "Dashboard", path: "/admin/dashboard" },
   { icon: Flag, title: "Races", path: "/admin/races" },
+  { icon: Tags, title: "Tags", path: "/admin/tags" },
   { icon: Users, title: "Users", path: "/admin/users" },
+  { icon: FileText, title: "Pages", path: "/admin/cms/pages" },
+  { icon: PenTool, title: "Blog", path: "/admin/cms/blog/posts" },
+  { icon: Menu, title: "Menus", path: "/admin/cms/menus" },
   { icon: Briefcase, title: "Items", path: "/admin/items" },
-  { icon: FileText, title: "CMS Pages", path: "/admin/cms/pages" },
-  { icon: PenTool, title: "CMS Blog", path: "/admin/cms/blog/posts" },
-  { icon: Menu, title: "CMS Menus", path: "/admin/cms/menus" },
   { icon: Settings, title: "Settings", path: "/admin/settings" },
 ]
 
 const userItems: Item[] = [
-  { icon: Bookmark, title: "Saved Races", path: "/saved" },
+  { icon: Calendar, title: "My Races", path: "/history" },
+  { icon: Bookmark, title: "Saved", path: "/saved" },
   { icon: UserIcon, title: "Profile", path: "/profile" },
 ]
 
