@@ -1,15 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { Loader2, LayoutGrid, Map } from "lucide-react"
+import { LayoutGrid, Loader2, Map as MapIcon } from "lucide-react"
 import { useCallback, useDeferredValue, useState } from "react"
+import type { DifficultyEnum, TerrainEnum } from "@/client"
 import { FilterBar, type RaceFilters } from "@/components/Races/FilterBar"
 import { RaceCard } from "@/components/Races/RaceCard"
 import { RacesMapView } from "@/components/Races/RacesMapView"
 import { SearchBar } from "@/components/Races/SearchBar"
 import { SortControls, type SortOption } from "@/components/Races/SortControls"
 import { useRaceSearch } from "@/hooks/useRaceSearch"
-import type { DifficultyEnum, TerrainEnum } from "@/client"
+import {
+  generateBreadcrumbSchema,
+  generateMetaTags,
+  StructuredData,
+} from "@/lib/seo"
 import { cn } from "@/lib/utils"
-import { generateMetaTags, generateBreadcrumbSchema, StructuredData } from "@/lib/seo"
 
 const baseUrl = import.meta.env.VITE_FRONTEND_URL || "https://vnrunner.com"
 
@@ -29,9 +33,12 @@ function validateSearch(search: Record<string, unknown>): RaceSearch {
     q: typeof search.q === "string" ? search.q : "",
     terrain: typeof search.terrain === "string" ? search.terrain : "",
     difficulty: typeof search.difficulty === "string" ? search.difficulty : "",
-    distanceMin: typeof search.distanceMin === "string" ? search.distanceMin : "",
-    distanceMax: typeof search.distanceMax === "string" ? search.distanceMax : "",
-    provinceCode: typeof search.provinceCode === "string" ? search.provinceCode : "",
+    distanceMin:
+      typeof search.distanceMin === "string" ? search.distanceMin : "",
+    distanceMax:
+      typeof search.distanceMax === "string" ? search.distanceMax : "",
+    provinceCode:
+      typeof search.provinceCode === "string" ? search.provinceCode : "",
     sort:
       search.sort === "date" || search.sort === "popularity"
         ? search.sort
@@ -48,7 +55,8 @@ export const Route = createFileRoute("/$lang/_public/races/")({
       title: "Browse Running Races in Vietnam | VNRunner",
       description:
         "Find and register for upcoming running races in Vietnam. Filter by distance, location, terrain (road, trail), and difficulty. Discover marathons, ultras, 5K, 10K, and half marathons across Vietnam. Secure online registration.",
-      keywords: "Vietnam races, running events Vietnam, trail running, road races, marathon registration, ultra marathon Vietnam, 5K Vietnam, 10K Vietnam, half marathon Vietnam",
+      keywords:
+        "Vietnam races, running events Vietnam, trail running, road races, marathon registration, ultra marathon Vietnam, 5K Vietnam, 10K Vietnam, half marathon Vietnam",
       canonicalUrl: `${baseUrl}/races`,
     }),
   }),
@@ -134,19 +142,20 @@ function RacesPage() {
               Upcoming Races in Vietnam
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-              Browse and register for upcoming running races across Vietnam. Find the perfect event
-              that matches your goals and fitness level - from road races to trail runs, 5Ks to ultramarathons.
+              Browse and register for upcoming running races across Vietnam.
+              Find the perfect event that matches your goals and fitness level -
+              from road races to trail runs, 5Ks to ultramarathons.
             </p>
           </header>
 
           {/* Search + Controls */}
           <div className="space-y-4 rounded-2xl border border-border/50 bg-card/30 backdrop-blur-sm p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <SearchBar
-                value={search.q ?? ""}
-                onChange={handleQueryChange}
+              <SearchBar value={search.q ?? ""} onChange={handleQueryChange} />
+              <SortControls
+                value={search.sort ?? "date"}
+                onChange={handleSortChange}
               />
-              <SortControls value={search.sort ?? "date"} onChange={handleSortChange} />
             </div>
             <FilterBar filters={filters} onChange={handleFilterChange} />
           </div>
@@ -159,31 +168,35 @@ function RacesPage() {
                 : `${totalCount} race${totalCount !== 1 ? "s" : ""} found`}
             </span>
             <div className="flex items-center gap-3">
-              {isFetching && !isLoading && <Loader2 className="size-4 animate-spin text-primary" />}
+              {isFetching && !isLoading && (
+                <Loader2 className="size-4 animate-spin text-primary" />
+              )}
               <div className="flex rounded-lg border border-border/50 overflow-hidden bg-card/50">
                 <button
+                  type="button"
                   onClick={() => setViewMode("grid")}
                   className={cn(
                     "px-3 py-2 transition-colors",
-                    viewMode === "grid" 
-                      ? "bg-primary text-primary-foreground" 
-                      : "hover:bg-muted/50"
+                    viewMode === "grid"
+                      ? "bg-primary text-primary-foreground"
+                      : "hover:bg-muted/50",
                   )}
                   title="Grid view"
                 >
                   <LayoutGrid className="size-4" />
                 </button>
                 <button
+                  type="button"
                   onClick={() => setViewMode("map")}
                   className={cn(
                     "px-3 py-2 border-l transition-colors",
-                    viewMode === "map" 
-                      ? "bg-primary text-primary-foreground" 
-                      : "hover:bg-muted/50"
+                    viewMode === "map"
+                      ? "bg-primary text-primary-foreground"
+                      : "hover:bg-muted/50",
                   )}
                   title="Map view"
                 >
-                  <Map className="size-4" />
+                  <MapIcon className="size-4" />
                 </button>
               </div>
             </div>
@@ -219,9 +232,14 @@ function RacesPage() {
           {totalPages > 1 && (
             <div className="flex items-center justify-center gap-3 pt-8">
               <button
+                type="button"
                 className="rounded-lg border border-border/50 bg-card/50 px-4 py-2 text-sm font-medium transition-colors hover:bg-card disabled:opacity-40 disabled:hover:bg-card/50"
                 disabled={currentPage === 0}
-                onClick={() => navigate({ search: (prev) => ({ ...prev, page: currentPage - 1 }) })}
+                onClick={() =>
+                  navigate({
+                    search: (prev) => ({ ...prev, page: currentPage - 1 }),
+                  })
+                }
               >
                 Previous
               </button>
@@ -229,9 +247,14 @@ function RacesPage() {
                 Page {currentPage + 1} of {totalPages}
               </span>
               <button
+                type="button"
                 className="rounded-lg border border-border/50 bg-card/50 px-4 py-2 text-sm font-medium transition-colors hover:bg-card disabled:opacity-40 disabled:hover:bg-card/50"
                 disabled={currentPage >= totalPages - 1}
-                onClick={() => navigate({ search: (prev) => ({ ...prev, page: currentPage + 1 }) })}
+                onClick={() =>
+                  navigate({
+                    search: (prev) => ({ ...prev, page: currentPage + 1 }),
+                  })
+                }
               >
                 Next
               </button>

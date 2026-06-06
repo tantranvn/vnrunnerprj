@@ -163,12 +163,14 @@ class UserBase(SQLModel):
     email: EmailStr = Field(unique=True, index=True, max_length=255)
     is_active: bool = True
     is_superuser: bool = False
+    is_verified: bool = False
     full_name: str | None = Field(default=None, max_length=255)
 
 
 # Properties to receive via API on creation
 class UserCreate(UserBase):
     password: str = Field(min_length=8, max_length=128)
+    is_verified: bool = False
 
 
 class UserRegister(SQLModel):
@@ -181,6 +183,7 @@ class UserRegister(SQLModel):
 class UserUpdate(UserBase):
     email: EmailStr | None = Field(default=None, max_length=255)  # type: ignore[assignment]
     password: str | None = Field(default=None, min_length=8, max_length=128)
+    is_verified: bool | None = None
 
 
 class UserUpdateMe(SQLModel):
@@ -1825,6 +1828,8 @@ class Message(SQLModel):
 class Token(SQLModel):
     access_token: str
     token_type: str = "bearer"
+    user: "UserPublic | None" = None
+    warning: str | None = None
 
 
 # Contents of JWT token

@@ -20,12 +20,16 @@ export function ElevationChart({ points, className }: ElevationChartProps) {
   const elevRange = maxElev - minElev || 1
   const maxDist = points[points.length - 1].distance_km
 
-  const toX = (d: number) => PAD.left + (d / maxDist) * (W - PAD.left - PAD.right)
+  const toX = (d: number) =>
+    PAD.left + (d / maxDist) * (W - PAD.left - PAD.right)
   const toY = (e: number) =>
     PAD.top + (1 - (e - minElev) / elevRange) * (H - PAD.top - PAD.bottom)
 
   const linePath = points
-    .map((p, i) => `${i === 0 ? "M" : "L"} ${toX(p.distance_km).toFixed(1)} ${toY(p.elevation_m).toFixed(1)}`)
+    .map(
+      (p, i) =>
+        `${i === 0 ? "M" : "L"} ${toX(p.distance_km).toFixed(1)} ${toY(p.elevation_m).toFixed(1)}`,
+    )
     .join(" ")
 
   const fillPath =
@@ -41,11 +45,18 @@ export function ElevationChart({ points, className }: ElevationChartProps) {
         viewBox={`0 0 ${W} ${H}`}
         className="w-full text-xs"
         preserveAspectRatio="xMidYMid meet"
+        aria-label="Elevation profile chart"
       >
+        <title>Elevation Profile</title>
         {/* Fill area */}
         <path d={fillPath} fill="hsl(var(--primary) / 0.15)" />
         {/* Line */}
-        <path d={linePath} fill="none" stroke="hsl(var(--primary))" strokeWidth="2" />
+        <path
+          d={linePath}
+          fill="none"
+          stroke="hsl(var(--primary))"
+          strokeWidth="2"
+        />
 
         {/* Y-axis ticks */}
         {yTicks.map((e) => (

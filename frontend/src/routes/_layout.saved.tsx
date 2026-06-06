@@ -1,11 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
+import { createFileRoute, Link } from "@tanstack/react-router"
+import { Bookmark } from "lucide-react"
 import { ProfilesService } from "@/client"
 import { RaceCard } from "@/components/Races/RaceCard"
 import { SaveButton } from "@/components/Races/SaveButton"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Bookmark } from "lucide-react"
-import { Link } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/_layout/saved")({
   component: SavedRacesPage,
@@ -26,7 +25,9 @@ function SavedRacesPage() {
     <div className="space-y-6">
       <div className="space-y-1">
         <h1 className="text-2xl font-bold tracking-tight">Saved Races</h1>
-        <p className="text-muted-foreground">Races you've bookmarked for later.</p>
+        <p className="text-muted-foreground">
+          Races you've bookmarked for later.
+        </p>
       </div>
 
       {isLoading ? (

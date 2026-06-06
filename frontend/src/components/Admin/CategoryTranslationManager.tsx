@@ -1,9 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import type { CategoryTranslationUpdate, RaceCategoryPublic } from "@/client"
 import { RaceCategoriesService } from "@/client"
-import type { RaceCategoryPublic, CategoryTranslationUpdate } from "@/client"
-import { TranslationEditor, type AllTranslations, type TranslationField } from "./TranslationEditor"
-import useCustomToast from "@/hooks/useCustomToast"
 import { Skeleton } from "@/components/ui/skeleton"
+import useCustomToast from "@/hooks/useCustomToast"
+import {
+  type AllTranslations,
+  TranslationEditor,
+  type TranslationField,
+} from "./TranslationEditor"
 
 interface CategoryTranslationManagerProps {
   categoryId: string
@@ -25,18 +29,28 @@ const CATEGORY_TRANSLATION_FIELDS: TranslationField[] = [
   },
 ]
 
-export function CategoryTranslationManager({ categoryId, category }: CategoryTranslationManagerProps) {
+export function CategoryTranslationManager({
+  categoryId,
+  category,
+}: CategoryTranslationManagerProps) {
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
 
   // Fetch current translations
   const { data: translations, isLoading } = useQuery({
     queryKey: ["category-translations", categoryId],
-    queryFn: () => RaceCategoriesService.getCategoryTranslations({ categoryId }),
+    queryFn: () =>
+      RaceCategoriesService.getCategoryTranslations({ categoryId }),
   })
 
   const updateTranslationMutation = useMutation({
-    mutationFn: async ({ language, data }: { language: string; data: Partial<CategoryTranslationUpdate> }) => {
+    mutationFn: async ({
+      language,
+      data,
+    }: {
+      language: string
+      data: Partial<CategoryTranslationUpdate>
+    }) => {
       return RaceCategoriesService.updateCategoryTranslations({
         categoryId,
         requestBody: {
@@ -47,12 +61,15 @@ export function CategoryTranslationManager({ categoryId, category }: CategoryTra
       })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["category-translations", categoryId] })
+      queryClient.invalidateQueries({
+        queryKey: ["category-translations", categoryId],
+      })
       queryClient.invalidateQueries({ queryKey: ["race-categories"] })
       showSuccessToast("Category translations updated successfully")
     },
     onError: (error: any) => {
-      const detail = error.body?.detail || "Failed to update category translations"
+      const detail =
+        error.body?.detail || "Failed to update category translations"
       showErrorToast(detail)
     },
   })
@@ -60,7 +77,7 @@ export function CategoryTranslationManager({ categoryId, category }: CategoryTra
   const handleSave = async (allTranslations: AllTranslations) => {
     // Save each language separately
     const languages = Object.keys(allTranslations)
-    
+
     for (const language of languages) {
       const data = allTranslations[language]
       if (data && (data.name || data.description)) {
@@ -79,11 +96,12 @@ export function CategoryTranslationManager({ categoryId, category }: CategoryTra
   }
 
   // Build initial translations
-  const initialTranslations: AllTranslations = (translations as AllTranslations) || {}
+  const initialTranslations: AllTranslations =
+    (translations as AllTranslations) || {}
 
   // Ensure default language has values from the category object
-  if (!initialTranslations["vi"]) {
-    initialTranslations["vi"] = {
+  if (!initialTranslations.vi) {
+    initialTranslations.vi = {
       name: category.name,
       description: category.description || "",
     }

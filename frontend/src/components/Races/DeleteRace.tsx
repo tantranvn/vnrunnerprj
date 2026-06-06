@@ -45,9 +45,9 @@ const DeleteRace = ({ race, children }: DeleteRaceProps) => {
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Race</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete the race <strong>{race.name}</strong>?
-            This action cannot be undone and will also delete all associated
-            categories, registrations, and results.
+            Are you sure you want to delete the race{" "}
+            <strong>{race.name}</strong>? This action cannot be undone and will
+            also delete all associated categories, registrations, and results.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

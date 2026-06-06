@@ -1,10 +1,16 @@
-import { createFileRoute, Link } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
+import { createFileRoute, Link } from "@tanstack/react-router"
 import { Calendar, Clock, Pin } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { CmsBlogPostsService } from "@/client"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { generateMetaTags } from "@/lib/seo"
 import { formatDate, getMediaUrl } from "@/lib/utils"
 
@@ -22,16 +28,16 @@ export const Route = createFileRoute("/_public/blog/")({
   head: () => ({
     meta: generateMetaTags({
       title: "Blog - VNRunner",
-      description: "Read the latest news, tips, and stories from the Vietnamese running community.",
+      description:
+        "Read the latest news, tips, and stories from the Vietnamese running community.",
       canonicalUrl: `${baseUrl}/blog`,
     }),
   }),
 })
 
 function BlogIndexPage() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const loaderData = Route.useLoaderData()
-  const lang = "vi" // Default to Vietnamese for non-prefixed routes
 
   const { data: postsData } = useSuspenseQuery({
     queryKey: ["blog-posts", "published"],
@@ -52,14 +58,19 @@ function BlogIndexPage() {
           {t("blog.title", "VNRunner Blog")}
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          {t("blog.description", "Latest news, tips, and stories from the Vietnamese running community")}
+          {t(
+            "blog.description",
+            "Latest news, tips, and stories from the Vietnamese running community",
+          )}
         </p>
       </div>
 
       {/* Featured Posts */}
       {featuredPosts.length > 0 && (
         <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">{t("blog.featured", "Featured")}</h2>
+          <h2 className="text-2xl font-bold mb-6">
+            {t("blog.featured", "Featured")}
+          </h2>
           <div className="grid md:grid-cols-2 gap-6">
             {featuredPosts.map((post) => (
               <Link
@@ -80,7 +91,9 @@ function BlogIndexPage() {
                   )}
                   <CardHeader>
                     <div className="flex items-center gap-2 mb-2">
-                      <Badge variant="default">{t("blog.featured", "Featured")}</Badge>
+                      <Badge variant="default">
+                        {t("blog.featured", "Featured")}
+                      </Badge>
                       {post.category && (
                         <Badge variant="outline">{post.category.name}</Badge>
                       )}
@@ -114,7 +127,9 @@ function BlogIndexPage() {
       {/* Sticky Posts */}
       {stickyPosts.length > 0 && (
         <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">{t("blog.pinned", "Pinned")}</h2>
+          <h2 className="text-2xl font-bold mb-6">
+            {t("blog.pinned", "Pinned")}
+          </h2>
           <div className="grid md:grid-cols-3 gap-6">
             {stickyPosts.map((post) => (
               <Link
@@ -165,7 +180,9 @@ function BlogIndexPage() {
       {/* Regular Posts */}
       {regularPosts.length > 0 && (
         <div>
-          <h2 className="text-2xl font-bold mb-6">{t("blog.allPosts", "All Posts")}</h2>
+          <h2 className="text-2xl font-bold mb-6">
+            {t("blog.allPosts", "All Posts")}
+          </h2>
           <div className="grid md:grid-cols-3 gap-6">
             {regularPosts.map((post) => (
               <Link

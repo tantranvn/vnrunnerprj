@@ -1,17 +1,29 @@
 // @ts-nocheck - Disabled due to duplicate react-hook-form type definitions in node_modules
+
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Plus, Edit, Trash2 } from "lucide-react"
+import { Edit, Plus, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 
-import { 
-  type BlogCategoryPublic,
+import {
   type BlogCategoryCreate,
+  type BlogCategoryPublic,
   type BlogCategoryUpdate,
-  CmsBlogCategoriesService 
+  CmsBlogCategoriesService,
 } from "@/client"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -31,9 +43,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
 import { LoadingButton } from "@/components/ui/loading-button"
+import { Switch } from "@/components/ui/switch"
 import {
   Table,
   TableBody,
@@ -42,17 +53,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+import { Textarea } from "@/components/ui/textarea"
 import useCustomToast from "@/hooks/useCustomToast"
 
 const formSchema = z.object({
@@ -66,12 +67,12 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>
 
-function CategoryDialog({ 
-  category, 
-  onClose 
-}: { 
+function CategoryDialog({
+  category,
+  onClose,
+}: {
   category?: BlogCategoryPublic
-  onClose: () => void 
+  onClose: () => void
 }) {
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
@@ -79,19 +80,21 @@ function CategoryDialog({
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: category ? {
-      ...category,
-      description: category.description || "",
-      meta_title: category.meta_title || "",
-      meta_description: category.meta_description || "",
-    } : {
-      name: "",
-      slug: "",
-      description: "",
-      is_active: true,
-      meta_title: "",
-      meta_description: "",
-    },
+    defaultValues: category
+      ? {
+          ...category,
+          description: category.description || "",
+          meta_title: category.meta_title || "",
+          meta_description: category.meta_description || "",
+        }
+      : {
+          name: "",
+          slug: "",
+          description: "",
+          is_active: true,
+          meta_title: "",
+          meta_description: "",
+        },
   })
 
   const mutation = useMutation({
@@ -129,10 +132,15 @@ function CategoryDialog({
   return (
     <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
       <DialogHeader>
-        <DialogTitle>{isEdit ? "Edit Category" : "Create Category"}</DialogTitle>
+        <DialogTitle>
+          {isEdit ? "Edit Category" : "Create Category"}
+        </DialogTitle>
       </DialogHeader>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="space-y-4">
+        <form
+          onSubmit={form.handleSubmit((data) => mutation.mutate(data))}
+          className="space-y-4"
+        >
           <FormField
             control={form.control}
             name="name"
@@ -217,10 +225,15 @@ function CategoryDialog({
               <FormItem className="flex items-center justify-between rounded-lg border p-4">
                 <div className="space-y-0.5">
                   <FormLabel className="text-base">Active</FormLabel>
-                  <FormDescription>Show this category on the site</FormDescription>
+                  <FormDescription>
+                    Show this category on the site
+                  </FormDescription>
                 </div>
                 <FormControl>
-                  <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 </FormControl>
               </FormItem>
             )}
@@ -244,7 +257,9 @@ export function BlogCategoryManager() {
   const { showSuccessToast, showErrorToast } = useCustomToast()
   const queryClient = useQueryClient()
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState<BlogCategoryPublic | undefined>()
+  const [selectedCategory, setSelectedCategory] = useState<
+    BlogCategoryPublic | undefined
+  >()
 
   const { data: categories } = useQuery({
     queryKey: ["cms-blog-categories"],
@@ -313,7 +328,9 @@ export function BlogCategoryManager() {
               {categories.data.map((category) => (
                 <TableRow key={category.id}>
                   <TableCell className="font-medium">{category.name}</TableCell>
-                  <TableCell className="text-muted-foreground">/{category.slug}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    /{category.slug}
+                  </TableCell>
                   <TableCell>
                     {category.is_active ? (
                       <span className="text-green-600">Active</span>
@@ -323,7 +340,11 @@ export function BlogCategoryManager() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <Button variant="ghost" size="sm" onClick={() => handleEdit(category)}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleEdit(category)}
+                      >
                         <Edit className="h-4 w-4" />
                       </Button>
                       <AlertDialog>
@@ -336,13 +357,15 @@ export function BlogCategoryManager() {
                           <AlertDialogHeader>
                             <AlertDialogTitle>Delete Category</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Are you sure you want to delete "{category.name}"? This action cannot be
-                              undone.
+                              Are you sure you want to delete "{category.name}"?
+                              This action cannot be undone.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => deleteMutation.mutate(category.id)}>
+                            <AlertDialogAction
+                              onClick={() => deleteMutation.mutate(category.id)}
+                            >
                               Delete
                             </AlertDialogAction>
                           </AlertDialogFooter>

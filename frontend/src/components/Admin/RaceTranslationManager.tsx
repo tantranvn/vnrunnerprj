@@ -1,9 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { RacesService } from "@/client"
 import type { RacePublic, RaceTranslationUpdate } from "@/client"
-import { TranslationEditor, type AllTranslations, type TranslationField } from "./TranslationEditor"
-import useCustomToast from "@/hooks/useCustomToast"
+import { RacesService } from "@/client"
 import { Skeleton } from "@/components/ui/skeleton"
+import useCustomToast from "@/hooks/useCustomToast"
+import {
+  type AllTranslations,
+  TranslationEditor,
+  type TranslationField,
+} from "./TranslationEditor"
 
 interface RaceTranslationManagerProps {
   raceId: string
@@ -32,7 +36,10 @@ const RACE_TRANSLATION_FIELDS: TranslationField[] = [
   },
 ]
 
-export function RaceTranslationManager({ raceId, race }: RaceTranslationManagerProps) {
+export function RaceTranslationManager({
+  raceId,
+  race,
+}: RaceTranslationManagerProps) {
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
 
@@ -43,7 +50,13 @@ export function RaceTranslationManager({ raceId, race }: RaceTranslationManagerP
   })
 
   const updateTranslationMutation = useMutation({
-    mutationFn: async ({ language, data }: { language: string; data: Partial<RaceTranslationUpdate> }) => {
+    mutationFn: async ({
+      language,
+      data,
+    }: {
+      language: string
+      data: Partial<RaceTranslationUpdate>
+    }) => {
       return RacesService.updateRaceTranslations({
         raceId,
         requestBody: {
@@ -68,7 +81,7 @@ export function RaceTranslationManager({ raceId, race }: RaceTranslationManagerP
   const handleSave = async (allTranslations: AllTranslations) => {
     // Save each language separately
     const languages = Object.keys(allTranslations)
-    
+
     for (const language of languages) {
       const data = allTranslations[language]
       if (data && (data.name || data.description || data.location)) {
@@ -87,7 +100,8 @@ export function RaceTranslationManager({ raceId, race }: RaceTranslationManagerP
   }
 
   // Build initial translations from race data and fetched translations
-  const initialTranslations: AllTranslations = (translations as AllTranslations) || {}
+  const initialTranslations: AllTranslations =
+    (translations as AllTranslations) || {}
 
   // Ensure default language has values from the race object
   if (!initialTranslations[race.default_language || "vi"]) {

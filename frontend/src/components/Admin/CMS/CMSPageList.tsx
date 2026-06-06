@@ -1,25 +1,19 @@
 // @ts-nocheck - Disabled due to strict type checking
-import { useSuspenseQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { Link as RouterLink } from "@tanstack/react-router"
-import { Edit, Trash2, Eye, Calendar, Globe } from "lucide-react"
 import {
-  ColumnDef,
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
+import { Link as RouterLink } from "@tanstack/react-router"
+import {
+  type ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import { Calendar, Edit, Eye, Globe, Trash2 } from "lucide-react"
 
-import { type PagePublic, CmsPagesService } from "@/client"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import { CmsPagesService, type PagePublic } from "@/client"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,6 +25,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import useCustomToast from "@/hooks/useCustomToast"
 import { formatDate } from "@/lib/utils"
 
@@ -39,13 +43,16 @@ interface CMSPageListProps {
 }
 
 const getStatusBadge = (status: string) => {
-  const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+  const variants: Record<
+    string,
+    "default" | "secondary" | "destructive" | "outline"
+  > = {
     draft: "secondary",
     published: "default",
     scheduled: "outline",
     archived: "destructive",
   }
-  
+
   return (
     <Badge variant={variants[status] || "default"}>
       {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -53,7 +60,15 @@ const getStatusBadge = (status: string) => {
   )
 }
 
-function DeletePageDialog({ pageId, pageName, onSuccess }: { pageId: string; pageName: string; onSuccess: () => void }) {
+function DeletePageDialog({
+  pageId,
+  pageName,
+  onSuccess,
+}: {
+  pageId: string
+  pageName: string
+  onSuccess: () => void
+}) {
   const { showSuccessToast, showErrorToast } = useCustomToast()
   const queryClient = useQueryClient()
 
@@ -80,7 +95,8 @@ function DeletePageDialog({ pageId, pageName, onSuccess }: { pageId: string; pag
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Page</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete "{pageName}"? This action cannot be undone.
+            Are you sure you want to delete "{pageName}"? This action cannot be
+            undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -137,7 +153,7 @@ export function CMSPageList({ status }: CMSPageListProps) {
     {
       accessorKey: "is_homepage",
       header: "Homepage",
-      cell: ({ row }) => row.original.is_homepage ? "✓" : "",
+      cell: ({ row }) => (row.original.is_homepage ? "✓" : ""),
     },
     {
       accessorKey: "default_language",
@@ -157,12 +173,15 @@ export function CMSPageList({ status }: CMSPageListProps) {
         return (
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" asChild>
-              <RouterLink to="/admin/cms/pages/$pageId/edit" params={{ pageId: page.id }}>
+              <RouterLink
+                to="/admin/cms/pages/$pageId/edit"
+                params={{ pageId: page.id }}
+              >
                 <Edit className="h-4 w-4" />
               </RouterLink>
             </Button>
-            <DeletePageDialog 
-              pageId={page.id} 
+            <DeletePageDialog
+              pageId={page.id}
               pageName={page.title}
               onSuccess={() => {}}
             />
@@ -186,7 +205,9 @@ export function CMSPageList({ status }: CMSPageListProps) {
         </div>
         <h3 className="text-lg font-semibold">No pages found</h3>
         <p className="text-muted-foreground">
-          {status ? `No ${status} pages found` : "Add a new page to get started"}
+          {status
+            ? `No ${status} pages found`
+            : "Add a new page to get started"}
         </p>
       </div>
     )
@@ -204,7 +225,7 @@ export function CMSPageList({ status }: CMSPageListProps) {
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                 </TableHead>
               ))}

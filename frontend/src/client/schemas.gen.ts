@@ -8444,6 +8444,27 @@ export const TokenSchema = {
             type: 'string',
             title: 'Token Type',
             default: 'bearer'
+        },
+        user: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/UserPublic'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        warning: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Warning'
         }
     },
     type: 'object',
@@ -8487,6 +8508,11 @@ export const UserCreateSchema = {
         is_superuser: {
             type: 'boolean',
             title: 'Is Superuser',
+            default: false
+        },
+        is_verified: {
+            type: 'boolean',
+            title: 'Is Verified',
             default: false
         },
         full_name: {
@@ -8897,6 +8923,11 @@ export const UserPublicSchema = {
             title: 'Is Superuser',
             default: false
         },
+        is_verified: {
+            type: 'boolean',
+            title: 'Is Verified',
+            default: false
+        },
         full_name: {
             anyOf: [
                 {
@@ -9027,6 +9058,17 @@ export const UserUpdateSchema = {
             type: 'boolean',
             title: 'Is Superuser',
             default: false
+        },
+        is_verified: {
+            anyOf: [
+                {
+                    type: 'boolean'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Is Verified'
         },
         full_name: {
             anyOf: [

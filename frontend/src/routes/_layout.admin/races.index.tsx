@@ -4,11 +4,14 @@ import { Plus, Search } from "lucide-react"
 import { Suspense, useState } from "react"
 
 import { RacesService } from "@/client"
+import {
+  type AdminRaceFilters,
+  RaceFilters,
+} from "@/components/Admin/RaceFilters"
 import { DataTable } from "@/components/Common/DataTable"
 import PendingItems from "@/components/Pending/PendingItems"
 import { columns } from "@/components/Races/columns"
 import { Button } from "@/components/ui/button"
-import { RaceFilters, type AdminRaceFilters } from "@/components/Admin/RaceFilters"
 
 function getRacesQueryOptions(filters: AdminRaceFilters) {
   return {
@@ -44,7 +47,10 @@ function RacesTableContent({ filters }: { filters: AdminRaceFilters }) {
         </div>
         <h3 className="text-lg font-semibold">No races found</h3>
         <p className="text-muted-foreground">
-          {filters.status || filters.search || filters.startDateFrom || filters.startDateTo
+          {filters.status ||
+          filters.search ||
+          filters.startDateFrom ||
+          filters.startDateTo
             ? "Try adjusting your filters"
             : "Add a new race to get started"}
         </p>
@@ -87,9 +93,9 @@ function AdminRaces() {
           </RouterLink>
         </Button>
       </div>
-      
+
       <RaceFilters filters={filters} onChange={setFilters} />
-      
+
       <RacesTable filters={filters} />
     </div>
   )

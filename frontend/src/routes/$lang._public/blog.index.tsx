@@ -1,6 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { Calendar, Clock, User, Eye } from "lucide-react"
+import { createFileRoute, Link } from "@tanstack/react-router"
+import { Calendar, Clock, Eye } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { CmsBlogPostsService } from "@/client"
 import { Badge } from "@/components/ui/badge"
@@ -23,10 +23,12 @@ export const Route = createFileRoute("/$lang/_public/blog/")({
   },
   head: () => ({
     meta: generateMetaTags({
-      title: "Blog - VNRunner | Running Tips, Race Reports & Trail Running Stories",
+      title:
+        "Blog - VNRunner | Running Tips, Race Reports & Trail Running Stories",
       description:
         "Read the latest running tips, race reports, training guides, and trail running stories from Vietnam's running community. Expert advice for runners of all levels.",
-      keywords: "running blog Vietnam, trail running tips, race reports, marathon training, running community Vietnam",
+      keywords:
+        "running blog Vietnam, trail running tips, race reports, marathon training, running community Vietnam",
       canonicalUrl: `${baseUrl}/blog`,
       ogType: "website",
     }),
@@ -38,13 +40,14 @@ function BlogIndexPage() {
   const { lang } = Route.useParams()
   const currentLang = lang || i18n.language || "vi"
   const loaderData = Route.useLoaderData()
-  
+
   const { data: postsData } = useSuspenseQuery({
     queryKey: ["blog-posts", { status: "published" }],
-    queryFn: () => CmsBlogPostsService.readBlogPosts({
-      status: "published",
-      limit: 100,
-    }),
+    queryFn: () =>
+      CmsBlogPostsService.readBlogPosts({
+        status: "published",
+        limit: 100,
+      }),
     initialData: loaderData.posts,
   })
 
@@ -62,7 +65,7 @@ function BlogIndexPage() {
             <p className="text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
               {t(
                 "blog.description",
-                "Discover running tips, race reports, and stories from Vietnam's running community"
+                "Discover running tips, race reports, and stories from Vietnam's running community",
               )}
             </p>
           </header>
@@ -71,7 +74,10 @@ function BlogIndexPage() {
           {posts.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground text-lg">
-                {t("blog.noPosts", "No blog posts available yet. Check back soon!")}
+                {t(
+                  "blog.noPosts",
+                  "No blog posts available yet. Check back soon!",
+                )}
               </p>
             </div>
           ) : (
@@ -110,7 +116,9 @@ function BlogIndexPage() {
                         {post.published_at && (
                           <div className="flex items-center gap-1.5">
                             <Calendar className="size-4" />
-                            <span>{formatDateLong(post.published_at, currentLang)}</span>
+                            <span>
+                              {formatDateLong(post.published_at, currentLang)}
+                            </span>
                           </div>
                         )}
                         {post.reading_time_minutes && (
@@ -122,12 +130,13 @@ function BlogIndexPage() {
                             </span>
                           </div>
                         )}
-                        {post.view_count !== undefined && post.view_count > 0 && (
-                          <div className="flex items-center gap-1.5">
-                            <Eye className="size-4" />
-                            <span>{post.view_count.toLocaleString()}</span>
-                          </div>
-                        )}
+                        {post.view_count !== undefined &&
+                          post.view_count > 0 && (
+                            <div className="flex items-center gap-1.5">
+                              <Eye className="size-4" />
+                              <span>{post.view_count.toLocaleString()}</span>
+                            </div>
+                          )}
                       </div>
 
                       {/* Badges */}

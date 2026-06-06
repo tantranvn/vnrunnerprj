@@ -1,5 +1,7 @@
-import { Filter } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
+import { Filter } from "lucide-react"
+import type { DifficultyEnum, TerrainEnum } from "@/client"
+import { ProvincesService } from "@/client"
 import { Button } from "@/components/ui/button"
 import {
   Select,
@@ -8,8 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import type { DifficultyEnum, TerrainEnum } from "@/client"
-import { ProvincesService } from "@/client"
 
 export interface RaceFilters {
   terrain: TerrainEnum | ""
@@ -60,10 +60,17 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
     filters.distanceMax !== "" ||
     filters.provinceCode !== ""
 
-  const update = (patch: Partial<RaceFilters>) => onChange({ ...filters, ...patch })
+  const update = (patch: Partial<RaceFilters>) =>
+    onChange({ ...filters, ...patch })
 
   const reset = () =>
-    onChange({ terrain: "", difficulty: "", distanceMin: "", distanceMax: "", provinceCode: "" })
+    onChange({
+      terrain: "",
+      difficulty: "",
+      distanceMin: "",
+      distanceMax: "",
+      provinceCode: "",
+    })
 
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -71,7 +78,9 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
 
       <Select
         value={filters.terrain || "all"}
-        onValueChange={(v) => update({ terrain: v === "all" ? "" : (v as TerrainEnum) })}
+        onValueChange={(v) =>
+          update({ terrain: v === "all" ? "" : (v as TerrainEnum) })
+        }
       >
         <SelectTrigger className="w-36">
           <SelectValue placeholder="Terrain" />

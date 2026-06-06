@@ -1,21 +1,20 @@
 // @ts-nocheck - Disabled due to duplicate react-hook-form type definitions in node_modules
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { Save, Upload } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { 
-  type BlogPostCreate, 
-  type BlogPostUpdate, 
-  CmsBlogPostsService,
+import {
+  type BlogPostCreate,
+  type BlogPostUpdate,
   CmsBlogCategoriesService,
+  CmsBlogPostsService,
   CmsBlogTagsService,
 } from "@/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Form,
   FormControl,
@@ -26,7 +25,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { LoadingButton } from "@/components/ui/loading-button"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import {
   Select,
   SelectContent,
@@ -35,8 +35,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { LoadingButton } from "@/components/ui/loading-button"
-import { RichTextEditor } from "@/components/ui/rich-text-editor"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
 import useCustomToast from "@/hooks/useCustomToast"
 import { toDateTimeLocalString } from "@/lib/utils"
 
@@ -80,7 +80,8 @@ export function BlogPostEditor({ postId }: BlogPostEditorProps) {
   // Fetch existing post data if editing
   const { data: existingPost } = useQuery({
     queryKey: ["cms-blog-post", postId],
-    queryFn: () => (postId ? CmsBlogPostsService.readBlogPost({ postId }) : null),
+    queryFn: () =>
+      postId ? CmsBlogPostsService.readBlogPost({ postId }) : null,
     enabled: isEdit,
   })
 
@@ -91,46 +92,47 @@ export function BlogPostEditor({ postId }: BlogPostEditorProps) {
   })
 
   // Fetch tags (for future tag selection implementation)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data: tagsData } = useQuery({
+  const { data: _tagsData } = useQuery({
     queryKey: ["cms-blog-tags"],
     queryFn: () => CmsBlogTagsService.readBlogTags({}),
   })
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: existingPost ? {
-      title: existingPost.title,
-      slug: existingPost.slug,
-      content: existingPost.content || "",
-      excerpt: existingPost.excerpt || "",
-      featured_image_url: existingPost.featured_image_url || "",
-      featured_image_alt: existingPost.featured_image_alt || "",
-      status: existingPost.status,
-      category_id: existingPost.category_id || "",
-      is_featured: existingPost.is_featured,
-      is_sticky: existingPost.is_sticky,
-      default_language: existingPost.default_language,
-      reading_time_minutes: existingPost.reading_time_minutes ?? undefined,
-      published_at: existingPost.published_at || "",
-      scheduled_at: existingPost.scheduled_at || "",
-      meta_title: existingPost.meta_title || "",
-      meta_description: existingPost.meta_description || "",
-      meta_keywords: existingPost.meta_keywords || "",
-      og_title: existingPost.og_title || "",
-      og_description: existingPost.og_description || "",
-      og_image_url: existingPost.og_image_url || "",
-      canonical_url: existingPost.canonical_url || "",
-    } : {
-      title: "",
-      slug: "",
-      content: "",
-      excerpt: "",
-      status: "draft" as const,
-      is_featured: false,
-      is_sticky: false,
-      default_language: "en",
-    },
+    defaultValues: existingPost
+      ? {
+          title: existingPost.title,
+          slug: existingPost.slug,
+          content: existingPost.content || "",
+          excerpt: existingPost.excerpt || "",
+          featured_image_url: existingPost.featured_image_url || "",
+          featured_image_alt: existingPost.featured_image_alt || "",
+          status: existingPost.status,
+          category_id: existingPost.category_id || "",
+          is_featured: existingPost.is_featured,
+          is_sticky: existingPost.is_sticky,
+          default_language: existingPost.default_language,
+          reading_time_minutes: existingPost.reading_time_minutes ?? undefined,
+          published_at: existingPost.published_at || "",
+          scheduled_at: existingPost.scheduled_at || "",
+          meta_title: existingPost.meta_title || "",
+          meta_description: existingPost.meta_description || "",
+          meta_keywords: existingPost.meta_keywords || "",
+          og_title: existingPost.og_title || "",
+          og_description: existingPost.og_description || "",
+          og_image_url: existingPost.og_image_url || "",
+          canonical_url: existingPost.canonical_url || "",
+        }
+      : {
+          title: "",
+          slug: "",
+          content: "",
+          excerpt: "",
+          status: "draft" as const,
+          is_featured: false,
+          is_sticky: false,
+          default_language: "en",
+        },
   })
 
   // Auto-generate slug from title
@@ -147,12 +149,21 @@ export function BlogPostEditor({ postId }: BlogPostEditorProps) {
   const mutation = useMutation({
     mutationFn: (data: BlogPostCreate | BlogPostUpdate) => {
       if (isEdit && postId) {
-        return CmsBlogPostsService.updateBlogPost({ postId, requestBody: data as BlogPostUpdate })
+        return CmsBlogPostsService.updateBlogPost({
+          postId,
+          requestBody: data as BlogPostUpdate,
+        })
       }
-      return CmsBlogPostsService.createBlogPost({ requestBody: data as BlogPostCreate })
+      return CmsBlogPostsService.createBlogPost({
+        requestBody: data as BlogPostCreate,
+      })
     },
     onSuccess: () => {
-      showSuccessToast(isEdit ? "Blog post updated successfully!" : "Blog post created successfully!")
+      showSuccessToast(
+        isEdit
+          ? "Blog post updated successfully!"
+          : "Blog post created successfully!",
+      )
       queryClient.invalidateQueries({ queryKey: ["cms-blog-posts"] })
       navigate({ to: "/admin/cms/blog/posts" })
     },
@@ -173,7 +184,10 @@ export function BlogPostEditor({ postId }: BlogPostEditorProps) {
             {isEdit ? "Edit Blog Post" : "Create New Blog Post"}
           </h2>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => navigate({ to: "/admin/cms/blog/posts" })}>
+            <Button
+              variant="outline"
+              onClick={() => navigate({ to: "/admin/cms/blog/posts" })}
+            >
               Cancel
             </Button>
             <LoadingButton type="submit" loading={mutation.isPending}>
@@ -226,7 +240,9 @@ export function BlogPostEditor({ postId }: BlogPostEditorProps) {
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
-                      <FormDescription>URL-friendly version of the title</FormDescription>
+                      <FormDescription>
+                        URL-friendly version of the title
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -239,9 +255,15 @@ export function BlogPostEditor({ postId }: BlogPostEditorProps) {
                     <FormItem>
                       <FormLabel>Excerpt</FormLabel>
                       <FormControl>
-                        <Textarea {...field} value={field.value || ""} rows={3} />
+                        <Textarea
+                          {...field}
+                          value={field.value || ""}
+                          rows={3}
+                        />
                       </FormControl>
-                      <FormDescription>Short description for previews</FormDescription>
+                      <FormDescription>
+                        Short description for previews
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -281,7 +303,11 @@ export function BlogPostEditor({ postId }: BlogPostEditorProps) {
                       <FormLabel>Image URL</FormLabel>
                       <FormControl>
                         <div className="flex gap-2">
-                          <Input {...field} value={field.value || ""} placeholder="/media/blog/image.jpg" />
+                          <Input
+                            {...field}
+                            value={field.value || ""}
+                            placeholder="/media/blog/image.jpg"
+                          />
                           <Button type="button" variant="outline" size="icon">
                             <Upload className="h-4 w-4" />
                           </Button>
@@ -301,7 +327,9 @@ export function BlogPostEditor({ postId }: BlogPostEditorProps) {
                       <FormControl>
                         <Input {...field} value={field.value || ""} />
                       </FormControl>
-                      <FormDescription>Describe the image for accessibility</FormDescription>
+                      <FormDescription>
+                        Describe the image for accessibility
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -337,7 +365,11 @@ export function BlogPostEditor({ postId }: BlogPostEditorProps) {
                     <FormItem>
                       <FormLabel>Meta Description</FormLabel>
                       <FormControl>
-                        <Textarea {...field} value={field.value || ""} rows={3} />
+                        <Textarea
+                          {...field}
+                          value={field.value || ""}
+                          rows={3}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -351,7 +383,11 @@ export function BlogPostEditor({ postId }: BlogPostEditorProps) {
                     <FormItem>
                       <FormLabel>Meta Keywords</FormLabel>
                       <FormControl>
-                        <Input {...field} value={field.value || ""} placeholder="keyword1, keyword2, keyword3" />
+                        <Input
+                          {...field}
+                          value={field.value || ""}
+                          placeholder="keyword1, keyword2, keyword3"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -379,7 +415,11 @@ export function BlogPostEditor({ postId }: BlogPostEditorProps) {
                     <FormItem>
                       <FormLabel>Open Graph Description</FormLabel>
                       <FormControl>
-                        <Textarea {...field} value={field.value || ""} rows={3} />
+                        <Textarea
+                          {...field}
+                          value={field.value || ""}
+                          rows={3}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -429,7 +469,10 @@ export function BlogPostEditor({ postId }: BlogPostEditorProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Status</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue />
@@ -453,7 +496,10 @@ export function BlogPostEditor({ postId }: BlogPostEditorProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Category</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select a category" />
@@ -478,7 +524,10 @@ export function BlogPostEditor({ postId }: BlogPostEditorProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Default Language</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue />
@@ -518,7 +567,11 @@ export function BlogPostEditor({ postId }: BlogPostEditorProps) {
                         <Input
                           type="datetime-local"
                           {...field}
-                          value={field.value ? toDateTimeLocalString(field.value) : ""}
+                          value={
+                            field.value
+                              ? toDateTimeLocalString(field.value)
+                              : ""
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -536,7 +589,11 @@ export function BlogPostEditor({ postId }: BlogPostEditorProps) {
                         <Input
                           type="datetime-local"
                           {...field}
-                          value={field.value ? toDateTimeLocalString(field.value) : ""}
+                          value={
+                            field.value
+                              ? toDateTimeLocalString(field.value)
+                              : ""
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -550,11 +607,18 @@ export function BlogPostEditor({ postId }: BlogPostEditorProps) {
                   render={({ field }) => (
                     <FormItem className="flex items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
-                        <FormLabel className="text-base">Featured Post</FormLabel>
-                        <FormDescription>Highlight this post on the homepage</FormDescription>
+                        <FormLabel className="text-base">
+                          Featured Post
+                        </FormLabel>
+                        <FormDescription>
+                          Highlight this post on the homepage
+                        </FormDescription>
                       </div>
                       <FormControl>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -567,10 +631,15 @@ export function BlogPostEditor({ postId }: BlogPostEditorProps) {
                     <FormItem className="flex items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Sticky Post</FormLabel>
-                        <FormDescription>Pin this post to the top of lists</FormDescription>
+                        <FormDescription>
+                          Pin this post to the top of lists
+                        </FormDescription>
                       </div>
                       <FormControl>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
                       </FormControl>
                     </FormItem>
                   )}

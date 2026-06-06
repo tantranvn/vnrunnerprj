@@ -1,13 +1,12 @@
-import { createFileRoute, useParams } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
+import { createFileRoute, Link, useParams } from "@tanstack/react-router"
+import { Calendar, Clock } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { RaceRegistrationsService } from "@/client"
 import type { RaceRegistrationPublic } from "@/client"
+import { RaceRegistrationsService } from "@/client"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Calendar, Clock } from "lucide-react"
-import { Link } from "@tanstack/react-router"
 import { cn, formatDate } from "@/lib/utils"
 
 export const Route = createFileRoute("/_layout/history")({
@@ -36,7 +35,9 @@ function RegistrationRow({ reg }: { reg: RaceRegistrationPublic }) {
     <div className="flex items-center justify-between gap-4 rounded-lg border p-4 hover:bg-muted/30 transition-colors">
       <div className="space-y-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-medium truncate">Registration #{reg.id.slice(0, 8)}</span>
+          <span className="font-medium truncate">
+            Registration #{reg.id.slice(0, 8)}
+          </span>
           {reg.bib_number && (
             <Badge variant="outline">Bib #{reg.bib_number}</Badge>
           )}
@@ -53,12 +54,23 @@ function RegistrationRow({ reg }: { reg: RaceRegistrationPublic }) {
       </div>
       <div className="flex items-center gap-2 shrink-0">
         {reg.registration_status && (
-          <span className={cn("rounded-full px-2.5 py-0.5 text-xs font-medium", STATUS_COLORS[reg.registration_status] ?? "bg-gray-100 text-gray-700")}>
+          <span
+            className={cn(
+              "rounded-full px-2.5 py-0.5 text-xs font-medium",
+              STATUS_COLORS[reg.registration_status] ??
+                "bg-gray-100 text-gray-700",
+            )}
+          >
             {reg.registration_status}
           </span>
         )}
         {reg.payment_status && (
-          <span className={cn("rounded-full px-2.5 py-0.5 text-xs font-medium", PAYMENT_COLORS[reg.payment_status] ?? "bg-gray-100 text-gray-700")}>
+          <span
+            className={cn(
+              "rounded-full px-2.5 py-0.5 text-xs font-medium",
+              PAYMENT_COLORS[reg.payment_status] ?? "bg-gray-100 text-gray-700",
+            )}
+          >
             {reg.payment_status}
           </span>
         )}
@@ -81,12 +93,8 @@ function RaceHistoryPage() {
   const regs = data?.data ?? []
   // const now = new Date() // Future use for filtering by date
 
-  const upcoming = regs.filter(
-    (r) => r.registration_status !== "cancelled"
-  )
-  const past = regs.filter(
-    (r) => r.registration_status === "cancelled"
-  )
+  const upcoming = regs.filter((r) => r.registration_status !== "cancelled")
+  const past = regs.filter((r) => r.registration_status === "cancelled")
 
   const displayed = tab === "upcoming" ? upcoming : past
 
@@ -121,11 +129,14 @@ function RaceHistoryPage() {
       <div className="flex gap-1 rounded-md border p-1 w-fit">
         {(["upcoming", "past"] as const).map((t) => (
           <button
+            type="button"
             key={t}
             onClick={() => setTab(t)}
             className={cn(
               "rounded px-4 py-1.5 text-sm font-medium capitalize transition-colors",
-              tab === t ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"
+              tab === t
+                ? "bg-muted text-foreground"
+                : "text-muted-foreground hover:text-foreground",
             )}
           >
             {t}
@@ -144,7 +155,11 @@ function RaceHistoryPage() {
           <Clock className="mx-auto size-10 text-muted-foreground/50" />
           <p className="text-muted-foreground">No {tab} registrations.</p>
           {tab === "upcoming" && (
-            <Link to="/$lang/races" params={{ lang }} className="text-sm text-primary hover:underline">
+            <Link
+              to="/$lang/races"
+              params={{ lang }}
+              className="text-sm text-primary hover:underline"
+            >
               Browse upcoming races →
             </Link>
           )}

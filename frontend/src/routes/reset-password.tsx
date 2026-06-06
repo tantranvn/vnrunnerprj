@@ -6,11 +6,12 @@ import {
   redirect,
   useNavigate,
 } from "@tanstack/react-router"
+import { Sparkles } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { Sparkles } from "lucide-react"
 
 import { LoginService } from "@/client"
+import { PublicFooter } from "@/components/Public/PublicFooter"
 import {
   Form,
   FormControl,
@@ -21,7 +22,6 @@ import {
 } from "@/components/ui/form"
 import { LoadingButton } from "@/components/ui/loading-button"
 import { PasswordInput } from "@/components/ui/password-input"
-import { PublicFooter } from "@/components/Public/PublicFooter"
 import { isLoggedIn } from "@/hooks/useAuth"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
@@ -104,7 +104,9 @@ function ResetPassword() {
           {/* Logo */}
           <RouterLink to="/" className="flex items-center justify-center gap-2">
             <Sparkles className="size-6" />
-            <span className="text-2xl font-black tracking-wide uppercase">VNRUNNER</span>
+            <span className="text-2xl font-black tracking-wide uppercase">
+              VNRUNNER
+            </span>
           </RouterLink>
 
           {/* Form */}
@@ -169,7 +171,10 @@ function ResetPassword() {
 
                 <div className="text-center text-sm">
                   Remember your password?{" "}
-                  <RouterLink to="/login" className="underline underline-offset-4 hover:text-primary">
+                  <RouterLink
+                    to="/login"
+                    className="underline underline-offset-4 hover:text-primary"
+                  >
                     Log in
                   </RouterLink>
                 </div>

@@ -1,6 +1,6 @@
 import i18n from "i18next"
-import { initReactI18next } from "react-i18next"
 import LanguageDetector from "i18next-browser-languagedetector"
+import { initReactI18next } from "react-i18next"
 
 import en from "./locales/en.json"
 import vi from "./locales/vi.json"
@@ -23,21 +23,21 @@ i18n
     fallbackLng: "vi",
     supportedLngs: ["vi", "en"],
     debug: false,
-    
+
     interpolation: {
       escapeValue: false, // React already escapes
     },
-    
+
     detection: {
       // Order of language detection methods
       order: ["path", "querystring", "localStorage", "navigator", "htmlTag"],
-      
+
       // Cache user language in localStorage
       caches: ["localStorage"],
-      
+
       // localStorage key
       lookupLocalStorage: "i18nextLng",
-      
+
       // Look for language in URL path
       lookupFromPathIndex: 0,
     },

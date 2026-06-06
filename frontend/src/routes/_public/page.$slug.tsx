@@ -1,8 +1,12 @@
-import { createFileRoute, notFound } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
+import { createFileRoute, notFound } from "@tanstack/react-router"
 import { useTranslation } from "react-i18next"
 import { CmsPagesService } from "@/client"
-import { generateMetaTags, generateWebPageSchema, StructuredData } from "@/lib/seo"
+import {
+  generateMetaTags,
+  generateWebPageSchema,
+  StructuredData,
+} from "@/lib/seo"
 
 const baseUrl = import.meta.env.VITE_FRONTEND_URL || "https://vnrunner.com"
 
@@ -14,7 +18,7 @@ export const Route = createFileRoute("/_public/page/$slug")({
         slug: params.slug,
       })
       return { page }
-    } catch (error) {
+    } catch (_error) {
       throw notFound()
     }
   },
@@ -68,6 +72,7 @@ function CMSPage() {
           <div className="w-full">
             <div
               className="prose prose-lg dark:prose-invert max-w-none"
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: CMS content is trusted
               dangerouslySetInnerHTML={{ __html: page.content }}
             />
           </div>
@@ -79,11 +84,14 @@ function CMSPage() {
             <aside className="space-y-4">
               {/* Sidebar content could be added here */}
               <div className="p-4 bg-muted rounded-lg">
-                <h3 className="font-semibold mb-2">{t("page.sidebar", "Navigation")}</h3>
+                <h3 className="font-semibold mb-2">
+                  {t("page.sidebar", "Navigation")}
+                </h3>
               </div>
             </aside>
             <div
               className="prose prose-lg dark:prose-invert max-w-none"
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: CMS content is trusted
               dangerouslySetInnerHTML={{ __html: page.content }}
             />
           </div>
@@ -94,12 +102,15 @@ function CMSPage() {
           <div className="grid md:grid-cols-[1fr_300px] gap-8">
             <div
               className="prose prose-lg dark:prose-invert max-w-none"
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: CMS content is trusted
               dangerouslySetInnerHTML={{ __html: page.content }}
             />
             <aside className="space-y-4">
               {/* Sidebar content could be added here */}
               <div className="p-4 bg-muted rounded-lg">
-                <h3 className="font-semibold mb-2">{t("page.sidebar", "Quick Links")}</h3>
+                <h3 className="font-semibold mb-2">
+                  {t("page.sidebar", "Quick Links")}
+                </h3>
               </div>
             </aside>
           </div>
@@ -110,6 +121,7 @@ function CMSPage() {
           <div className="w-full">
             <div
               className="max-w-none"
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: CMS content is trusted
               dangerouslySetInnerHTML={{ __html: page.content }}
             />
           </div>
@@ -119,6 +131,7 @@ function CMSPage() {
         return (
           <div
             className="prose prose-lg dark:prose-invert max-w-none"
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: CMS content is trusted
             dangerouslySetInnerHTML={{ __html: page.content }}
           />
         )
@@ -128,14 +141,22 @@ function CMSPage() {
   return (
     <>
       <StructuredData data={pageSchema} />
-      
-      <div className={page.template === "landing" ? "w-full" : "container mx-auto px-4 py-12"}>
+
+      <div
+        className={
+          page.template === "landing"
+            ? "w-full"
+            : "container mx-auto px-4 py-12"
+        }
+      >
         {page.template !== "landing" && (
           <header className="mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">{page.title}</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              {page.title}
+            </h1>
           </header>
         )}
-        
+
         {renderPageContent()}
       </div>
     </>

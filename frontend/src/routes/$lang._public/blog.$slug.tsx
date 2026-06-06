@@ -1,12 +1,16 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { Calendar, Clock, Eye, ArrowLeft, Share2 } from "lucide-react"
+import { createFileRoute, Link, notFound } from "@tanstack/react-router"
+import { ArrowLeft, Calendar, Clock, Eye, Share2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { CmsBlogPostsService } from "@/client"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { generateMetaTags, generateArticleSchema, StructuredData } from "@/lib/seo"
+import {
+  generateArticleSchema,
+  generateMetaTags,
+  StructuredData,
+} from "@/lib/seo"
 import { formatDateLong, getMediaUrl } from "@/lib/utils"
 
 const baseUrl = import.meta.env.VITE_FRONTEND_URL || "https://vnrunner.com"
@@ -19,7 +23,7 @@ export const Route = createFileRoute("/$lang/_public/blog/$slug")({
         slug: params.slug,
       })
       return { post }
-    } catch (error) {
+    } catch (_error) {
       throw notFound()
     }
   },
@@ -63,7 +67,7 @@ function BlogPostPage() {
   })
 
   const publishedDate = post.published_at || post.created_at
-  
+
   const articleSchema = generateArticleSchema({
     headline: post.title,
     description: post.excerpt || "",
@@ -98,7 +102,7 @@ function BlogPostPage() {
   return (
     <>
       <StructuredData data={articleSchema} />
-      
+
       <div className="w-full py-12 md:py-16 lg:py-20">
         <div className="container max-w-[900px]">
           {/* Back Button */}
@@ -111,7 +115,11 @@ function BlogPostPage() {
             </Link>
           </div>
 
-          <article className="space-y-8" itemScope itemType="https://schema.org/BlogPosting">
+          <article
+            className="space-y-8"
+            itemScope
+            itemType="https://schema.org/BlogPosting"
+          >
             {/* Header */}
             <header className="space-y-6">
               {/* Badges */}
@@ -129,20 +137,30 @@ function BlogPostPage() {
               </div>
 
               {/* Title */}
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight" itemProp="headline">
+              <h1
+                className="text-4xl md:text-5xl font-bold tracking-tight"
+                itemProp="headline"
+              >
                 {post.title}
               </h1>
 
               {/* Excerpt */}
               {post.excerpt && (
-                <p className="text-xl text-muted-foreground leading-relaxed" itemProp="description">
+                <p
+                  className="text-xl text-muted-foreground leading-relaxed"
+                  itemProp="description"
+                >
                   {post.excerpt}
                 </p>
               )}
 
               {/* Meta Information */}
               <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                <time dateTime={publishedDate} itemProp="datePublished" className="flex items-center gap-1.5">
+                <time
+                  dateTime={publishedDate}
+                  itemProp="datePublished"
+                  className="flex items-center gap-1.5"
+                >
                   <Calendar className="size-4" />
                   <span>{formatDateLong(publishedDate, currentLang)}</span>
                 </time>
@@ -150,21 +168,30 @@ function BlogPostPage() {
                   <div className="flex items-center gap-1.5">
                     <Clock className="size-4" />
                     <span>
-                      {post.reading_time_minutes} {t("blog.minRead", "min read")}
+                      {post.reading_time_minutes}{" "}
+                      {t("blog.minRead", "min read")}
                     </span>
                   </div>
                 )}
                 {post.view_count !== undefined && post.view_count > 0 && (
                   <div className="flex items-center gap-1.5">
                     <Eye className="size-4" />
-                    <span>{post.view_count.toLocaleString()} {t("blog.views", "views")}</span>
+                    <span>
+                      {post.view_count.toLocaleString()}{" "}
+                      {t("blog.views", "views")}
+                    </span>
                   </div>
                 )}
               </div>
 
               {/* Share Button */}
               <div>
-                <Button variant="outline" size="sm" onClick={handleShare} className="gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleShare}
+                  className="gap-2"
+                >
                   <Share2 className="size-4" />
                   {t("blog.share", "Share")}
                 </Button>
@@ -175,7 +202,12 @@ function BlogPostPage() {
 
             {/* Featured Image */}
             {post.featured_image_url && (
-              <figure className="space-y-3" itemProp="image" itemScope itemType="https://schema.org/ImageObject">
+              <figure
+                className="space-y-3"
+                itemProp="image"
+                itemScope
+                itemType="https://schema.org/ImageObject"
+              >
                 <div className="aspect-video overflow-hidden rounded-lg">
                   <img
                     src={getMediaUrl(post.featured_image_url)}
@@ -187,7 +219,10 @@ function BlogPostPage() {
                   <meta itemProp="height" content="675" />
                 </div>
                 {post.featured_image_alt && (
-                  <figcaption className="text-sm text-muted-foreground text-center" itemProp="caption">
+                  <figcaption
+                    className="text-sm text-muted-foreground text-center"
+                    itemProp="caption"
+                  >
                     {post.featured_image_alt}
                   </figcaption>
                 )}
@@ -223,11 +258,13 @@ function BlogPostPage() {
               {/* Publish/Update Dates */}
               <div className="text-sm text-muted-foreground space-y-1">
                 <p>
-                  {t("blog.published", "Published")}: {formatDateLong(publishedDate, currentLang)}
+                  {t("blog.published", "Published")}:{" "}
+                  {formatDateLong(publishedDate, currentLang)}
                 </p>
                 {post.updated_at !== post.created_at && (
                   <p itemProp="dateModified">
-                    {t("blog.lastUpdated", "Last updated")}: {formatDateLong(post.updated_at, currentLang)}
+                    {t("blog.lastUpdated", "Last updated")}:{" "}
+                    {formatDateLong(post.updated_at, currentLang)}
                   </p>
                 )}
               </div>

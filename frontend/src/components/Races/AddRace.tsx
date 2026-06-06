@@ -6,13 +6,11 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { type RaceCreate, RacesService, ProvincesService } from "@/client"
+import { ProvincesService, type RaceCreate, RacesService } from "@/client"
 import MediaGalleryManager from "@/components/Media/MediaGalleryManager"
 import RaceCategoryManager from "@/components/Races/RaceCategoryManager"
 import { Button } from "@/components/ui/button"
-import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { Card, CardContent } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Form,
   FormControl,
@@ -22,6 +20,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { LoadingButton } from "@/components/ui/loading-button"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import {
   Select,
   SelectContent,
@@ -29,10 +29,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { LoadingButton } from "@/components/ui/loading-button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import useCustomToast from "@/hooks/useCustomToast"
-import { handleError } from "@/utils"
 import { uploadMediaAsset } from "@/lib/media-api"
+import { handleError } from "@/utils"
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Race name is required" }),
@@ -47,7 +47,16 @@ const formSchema = z.object({
   registration_end: z.string().optional(),
   base_price: z.coerce.number().min(0).optional(),
   currency: z.string().optional(),
-  status: z.enum(["draft", "published", "registration_open", "registration_closed", "completed", "cancelled"]).optional(),
+  status: z
+    .enum([
+      "draft",
+      "published",
+      "registration_open",
+      "registration_closed",
+      "completed",
+      "cancelled",
+    ])
+    .optional(),
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -99,7 +108,8 @@ const AddRace = () => {
   })
 
   const mutation = useMutation({
-    mutationFn: (data: RaceCreate) => RacesService.createRace({ requestBody: data }),
+    mutationFn: (data: RaceCreate) =>
+      RacesService.createRace({ requestBody: data }),
     onSuccess: (race) => {
       showSuccessToast("Race created successfully!")
       setCreatedRaceId(race.id)
@@ -114,11 +124,13 @@ const AddRace = () => {
 
   const aiAssistMutation = useMutation({
     mutationFn: async (raceName: string) => {
-      return RacesService.generateRaceDetails({ requestBody: { name: raceName } })
+      return RacesService.generateRaceDetails({
+        requestBody: { name: raceName },
+      })
     },
     onSuccess: (data) => {
       showSuccessToast("AI has generated race details!")
-      
+
       // Populate form fields with AI-generated data
       if (data.description) {
         form.setValue("description", data.description)
@@ -136,7 +148,7 @@ const AddRace = () => {
   })
 
   const aiImageMutation = useMutation({
-    mutationFn: async ({ imageType }: { imageType: 'cover' | 'banner' }) => {
+    mutationFn: async ({ imageType }: { imageType: "cover" | "banner" }) => {
       const raceName = form.getValues("name")
       const location = form.getValues("location")
       return RacesService.generateRaceImageEndpoint({
@@ -149,16 +161,20 @@ const AddRace = () => {
     },
     onSuccess: async (data, variables) => {
       showSuccessToast(`AI has generated ${variables.imageType} image!`)
-      
+
       if (!createdRaceId) {
         showErrorToast("Race must be created first to upload images.")
         return
       }
-      
+
       // Type guard to ensure data has the expected shape
-      if (typeof data === 'object' && data !== null && 'image_data' in data) {
-        const responseData = data as { image_data: string; mime_type: string; size: number }
-        
+      if (typeof data === "object" && data !== null && "image_data" in data) {
+        const responseData = data as {
+          image_data: string
+          mime_type: string
+          size: number
+        }
+
         // Convert base64 to File
         const byteString = atob(responseData.image_data)
         const ab = new ArrayBuffer(byteString.length)
@@ -166,9 +182,13 @@ const AddRace = () => {
         for (let i = 0; i < byteString.length; i++) {
           ia[i] = byteString.charCodeAt(i)
         }
-        const blob = new Blob([ab], { type: 'image/png' })
-        const file = new File([blob], `ai-${variables.imageType}-${Date.now()}.png`, { type: 'image/png' })
-        
+        const blob = new Blob([ab], { type: "image/png" })
+        const file = new File(
+          [blob],
+          `ai-${variables.imageType}-${Date.now()}.png`,
+          { type: "image/png" },
+        )
+
         // Upload the file directly to the race media
         await uploadMediaAsset({
           file,
@@ -178,13 +198,17 @@ const AddRace = () => {
           isPrimary: true,
           displayOrder: 0,
         })
-        
+
         // Invalidate media query to refresh the gallery
-        queryClient.invalidateQueries({ queryKey: ["media", "race", createdRaceId] })
+        queryClient.invalidateQueries({
+          queryKey: ["media", "race", createdRaceId],
+        })
       }
     },
     onError: (error, variables) => {
-      showErrorToast(`Failed to generate ${variables.imageType} image. Please try again.`)
+      showErrorToast(
+        `Failed to generate ${variables.imageType} image. Please try again.`,
+      )
       console.error("AI image generation error:", error)
     },
   })
@@ -198,7 +222,7 @@ const AddRace = () => {
     aiAssistMutation.mutate(raceName)
   }
 
-  const handleGenerateImage = (imageType: 'cover' | 'banner') => {
+  const handleGenerateImage = (imageType: "cover" | "banner") => {
     const raceName = form.getValues("name")
     if (!raceName) {
       showErrorToast("Please enter a race name first.")
@@ -245,279 +269,305 @@ const AddRace = () => {
         </TabsList>
 
         <TabsContent value="details" className="mt-6">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem className="md:col-span-2">
-                    <div className="flex items-center justify-between">
-                      <FormLabel>Race Name *</FormLabel>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={handleAIAssist}
-                        disabled={aiAssistMutation.isPending}
-                        className="gap-2"
-                      >
-                        <Sparkles className="h-4 w-4" />
-                        {aiAssistMutation.isPending ? "Generating..." : "AI Assist"}
-                      </Button>
-                    </div>
-                    <FormControl>
-                      <Input placeholder="City Marathon 2026" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem className="md:col-span-2">
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <RichTextEditor
-                        placeholder="Describe the race event..."
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="event_start_date"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Event Start Date *</FormLabel>
-                    <FormControl>
-                      <Input type="datetime-local" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="event_end_date"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Event End Date</FormLabel>
-                    <FormControl>
-                      <Input type="datetime-local" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="location"
-                render={({ field }) => (
-                  <FormItem className="md:col-span-2">
-                    <FormLabel>Location *</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Main Street, Downtown" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="country"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Country</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Vietnam" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="province_code"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Province/City (Optional)</FormLabel>
-                    <Select
-                      onValueChange={(value) => {
-                        field.onChange(value)
-                        form.setValue("ward_code", "") // Reset ward when province changes
-                      }}
-                      value={field.value || undefined}
-                    >
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                      <div className="flex items-center justify-between">
+                        <FormLabel>Race Name *</FormLabel>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={handleAIAssist}
+                          disabled={aiAssistMutation.isPending}
+                          className="gap-2"
+                        >
+                          <Sparkles className="h-4 w-4" />
+                          {aiAssistMutation.isPending
+                            ? "Generating..."
+                            : "AI Assist"}
+                        </Button>
+                      </div>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select province" />
-                        </SelectTrigger>
+                        <Input placeholder="City Marathon 2026" {...field} />
                       </FormControl>
-                      <SelectContent>
-                        {provincesData?.data?.map((province) => (
-                          <SelectItem key={province.code} value={province.code}>
-                            {province.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="ward_code"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>District/Ward (Optional)</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value || undefined}
-                      disabled={!selectedProvinceCode}
-                    >
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                      <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder={selectedProvinceCode ? "Select district/ward" : "Select province first"} />
-                        </SelectTrigger>
+                        <RichTextEditor
+                          placeholder="Describe the race event..."
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
                       </FormControl>
-                      <SelectContent>
-                        {wardsData?.data?.map((ward) => (
-                          <SelectItem key={ward.code} value={ward.code}>
-                            {ward.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormField
+                  control={form.control}
+                  name="event_start_date"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Event Start Date *</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
+                        <Input type="datetime-local" {...field} />
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="draft">Draft</SelectItem>
-                        <SelectItem value="published">Published</SelectItem>
-                        <SelectItem value="registration_open">Registration Open</SelectItem>
-                        <SelectItem value="registration_closed">Registration Closed</SelectItem>
-                        <SelectItem value="completed">Completed</SelectItem>
-                        <SelectItem value="cancelled">Cancelled</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="registration_start"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Registration Start</FormLabel>
-                    <FormControl>
-                      <Input type="datetime-local" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="event_end_date"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Event End Date</FormLabel>
+                      <FormControl>
+                        <Input type="datetime-local" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="registration_end"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Registration End</FormLabel>
-                    <FormControl>
-                      <Input type="datetime-local" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                      <FormLabel>Location *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Main Street, Downtown" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="base_price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Base Price</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        placeholder="50.00"
-                        name={field.name}
-                        ref={field.ref}
-                        onBlur={field.onBlur}
-                        value={typeof field.value === "number" ? field.value : ""}
-                        onChange={(event) => {
-                          const value = event.target.value
-                          field.onChange(value === "" ? undefined : Number(value))
+                <FormField
+                  control={form.control}
+                  name="country"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Country</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Vietnam" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="province_code"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Province/City (Optional)</FormLabel>
+                      <Select
+                        onValueChange={(value) => {
+                          field.onChange(value)
+                          form.setValue("ward_code", "") // Reset ward when province changes
                         }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                        value={field.value || undefined}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select province" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {provincesData?.data?.map((province) => (
+                            <SelectItem
+                              key={province.code}
+                              value={province.code}
+                            >
+                              {province.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="currency"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Currency</FormLabel>
-                    <FormControl>
-                      <Input placeholder="USD" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-          </div>
+                <FormField
+                  control={form.control}
+                  name="ward_code"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>District/Ward (Optional)</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value || undefined}
+                        disabled={!selectedProvinceCode}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={
+                                selectedProvinceCode
+                                  ? "Select district/ward"
+                                  : "Select province first"
+                              }
+                            />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {wardsData?.data?.map((ward) => (
+                            <SelectItem key={ward.code} value={ward.code}>
+                              {ward.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          <div className="flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate({ to: "/admin/races" })}
-            >
-              Cancel
-            </Button>
-            <LoadingButton type="submit" loading={mutation.isPending} disabled={createdRaceId !== null}>
-              {createdRaceId ? "Race Created" : "Create Race"}
-            </LoadingButton>
-          </div>
-        </form>
-      </Form>
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Status</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="draft">Draft</SelectItem>
+                          <SelectItem value="published">Published</SelectItem>
+                          <SelectItem value="registration_open">
+                            Registration Open
+                          </SelectItem>
+                          <SelectItem value="registration_closed">
+                            Registration Closed
+                          </SelectItem>
+                          <SelectItem value="completed">Completed</SelectItem>
+                          <SelectItem value="cancelled">Cancelled</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="registration_start"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Registration Start</FormLabel>
+                      <FormControl>
+                        <Input type="datetime-local" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="registration_end"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Registration End</FormLabel>
+                      <FormControl>
+                        <Input type="datetime-local" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="base_price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Base Price</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          placeholder="50.00"
+                          name={field.name}
+                          ref={field.ref}
+                          onBlur={field.onBlur}
+                          value={
+                            typeof field.value === "number" ? field.value : ""
+                          }
+                          onChange={(event) => {
+                            const value = event.target.value
+                            field.onChange(
+                              value === "" ? undefined : Number(value),
+                            )
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="currency"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Currency</FormLabel>
+                      <FormControl>
+                        <Input placeholder="USD" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => navigate({ to: "/admin/races" })}
+                >
+                  Cancel
+                </Button>
+                <LoadingButton
+                  type="submit"
+                  loading={mutation.isPending}
+                  disabled={createdRaceId !== null}
+                >
+                  {createdRaceId ? "Race Created" : "Create Race"}
+                </LoadingButton>
+              </div>
+            </form>
+          </Form>
         </TabsContent>
 
         <TabsContent value="images" className="mt-6">
@@ -527,31 +577,38 @@ const AddRace = () => {
                 <CardContent className="pt-6">
                   <div className="space-y-4">
                     <div>
-                      <h3 className="text-lg font-semibold mb-2">AI Image Generation</h3>
+                      <h3 className="text-lg font-semibold mb-2">
+                        AI Image Generation
+                      </h3>
                       <p className="text-sm text-muted-foreground mb-4">
-                        Generate professional cover and banner images using AI based on the race name and location.
+                        Generate professional cover and banner images using AI
+                        based on the race name and location.
                       </p>
                     </div>
                     <div className="flex gap-4">
                       <Button
                         type="button"
                         variant="outline"
-                        onClick={() => handleGenerateImage('cover')}
+                        onClick={() => handleGenerateImage("cover")}
                         disabled={aiImageMutation.isPending}
                         className="gap-2"
                       >
                         <Sparkles className="h-4 w-4" />
-                        {aiImageMutation.isPending ? "Generating..." : "Generate Cover Image"}
+                        {aiImageMutation.isPending
+                          ? "Generating..."
+                          : "Generate Cover Image"}
                       </Button>
                       <Button
                         type="button"
                         variant="outline"
-                        onClick={() => handleGenerateImage('banner')}
+                        onClick={() => handleGenerateImage("banner")}
                         disabled={aiImageMutation.isPending}
                         className="gap-2"
                       >
                         <Sparkles className="h-4 w-4" />
-                        {aiImageMutation.isPending ? "Generating..." : "Generate Banner Image"}
+                        {aiImageMutation.isPending
+                          ? "Generating..."
+                          : "Generate Banner Image"}
                       </Button>
                     </div>
                   </div>
@@ -568,7 +625,9 @@ const AddRace = () => {
           ) : (
             <Card>
               <CardContent className="pt-6">
-                <p className="text-muted-foreground text-center">Create the race first to manage images.</p>
+                <p className="text-muted-foreground text-center">
+                  Create the race first to manage images.
+                </p>
               </CardContent>
             </Card>
           )}
@@ -584,7 +643,9 @@ const AddRace = () => {
           ) : (
             <Card>
               <CardContent className="pt-6">
-                <p className="text-muted-foreground text-center">Create the race first to add categories.</p>
+                <p className="text-muted-foreground text-center">
+                  Create the race first to add categories.
+                </p>
               </CardContent>
             </Card>
           )}
@@ -597,7 +658,8 @@ const AddRace = () => {
             <div>
               <p className="font-medium">Race Created Successfully!</p>
               <p className="text-sm text-muted-foreground">
-                Continue to manage images and categories, or create another race.
+                Continue to manage images and categories, or create another
+                race.
               </p>
             </div>
             <div className="flex gap-2">

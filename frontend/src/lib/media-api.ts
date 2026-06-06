@@ -69,9 +69,12 @@ export async function listMediaAssets(params: {
     limit: "500",
   })
 
-  const response = await fetch(withBase(`/api/v1/media/?${search.toString()}`), {
-    method: "GET",
-  })
+  const response = await fetch(
+    withBase(`/api/v1/media/?${search.toString()}`),
+    {
+      method: "GET",
+    },
+  )
 
   if (!response.ok) {
     return parseError(response)
@@ -141,15 +144,12 @@ export async function uploadMediaAsset(params: {
       try {
         const detail = JSON.parse(xhr.responseText)
         const message =
-          typeof detail?.detail === "string"
-            ? detail.detail
-            : "Upload failed"
+          typeof detail?.detail === "string" ? detail.detail : "Upload failed"
         reject(new Error(message))
       } catch {
         reject(new Error("Upload failed"))
       }
     }
-
   })
 }
 
@@ -160,7 +160,7 @@ export async function updateMediaAsset(
     alt_text?: string
     is_primary?: boolean
     display_order?: number
-  }
+  },
 ): Promise<MediaAsset> {
   const response = await fetch(withBase(`/api/v1/media/${mediaId}`), {
     method: "PUT",

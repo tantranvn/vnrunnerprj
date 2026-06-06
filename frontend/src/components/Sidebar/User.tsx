@@ -79,10 +79,13 @@ export function User({ user }: { user: any }) {
               <UserInfo fullName={user?.full_name} email={user?.email} />
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <RouterLink to="/admin/settings" onClick={handleMenuClick}>
+            <RouterLink
+              to={user?.is_superuser ? "/admin/settings" : "/profile"}
+              onClick={handleMenuClick}
+            >
               <DropdownMenuItem>
                 <Settings />
-                User Settings
+                {user?.is_superuser ? "Admin Settings" : "Profile Settings"}
               </DropdownMenuItem>
             </RouterLink>
             <DropdownMenuItem onClick={handleLogout}>

@@ -1,9 +1,13 @@
-import { createFileRoute, notFound } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
+import { createFileRoute, notFound } from "@tanstack/react-router"
 import { useTranslation } from "react-i18next"
 import { CmsPagesService } from "@/client"
 import { Separator } from "@/components/ui/separator"
-import { generateMetaTags, StructuredData, generateWebPageSchema } from "@/lib/seo"
+import {
+  generateMetaTags,
+  generateWebPageSchema,
+  StructuredData,
+} from "@/lib/seo"
 import { formatDateLong } from "@/lib/utils"
 
 const baseUrl = import.meta.env.VITE_FRONTEND_URL || "https://vnrunner.com"
@@ -16,7 +20,7 @@ export const Route = createFileRoute("/$lang/_public/page/$slug")({
         slug: params.slug,
       })
       return { page }
-    } catch (error) {
+    } catch (_error) {
       throw notFound()
     }
   },
@@ -97,20 +101,30 @@ function CMSPage() {
   return (
     <>
       <StructuredData data={webPageSchema} />
-      
+
       <div className="w-full py-12 md:py-16 lg:py-20">
         <div className="container max-w-225">
-          <article className="space-y-8" itemScope itemType="https://schema.org/WebPage">
+          <article
+            className="space-y-8"
+            itemScope
+            itemType="https://schema.org/WebPage"
+          >
             <meta itemProp="name" content={page.title} />
-            
+
             {/* Header */}
             <header className="space-y-6">
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight" itemProp="headline">
+              <h1
+                className="text-4xl md:text-5xl font-bold tracking-tight"
+                itemProp="headline"
+              >
                 {page.title}
               </h1>
 
               {page.excerpt && (
-                <p className="text-xl text-muted-foreground leading-relaxed" itemProp="description">
+                <p
+                  className="text-xl text-muted-foreground leading-relaxed"
+                  itemProp="description"
+                >
                   {page.excerpt}
                 </p>
               )}
@@ -124,8 +138,12 @@ function CMSPage() {
             {/* Footer - Last Updated */}
             {page.updated_at && (
               <footer className="pt-8 border-t">
-                <p className="text-sm text-muted-foreground" itemProp="dateModified">
-                  {t("page.lastUpdated", "Last updated")}: {formatDateLong(page.updated_at, currentLang)}
+                <p
+                  className="text-sm text-muted-foreground"
+                  itemProp="dateModified"
+                >
+                  {t("page.lastUpdated", "Last updated")}:{" "}
+                  {formatDateLong(page.updated_at, currentLang)}
                 </p>
               </footer>
             )}

@@ -31,7 +31,10 @@ export function formatDate(dateStr: string | Date, locale = "en-GB"): string {
 /**
  * Format a date string with long month format (e.g., "21 December 2024")
  */
-export function formatDateLong(dateStr: string | Date, locale = "en-GB"): string {
+export function formatDateLong(
+  dateStr: string | Date,
+  locale = "en-GB",
+): string {
   const date = typeof dateStr === "string" ? new Date(dateStr) : dateStr
   return date.toLocaleDateString(locale, {
     day: "numeric",
@@ -45,16 +48,20 @@ export function formatDateLong(dateStr: string | Date, locale = "en-GB"): string
  */
 export function formatShortDate(dateStr: string | Date): string {
   const date = typeof dateStr === "string" ? new Date(dateStr) : dateStr
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  }).toUpperCase()
+  return date
+    .toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    })
+    .toUpperCase()
 }
 
 /**
  * Convert a date to datetime-local input format (YYYY-MM-DDTHH:mm)
  */
-export function toDateTimeLocalString(dateStr: string | Date | null | undefined): string {
+export function toDateTimeLocalString(
+  dateStr: string | Date | null | undefined,
+): string {
   if (!dateStr) return ""
   const date = typeof dateStr === "string" ? new Date(dateStr) : dateStr
   return date.toISOString().slice(0, 16)
@@ -63,7 +70,10 @@ export function toDateTimeLocalString(dateStr: string | Date | null | undefined)
 /**
  * Format price with locale string and currency
  */
-export function formatPrice(price: number | null | undefined, currency = "VND"): string {
+export function formatPrice(
+  price: number | null | undefined,
+  currency = "VND",
+): string {
   if (price === null || price === undefined) return "—"
   return `${price.toLocaleString()} ${currency}`
 }

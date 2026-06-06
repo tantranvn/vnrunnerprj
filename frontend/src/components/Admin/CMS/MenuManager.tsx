@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 import { Link as RouterLink } from "@tanstack/react-router"
-import { Plus, Menu, Eye } from "lucide-react"
+import { Eye, Menu, Plus } from "lucide-react"
 
 import { CmsMenusService } from "@/client"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 
 export function MenuManager() {
   const { data: menus } = useQuery({
@@ -57,7 +57,9 @@ export function MenuManager() {
                   <div className="space-y-1">
                     <CardTitle className="text-lg">{menu.name}</CardTitle>
                     {menu.description && (
-                      <p className="text-sm text-muted-foreground">{menu.description}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {menu.description}
+                      </p>
                     )}
                   </div>
                   {menu.is_active ? (
@@ -71,15 +73,25 @@ export function MenuManager() {
                 <div className="space-y-2">
                   <div className="text-sm">
                     <span className="text-muted-foreground">Location:</span>{" "}
-                    <span className="font-medium capitalize">{menu.location || "Not set"}</span>
+                    <span className="font-medium capitalize">
+                      {menu.location || "Not set"}
+                    </span>
                   </div>
                   <div className="text-sm">
                     <span className="text-muted-foreground">Slug:</span>{" "}
                     <span className="font-mono text-xs">/{menu.slug}</span>
                   </div>
                   <div className="flex gap-2 pt-2">
-                    <Button variant="outline" size="sm" asChild className="flex-1">
-                      <RouterLink to="/admin/cms/menus/$menuId/edit" params={{ menuId: menu.id }}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      asChild
+                      className="flex-1"
+                    >
+                      <RouterLink
+                        to="/admin/cms/menus/$menuId/edit"
+                        params={{ menuId: menu.id }}
+                      >
                         <Eye className="mr-2 h-4 w-4" />
                         Manage Items
                       </RouterLink>

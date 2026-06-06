@@ -1,9 +1,7 @@
+import { Globe, Save } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import {
   Card,
   CardContent,
@@ -11,8 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Globe, Save } from "lucide-react"
+import { Textarea } from "@/components/ui/textarea"
 
 export interface TranslationField {
   name: string
@@ -58,14 +58,14 @@ export function TranslationEditor({
 }: TranslationEditorProps) {
   const { t } = useTranslation()
   const [translations, setTranslations] = useState<AllTranslations>(
-    currentTranslations || {}
+    currentTranslations || {},
   )
   const [activeLanguage, setActiveLanguage] = useState<string>(defaultLanguage)
 
   const handleFieldChange = (
     language: string,
     fieldName: string,
-    value: string
+    value: string,
   ) => {
     setTranslations((prev) => ({
       ...prev,
@@ -111,15 +111,21 @@ export function TranslationEditor({
             ))}
           </TabsList>
           {supportedLanguages.map((lang) => (
-            <TabsContent key={lang.code} value={lang.code} className="space-y-4">
+            <TabsContent
+              key={lang.code}
+              value={lang.code}
+              className="space-y-4"
+            >
               <div className="rounded-md bg-muted/50 p-3 text-sm">
                 {lang.code === defaultLanguage ? (
                   <p className="text-muted-foreground">
-                    <strong>Default language:</strong> This is the primary language for this content.
+                    <strong>Default language:</strong> This is the primary
+                    language for this content.
                   </p>
                 ) : (
                   <p className="text-muted-foreground">
-                    <strong>Translation to {lang.name}:</strong> Translate the content from the default language.
+                    <strong>Translation to {lang.name}:</strong> Translate the
+                    content from the default language.
                   </p>
                 )}
               </div>
@@ -127,7 +133,9 @@ export function TranslationEditor({
                 <div key={field.name} className="space-y-2">
                   <Label htmlFor={`${lang.code}-${field.name}`}>
                     {field.label}
-                    {field.required && <span className="text-destructive ml-1">*</span>}
+                    {field.required && (
+                      <span className="text-destructive ml-1">*</span>
+                    )}
                   </Label>
                   {field.type === "input" ? (
                     <Input
@@ -153,7 +161,8 @@ export function TranslationEditor({
                   )}
                   {field.maxLength && (
                     <p className="text-xs text-muted-foreground text-right">
-                      {getFieldValue(lang.code, field.name).length} / {field.maxLength}
+                      {getFieldValue(lang.code, field.name).length} /{" "}
+                      {field.maxLength}
                     </p>
                   )}
                 </div>

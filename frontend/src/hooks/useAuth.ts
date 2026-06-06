@@ -18,7 +18,7 @@ const isLoggedIn = () => {
 const useAuth = () => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const { showErrorToast } = useCustomToast()
+  const { showErrorToast, showSuccessToast } = useCustomToast()
 
   const { data: user } = useQuery<UserPublic | null, Error>({
     queryKey: ["currentUser"],
@@ -30,6 +30,9 @@ const useAuth = () => {
     mutationFn: (data: UserRegister) =>
       UsersService.registerUser({ requestBody: data }),
     onSuccess: () => {
+      showSuccessToast(
+        "Account created successfully! Please check your email to verify your account before logging in.",
+      )
       navigate({ to: "/login" })
     },
     onError: handleError.bind(showErrorToast),
@@ -43,14 +46,31 @@ const useAuth = () => {
       formData: data,
     })
     localStorage.setItem("access_token", response.access_token)
+    return response
   }
 
   const loginMutation = useMutation({
     mutationFn: login,
-    onSuccess: () => {
-      navigate({ to: "/admin/dashboard" })
+    onSuccess: (response) => {
+      // Redirect based on user role
+      const user = response.user
+      if (user?.is_superuser) {
+        navigate({ to: "/admin/dashboard" })
+      } else {
+        // Regular users (runners) go to saved races or home
+        navigate({ to: "/saved" })
+      }
     },
-    onError: handleError.bind(showErrorToast),
+    onError: (error: any) => {
+      // Check if error is due to unverified email
+      if (error?.body?.detail?.includes("verify your email")) {
+        showErrorToast(
+          "Please verify your email address before logging in. Check your inbox for the verification link.",
+        )
+      } else {
+        handleError.call(showErrorToast, error)
+      }
+    },
   })
 
   const logout = () => {

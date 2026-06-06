@@ -28,9 +28,11 @@ export function generateMetaTags(config: SEOMetaTags) {
     // Basic meta tags
     { title: config.title },
     { name: "description", content: config.description },
-    ...(config.keywords ? [{ name: "keywords", content: config.keywords }] : []),
+    ...(config.keywords
+      ? [{ name: "keywords", content: config.keywords }]
+      : []),
     { name: "author", content: config.author || siteName },
-    
+
     // Open Graph (Facebook, LinkedIn, etc.)
     { property: "og:site_name", content: siteName },
     { property: "og:title", content: config.title },
@@ -38,18 +40,27 @@ export function generateMetaTags(config: SEOMetaTags) {
     { property: "og:type", content: config.ogType || "website" },
     { property: "og:image", content: config.ogImage || defaultImage },
     { property: "og:image:alt", content: config.title },
-    ...(config.canonicalUrl ? [{ property: "og:url", content: config.canonicalUrl }] : []),
-    
+    ...(config.canonicalUrl
+      ? [{ property: "og:url", content: config.canonicalUrl }]
+      : []),
+
     // Twitter Cards
-    { name: "twitter:card", content: config.twitterCard || "summary_large_image" },
+    {
+      name: "twitter:card",
+      content: config.twitterCard || "summary_large_image",
+    },
     { name: "twitter:title", content: config.title },
     { name: "twitter:description", content: config.description },
     { name: "twitter:image", content: config.ogImage || defaultImage },
-    
+
     // Article specific (if applicable)
-    ...(config.publishedTime ? [{ property: "article:published_time", content: config.publishedTime }] : []),
-    ...(config.modifiedTime ? [{ property: "article:modified_time", content: config.modifiedTime }] : []),
-    
+    ...(config.publishedTime
+      ? [{ property: "article:published_time", content: config.publishedTime }]
+      : []),
+    ...(config.modifiedTime
+      ? [{ property: "article:modified_time", content: config.modifiedTime }]
+      : []),
+
     // Additional SEO
     { name: "robots", content: "index, follow" },
     { name: "googlebot", content: "index, follow" },
@@ -257,6 +268,7 @@ export function StructuredData({ data }: { data: object }) {
   return (
     <script
       type="application/ld+json"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data is safe
       dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
     />
   )
@@ -276,5 +288,5 @@ export function stripHtml(html: string): string {
  */
 export function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text
-  return text.substring(0, maxLength - 3) + "..."
+  return `${text.substring(0, maxLength - 3)}...`
 }

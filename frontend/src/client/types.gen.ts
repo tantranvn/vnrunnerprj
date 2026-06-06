@@ -1248,6 +1248,8 @@ export type TerrainEnum = 'road' | 'trail' | 'track' | 'mixed';
 export type Token = {
     access_token: string;
     token_type?: string;
+    user?: (UserPublic | null);
+    warning?: (string | null);
 };
 
 export type UpdatePassword = {
@@ -1259,6 +1261,7 @@ export type UserCreate = {
     email: string;
     is_active?: boolean;
     is_superuser?: boolean;
+    is_verified?: boolean;
     full_name?: (string | null);
     password: string;
 };
@@ -1310,6 +1313,7 @@ export type UserPublic = {
     email: string;
     is_active?: boolean;
     is_superuser?: boolean;
+    is_verified?: boolean;
     full_name?: (string | null);
     id: string;
     created_at?: (string | null);
@@ -1339,6 +1343,7 @@ export type UserUpdate = {
     email?: (string | null);
     is_active?: boolean;
     is_superuser?: boolean;
+    is_verified?: (boolean | null);
     full_name?: (string | null);
     password?: (string | null);
 };
@@ -1774,6 +1779,18 @@ export type LoginResetPasswordData = {
 };
 
 export type LoginResetPasswordResponse = (Message);
+
+export type LoginVerifyEmailData = {
+    token: string;
+};
+
+export type LoginVerifyEmailResponse = (Message);
+
+export type LoginResendVerificationEmailData = {
+    email: string;
+};
+
+export type LoginResendVerificationEmailResponse = (Message);
 
 export type LoginRecoverPasswordHtmlContentData = {
     email: string;

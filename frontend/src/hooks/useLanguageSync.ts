@@ -1,6 +1,6 @@
+import { useSearch } from "@tanstack/react-router"
 import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
-import { useSearch } from "@tanstack/react-router"
 
 /**
  * Hook to sync language from URL search params with i18next
@@ -12,7 +12,7 @@ export function useLanguageSync() {
 
   useEffect(() => {
     const urlLang = search?.lang
-    
+
     // If there's a lang param in URL and it's different from current language
     if (urlLang && typeof urlLang === "string" && urlLang !== i18n.language) {
       // Only change if it's a supported language

@@ -1,12 +1,15 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { Calendar, Clock, Eye, ArrowLeft, Share2 } from "lucide-react"
+import { createFileRoute, Link, notFound } from "@tanstack/react-router"
+import { ArrowLeft, Calendar, Clock, Eye, Share2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { CmsBlogPostsService } from "@/client"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { generateMetaTags, generateArticleSchema, StructuredData } from "@/lib/seo"
+import {
+  generateArticleSchema,
+  generateMetaTags,
+  StructuredData,
+} from "@/lib/seo"
 import { formatDateLong, getMediaUrl } from "@/lib/utils"
 
 const baseUrl = import.meta.env.VITE_FRONTEND_URL || "https://vnrunner.com"
@@ -19,7 +22,7 @@ export const Route = createFileRoute("/_public/blog/$slug")({
         slug: params.slug,
       })
       return { post }
-    } catch (error) {
+    } catch (_error) {
       throw notFound()
     }
   },
@@ -51,9 +54,8 @@ export const Route = createFileRoute("/_public/blog/$slug")({
 })
 
 function BlogPostPage() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const { slug } = Route.useParams()
-  const lang = "vi" // Default to Vietnamese for non-prefixed routes
   const loaderData = Route.useLoaderData()
 
   const { data: post } = useSuspenseQuery({
@@ -63,7 +65,7 @@ function BlogPostPage() {
   })
 
   const publishedDate = post.published_at || post.created_at
-  
+
   const articleSchema = generateArticleSchema({
     headline: post.title,
     description: post.excerpt || "",
@@ -95,10 +97,13 @@ function BlogPostPage() {
   return (
     <>
       <StructuredData data={articleSchema} />
-      
+
       <article className="container mx-auto px-4 py-12 max-w-4xl">
         {/* Back Button */}
-        <Link to="/blog" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8">
+        <Link
+          to="/blog"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8"
+        >
           <ArrowLeft className="h-4 w-4" />
           {t("blog.backToList", "Back to Blog")}
         </Link>
@@ -116,18 +121,6 @@ function BlogPostPage() {
 
         {/* Header */}
         <header className="mb-8">
-          {/* Category & Tags */}
-          <div className="flex flex-wrap items-center gap-2 mb-4">
-            {post.category && (
-              <Badge variant="default">{post.category.name}</Badge>
-            )}
-            {post.tags?.map((tag) => (
-              <Badge key={tag.id} variant="outline">
-                {tag.name}
-              </Badge>
-            ))}
-          </div>
-
           {/* Title */}
           <h1 className="text-4xl md:text-5xl font-bold mb-6">{post.title}</h1>
 
@@ -144,7 +137,7 @@ function BlogPostPage() {
             </span>
             <span className="flex items-center gap-2">
               <Clock className="h-4 w-4" />
-              {post.read_time_minutes || 5} {t("blog.minRead", "min read")}
+              {post.reading_time_minutes || 5} {t("blog.minRead", "min read")}
             </span>
             {post.view_count !== undefined && (
               <span className="flex items-center gap-2">
@@ -169,14 +162,18 @@ function BlogPostPage() {
         {/* Content */}
         <div
           className="prose prose-lg dark:prose-invert max-w-none mb-12"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: CMS blog content is trusted
+          dangerouslySetInnerHTML={{ __html: post.content || "" }}
         />
 
         <Separator className="mb-8" />
 
         {/* Footer */}
         <footer className="flex items-center justify-between">
-          <Link to="/blog" className="inline-flex items-center gap-2 text-sm hover:underline">
+          <Link
+            to="/blog"
+            className="inline-flex items-center gap-2 text-sm hover:underline"
+          >
             <ArrowLeft className="h-4 w-4" />
             {t("blog.backToList", "Back to Blog")}
           </Link>

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
+import type { DifficultyEnum, RacePublic, TerrainEnum } from "@/client"
 import { OpenAPI } from "@/client/core/OpenAPI"
 import { request as __request } from "@/client/core/request"
-import type { RacePublic, DifficultyEnum, TerrainEnum } from "@/client"
 
 export interface RaceSearchParams {
   q?: string
@@ -34,7 +34,9 @@ function buildQuery(params: RaceSearchParams): Record<string, string | number> {
   return q
 }
 
-async function searchRaces(params: RaceSearchParams): Promise<RacesSearchResult> {
+async function searchRaces(
+  params: RaceSearchParams,
+): Promise<RacesSearchResult> {
   return __request(OpenAPI, {
     method: "GET",
     url: "/api/v1/races/search",

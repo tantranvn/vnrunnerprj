@@ -11,7 +11,7 @@ export function useMenuByLocation(location: string) {
       const response = await CmsMenusService.readMenus({})
       // Filter active menus by location
       const menu = response.data.find(
-        (m) => m.location === location && m.is_active
+        (m) => m.location === location && m.is_active,
       )
       if (!menu) return null
 

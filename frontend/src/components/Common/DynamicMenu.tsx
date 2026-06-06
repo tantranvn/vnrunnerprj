@@ -12,23 +12,23 @@ interface DynamicMenuProps {
  * Renders a dynamic menu from CMS menu items
  * Supports both internal and external links
  */
-export function DynamicMenu({ 
-  items, 
-  className = "", 
+export function DynamicMenu({
+  items,
+  className = "",
   itemClassName = "",
-  activeClassName = "text-primary"
+  activeClassName = "text-primary",
 }: DynamicMenuProps) {
   if (!items || items.length === 0) return null
 
   const isInternalLink = (url: string) => {
-    return url.startsWith('/') && !url.startsWith('//')
+    return url.startsWith("/") && !url.startsWith("//")
   }
 
   return (
     <nav className={className}>
       {items.map((item) => {
         const isInternal = isInternalLink(item.url)
-        const target = item.target || '_self'
+        const target = item.target || "_self"
 
         if (isInternal) {
           return (
@@ -50,7 +50,7 @@ export function DynamicMenu({
             key={item.id}
             href={item.url}
             target={target}
-            rel={target === '_blank' ? 'noopener noreferrer' : undefined}
+            rel={target === "_blank" ? "noopener noreferrer" : undefined}
             className={itemClassName}
             title={item.title || undefined}
           >

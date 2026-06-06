@@ -1,15 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Plus, Pencil, Trash2 } from "lucide-react"
+import { Pencil, Plus, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import {
+  RaceCategoriesService,
   type RaceCategoryCreate,
   type RaceCategoryPublic,
   type RaceCategoryUpdate,
-  RaceCategoriesService,
 } from "@/client"
 import { Button } from "@/components/ui/button"
 import {
@@ -28,7 +28,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { LoadingButton } from "@/components/ui/loading-button"
 import {
   Select,
   SelectContent,
@@ -36,7 +36,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { LoadingButton } from "@/components/ui/loading-button"
 import {
   Table,
   TableBody,
@@ -45,9 +44,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Textarea } from "@/components/ui/textarea"
 import useCustomToast from "@/hooks/useCustomToast"
-import { handleError } from "@/utils"
 import { formatPrice, toDateTimeLocalString } from "@/lib/utils"
+import { handleError } from "@/utils"
 
 const categoryFormSchema = z.object({
   name: z.string().min(1, { message: "Category name is required" }),
@@ -84,7 +84,8 @@ const RaceCategoryManager = ({
   description = "Manage distance categories for this race (e.g., 5K, 10K, Half Marathon, Full Marathon).",
 }: RaceCategoryManagerProps) => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-  const [editingCategory, setEditingCategory] = useState<RaceCategoryPublic | null>(null)
+  const [editingCategory, setEditingCategory] =
+    useState<RaceCategoryPublic | null>(null)
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
 
@@ -102,7 +103,8 @@ const RaceCategoryManager = ({
   // Fetch categories for this race
   const { data: categoriesData, isLoading } = useQuery({
     queryKey: ["race-categories", raceId],
-    queryFn: () => RaceCategoriesService.readRaceCategories({ raceId, limit: 100 }),
+    queryFn: () =>
+      RaceCategoriesService.readRaceCategories({ raceId, limit: 100 }),
   })
 
   // Create mutation
@@ -120,8 +122,17 @@ const RaceCategoryManager = ({
 
   // Update mutation
   const updateMutation = useMutation({
-    mutationFn: ({ categoryId, data }: { categoryId: string; data: RaceCategoryUpdate }) =>
-      RaceCategoriesService.updateRaceCategory({ categoryId, requestBody: data }),
+    mutationFn: ({
+      categoryId,
+      data,
+    }: {
+      categoryId: string
+      data: RaceCategoryUpdate
+    }) =>
+      RaceCategoriesService.updateRaceCategory({
+        categoryId,
+        requestBody: data,
+      }),
     onSuccess: () => {
       showSuccessToast("Category updated successfully")
       setEditingCategory(null)
@@ -153,10 +164,16 @@ const RaceCategoryManager = ({
       registration_start: data.registration_start || undefined,
       registration_end: data.registration_end || undefined,
       early_bird_deadline: data.early_bird_deadline || undefined,
-      cutoff_time_minutes: data.cutoff_time_minutes ? Number(data.cutoff_time_minutes) : undefined,
+      cutoff_time_minutes: data.cutoff_time_minutes
+        ? Number(data.cutoff_time_minutes)
+        : undefined,
       price: data.price ? Number(data.price) : undefined,
-      early_bird_price: data.early_bird_price ? Number(data.early_bird_price) : undefined,
-      max_participants: data.max_participants ? Number(data.max_participants) : undefined,
+      early_bird_price: data.early_bird_price
+        ? Number(data.early_bird_price)
+        : undefined,
+      max_participants: data.max_participants
+        ? Number(data.max_participants)
+        : undefined,
       min_age: data.min_age ? Number(data.min_age) : undefined,
       max_age: data.max_age ? Number(data.max_age) : undefined,
       gender_restriction: data.gender_restriction || undefined,
@@ -186,13 +203,19 @@ const RaceCategoryManager = ({
       distance_unit: category.distance_unit,
       start_time: toDateTimeLocalString(category.start_time),
       end_time: toDateTimeLocalString(category.end_time),
-      cutoff_time_minutes: category.cutoff_time_minutes ? String(category.cutoff_time_minutes) : "",
+      cutoff_time_minutes: category.cutoff_time_minutes
+        ? String(category.cutoff_time_minutes)
+        : "",
       registration_start: toDateTimeLocalString(category.registration_start),
       registration_end: toDateTimeLocalString(category.registration_end),
       price: category.price ? String(category.price) : "",
-      early_bird_price: category.early_bird_price ? String(category.early_bird_price) : "",
+      early_bird_price: category.early_bird_price
+        ? String(category.early_bird_price)
+        : "",
       early_bird_deadline: toDateTimeLocalString(category.early_bird_deadline),
-      max_participants: category.max_participants ? String(category.max_participants) : "",
+      max_participants: category.max_participants
+        ? String(category.max_participants)
+        : "",
       min_age: category.min_age ? String(category.min_age) : "",
       max_age: category.max_age ? String(category.max_age) : "",
       gender_restriction: category.gender_restriction || "",
@@ -215,13 +238,16 @@ const RaceCategoryManager = ({
           <h3 className="text-lg font-semibold">{title}</h3>
           <p className="text-sm text-muted-foreground">{description}</p>
         </div>
-        <Dialog open={isAddDialogOpen || !!editingCategory} onOpenChange={(open) => {
-          if (!open) {
-            setIsAddDialogOpen(false)
-            setEditingCategory(null)
-            form.reset()
-          }
-        }}>
+        <Dialog
+          open={isAddDialogOpen || !!editingCategory}
+          onOpenChange={(open) => {
+            if (!open) {
+              setIsAddDialogOpen(false)
+              setEditingCategory(null)
+              form.reset()
+            }
+          }}
+        >
           <DialogTrigger asChild>
             <Button onClick={() => setIsAddDialogOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
@@ -235,7 +261,10 @@ const RaceCategoryManager = ({
               </DialogTitle>
             </DialogHeader>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -244,7 +273,10 @@ const RaceCategoryManager = ({
                       <FormItem className="md:col-span-2">
                         <FormLabel>Category Name *</FormLabel>
                         <FormControl>
-                          <Input placeholder="e.g., Full Marathon, 5K" {...field} />
+                          <Input
+                            placeholder="e.g., Full Marathon, 5K"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -258,7 +290,12 @@ const RaceCategoryManager = ({
                       <FormItem>
                         <FormLabel>Distance *</FormLabel>
                         <FormControl>
-                          <Input type="number" step="0.01" placeholder="42.195" {...field} />
+                          <Input
+                            type="number"
+                            step="0.01"
+                            placeholder="42.195"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -271,7 +308,10 @@ const RaceCategoryManager = ({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Distance Unit</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue />
@@ -359,7 +399,9 @@ const RaceCategoryManager = ({
                   </Button>
                   <LoadingButton
                     type="submit"
-                    loading={createMutation.isPending || updateMutation.isPending}
+                    loading={
+                      createMutation.isPending || updateMutation.isPending
+                    }
                   >
                     {editingCategory ? "Update" : "Create"}
                   </LoadingButton>
@@ -371,7 +413,9 @@ const RaceCategoryManager = ({
       </div>
 
       {isLoading ? (
-        <div className="text-center py-8 text-muted-foreground">Loading categories...</div>
+        <div className="text-center py-8 text-muted-foreground">
+          Loading categories...
+        </div>
       ) : categoriesData?.data.length === 0 ? (
         <div className="text-center py-8 border rounded-lg bg-muted/50">
           <p className="text-muted-foreground">No categories added yet.</p>
@@ -397,7 +441,9 @@ const RaceCategoryManager = ({
                 .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))
                 .map((category) => (
                   <TableRow key={category.id}>
-                    <TableCell className="font-medium">{category.name}</TableCell>
+                    <TableCell className="font-medium">
+                      {category.name}
+                    </TableCell>
                     <TableCell>
                       {category.distance_km} {category.distance_unit}
                     </TableCell>

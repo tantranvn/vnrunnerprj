@@ -1,8 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table"
-import { Badge } from "@/components/ui/badge"
 import { format } from "date-fns"
-
 import type { RacePublic } from "@/client"
+import { Badge } from "@/components/ui/badge"
 import { cn, formatStatus } from "@/lib/utils"
 import { RaceActionsMenu } from "./RaceActionsMenu"
 
@@ -38,7 +37,9 @@ export const columns: ColumnDef<RacePublic>[] = [
       return (
         <div className="space-y-1">
           <p className="font-medium">{format(date, "MMM dd, yyyy")}</p>
-          <p className="text-sm text-muted-foreground">{format(date, "h:mm a")}</p>
+          <p className="text-sm text-muted-foreground">
+            {format(date, "h:mm a")}
+          </p>
         </div>
       )
     },
@@ -63,7 +64,10 @@ export const columns: ColumnDef<RacePublic>[] = [
       return (
         <Badge
           variant="outline"
-          className={cn("text-white border-0", statusColors[status as keyof typeof statusColors])}
+          className={cn(
+            "text-white border-0",
+            statusColors[status as keyof typeof statusColors],
+          )}
         >
           {formatStatus(status)}
         </Badge>

@@ -3,8 +3,8 @@ import { createFileRoute } from "@tanstack/react-router"
 import { Suspense } from "react"
 
 import { RacesService } from "@/client"
-import EditRace from "@/components/Races/EditRace"
 import PendingItems from "@/components/Pending/PendingItems"
+import EditRace from "@/components/Races/EditRace"
 
 export const Route = createFileRoute("/_layout/admin/races/$raceId/edit")({
   component: AdminEditRace,

@@ -66,8 +66,11 @@ export function RaceFilters({ filters, onChange }: RaceFiltersProps) {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* Search */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium">Search</label>
+          <label htmlFor="race-search" className="text-sm font-medium">
+            Search
+          </label>
           <Input
+            id="race-search"
             placeholder="Search race name..."
             value={filters.search}
             onChange={(e) => update({ search: e.target.value })}
@@ -76,12 +79,14 @@ export function RaceFilters({ filters, onChange }: RaceFiltersProps) {
 
         {/* Status */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium">Status</label>
+          <label htmlFor="race-status" className="text-sm font-medium">
+            Status
+          </label>
           <Select
             value={filters.status || "all"}
             onValueChange={(v) => update({ status: v === "all" ? "" : v })}
           >
-            <SelectTrigger>
+            <SelectTrigger id="race-status">
               <SelectValue placeholder="All statuses" />
             </SelectTrigger>
             <SelectContent>
@@ -97,8 +102,11 @@ export function RaceFilters({ filters, onChange }: RaceFiltersProps) {
 
         {/* Start Date From */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium">Start Date From</label>
+          <label htmlFor="race-start-date-from" className="text-sm font-medium">
+            Start Date From
+          </label>
           <Input
+            id="race-start-date-from"
             type="date"
             value={filters.startDateFrom}
             onChange={(e) => update({ startDateFrom: e.target.value })}
@@ -107,8 +115,11 @@ export function RaceFilters({ filters, onChange }: RaceFiltersProps) {
 
         {/* Start Date To */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium">Start Date To</label>
+          <label htmlFor="race-start-date-to" className="text-sm font-medium">
+            Start Date To
+          </label>
           <Input
+            id="race-start-date-to"
             type="date"
             value={filters.startDateTo}
             onChange={(e) => update({ startDateTo: e.target.value })}

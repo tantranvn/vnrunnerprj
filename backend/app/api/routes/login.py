@@ -11,9 +11,12 @@ from app.core import security
 from app.core.config import settings
 from app.models import Message, NewPassword, Token, UserPublic, UserUpdate
 from app.utils import (
+    generate_email_verification_token,
     generate_password_reset_token,
     generate_reset_password_email,
+    generate_verify_email_email,
     send_email,
+    verify_email_verification_token,
     verify_password_reset_token,
 )
 
@@ -34,11 +37,20 @@ def login_access_token(
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     elif not user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    return Token(
-        access_token=security.create_access_token(
-            user.id, expires_delta=access_token_expires
+    elif not user.is_verified:
+        raise HTTPException(
+            status_code=403,
+            detail="Please verify your email address before logging in. Check your inbox for the verification link."
         )
+    
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = security.create_access_token(
+        user.id, expires_delta=access_token_expires
+    )
+    
+    return Token(
+        access_token=access_token,
+        user=UserPublic.model_validate(user),
     )
 
 
@@ -95,6 +107,57 @@ def reset_password(session: SessionDep, body: NewPassword) -> Message:
         user_in=user_in_update,
     )
     return Message(message="Password updated successfully")
+
+
+@router.post("/verify-email/")
+def verify_email(session: SessionDep, token: str) -> Message:
+    """
+    Verify email address using token from verification email
+    """
+    email = verify_email_verification_token(token=token)
+    if not email:
+        raise HTTPException(status_code=400, detail="Invalid or expired verification token")
+    
+    user = crud.get_user_by_email(session=session, email=email)
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid or expired verification token")
+    
+    if user.is_verified:
+        return Message(message="Email already verified")
+    
+    # Update user to mark email as verified
+    user_in_update = UserUpdate(is_verified=True)
+    crud.update_user(
+        session=session,
+        db_user=user,
+        user_in=user_in_update,
+    )
+    return Message(message="Email verified successfully")
+
+
+@router.post("/resend-verification-email/{email}")
+def resend_verification_email(email: str, session: SessionDep) -> Message:
+    """
+    Resend email verification link
+    """
+    user = crud.get_user_by_email(session=session, email=email)
+
+    # Always return success to prevent email enumeration
+    if user and not user.is_verified:
+        if settings.emails_enabled:
+            email_verification_token = generate_email_verification_token(email=user.email)
+            email_data = generate_verify_email_email(
+                email_to=user.email, email=user.email, token=email_verification_token
+            )
+            send_email(
+                email_to=user.email,
+                subject=email_data.subject,
+                html_content=email_data.html_content,
+            )
+    
+    return Message(
+        message="If that email is registered and not verified, we sent a verification link"
+    )
 
 
 @router.post(

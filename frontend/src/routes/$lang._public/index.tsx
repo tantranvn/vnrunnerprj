@@ -1,15 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { ArrowRight, Sparkles } from "lucide-react"
-import { useTranslation } from "react-i18next"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
+import { RaceCard } from "@/components/Races/RaceCard"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { RaceCard } from "@/components/Races/RaceCard"
-import { PublicFooter } from "@/components/Public/PublicFooter"
-import { useRaceSearch } from "@/hooks/useRaceSearch"
 import { isLoggedIn } from "@/hooks/useAuth"
-import { generateMetaTags, generateOrganizationSchema, StructuredData } from "@/lib/seo"
+import { useRaceSearch } from "@/hooks/useRaceSearch"
+import {
+  generateMetaTags,
+  generateOrganizationSchema,
+  StructuredData,
+} from "@/lib/seo"
 
 const baseUrl = import.meta.env.VITE_FRONTEND_URL || "https://vnrunner.com"
 
@@ -17,10 +20,12 @@ export const Route = createFileRoute("/$lang/_public/")({
   component: HomePage,
   head: () => ({
     meta: generateMetaTags({
-      title: "VNRunner - Discover Vietnamese Running Races & Trail Runs | Register Online",
+      title:
+        "VNRunner - Discover Vietnamese Running Races & Trail Runs | Register Online",
       description:
         "Find and register for running races across Vietnam. Discover trail runs, road races, marathons, and ultras. Join thousands of Vietnamese runners achieving their goals. Free online registration.",
-      keywords: "Vietnam running races, trail running Vietnam, marathon Vietnam, ultra running, race registration, Vietnamese runners, running events Vietnam, 5K 10K races Vietnam",
+      keywords:
+        "Vietnam running races, trail running Vietnam, marathon Vietnam, ultra running, race registration, Vietnamese runners, running events Vietnam, 5K 10K races Vietnam",
       canonicalUrl: baseUrl,
       ogType: "website",
     }),
@@ -46,7 +51,8 @@ function HomePage() {
     name: "VNRunner",
     url: baseUrl,
     logo: `${baseUrl}/assets/images/favicon.png`,
-    description: "Vietnam's premier platform for discovering and registering for running races, trail runs, and marathons.",
+    description:
+      "Vietnam's premier platform for discovering and registering for running races, trail runs, and marathons.",
     sameAs: [],
   })
 
@@ -67,9 +73,13 @@ function HomePage() {
   return (
     <>
       <StructuredData data={organizationSchema} />
-      
+
       {/* Hero Section - Bold Typography with AI Search */}
-      <section className="w-full py-16 md:py-20 lg:py-24" itemScope itemType="https://schema.org/WebSite">
+      <section
+        className="w-full py-16 md:py-20 lg:py-24"
+        itemScope
+        itemType="https://schema.org/WebSite"
+      >
         <meta itemProp="url" content={baseUrl} />
         <meta itemProp="name" content="VNRunner" />
         <div className="container max-w-[1100px]">
@@ -77,23 +87,31 @@ function HomePage() {
             {/* Small header text with icon */}
             <div className="flex items-center justify-center gap-2 text-xs tracking-[0.14em] uppercase text-[#74716A] font-mono">
               <Sparkles className="size-3.5" />
-              <span>{t("home.hero.aiFinderLabel")} · {t("home.hero.racesIndexed", { count: totalRaces.toLocaleString() })}</span>
+              <span>
+                {t("home.hero.aiFinderLabel")} ·{" "}
+                {t("home.hero.racesIndexed", {
+                  count: totalRaces.toLocaleString(),
+                })}
+              </span>
             </div>
-            
+
             {/* Large bold heading - Anton-style */}
             <h1 className="text-4xl md:text-5xl lg:text-7xl xl:text-[100px] font-black tracking-[-0.01em] leading-[0.9] uppercase">
               {t("home.hero.titleLine1")}
               <br />
-              <span className="text-[#FF5A1F]">{t("home.hero.titleLine2Next")}</span> {t("home.hero.titleLine2Rest")}
+              <span className="text-[#FF5A1F]">
+                {t("home.hero.titleLine2Next")}
+              </span>{" "}
+              {t("home.hero.titleLine2Rest")}
               <br />
               {t("home.hero.titleLine3")}
             </h1>
-            
+
             {/* Subtitle */}
             <p className="text-base md:text-lg lg:text-xl text-[#74716A] max-w-[620px] mx-auto leading-7 px-4">
               {t("home.hero.subtitle")}
             </p>
-            
+
             {/* AI Search Bar */}
             <div className="max-w-[820px] mx-auto space-y-4 pt-5 px-4">
               <div className="relative bg-white border-2 border-[#E6E1D7] rounded-[28px] shadow-[0px_6px_12px_rgba(15,14,12,0.06),0px_1px_1px_rgba(15,14,12,0.04)] p-2.5">
@@ -113,14 +131,17 @@ function HomePage() {
                     onClick={handleSearch}
                     className="rounded-full h-11 px-5 font-bold text-sm bg-[#FF5A1F] hover:bg-[#FF5A1F]/90 w-full sm:w-auto whitespace-nowrap"
                   >
-                    {t("home.hero.findRaces")} <ArrowRight className="ml-2 size-4" />
+                    {t("home.hero.findRaces")}{" "}
+                    <ArrowRight className="ml-2 size-4" />
                   </Button>
                 </div>
               </div>
-              
+
               {/* Quick filters */}
               <div className="flex flex-wrap items-center justify-center gap-2">
-                <span className="text-xs text-[#74716A] font-mono tracking-widest uppercase">{t("home.hero.tryLabel")}</span>
+                <span className="text-xs text-[#74716A] font-mono tracking-widest uppercase">
+                  {t("home.hero.tryLabel")}
+                </span>
                 {quickFilters.map((filter) => (
                   <Badge
                     key={filter}
@@ -160,7 +181,7 @@ function HomePage() {
                 {t("home.handPicked.seeAll")} <ArrowRight className="size-4" />
               </Link>
             </div>
-            
+
             {/* Races Grid */}
             {isLoading ? (
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -194,7 +215,7 @@ function HomePage() {
             <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl" />
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl" />
           </div>
-          
+
           <div className="container max-w-[1328px] relative px-4">
             <div className="grid lg:grid-cols-[1.4fr_1fr] gap-8 md:gap-12 items-center">
               {/* Left side - Copy */}
@@ -213,34 +234,43 @@ function HomePage() {
                   {t("home.cta.description")}
                 </p>
               </div>
-                
+
               {/* Right side - Form */}
               <div className="bg-white rounded-[22px] p-6 space-y-2.5">
                 <p className="text-xs tracking-[0.14em] uppercase text-[#74716A] font-mono">
                   {t("home.cta.formLabel")}
                 </p>
-                
+
                 <Input
                   type="email"
                   placeholder={t("home.cta.emailPlaceholder")}
                   className="h-12 rounded-full border-[#E6E1D7] text-sm"
                 />
-                
+
                 <Button className="w-full h-11 rounded-full bg-[#0F0E0C] hover:bg-[#0F0E0C]/90 text-white font-bold text-sm">
-                  {t("home.cta.createAccount")} <ArrowRight className="ml-2 size-4" />
+                  {t("home.cta.createAccount")}{" "}
+                  <ArrowRight className="ml-2 size-4" />
                 </Button>
-                
+
                 <div className="flex items-center gap-2 py-1">
                   <div className="flex-1 h-px bg-[#E6E1D7]" />
-                  <span className="text-xs text-[#74716A]">{t("home.cta.or")}</span>
+                  <span className="text-xs text-[#74716A]">
+                    {t("home.cta.or")}
+                  </span>
                   <div className="flex-1 h-px bg-[#E6E1D7]" />
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-2 pt-1">
-                  <Button variant="outline" className="h-[34px] rounded-full border-[#E6E1D7] text-xs font-bold">
+                  <Button
+                    variant="outline"
+                    className="h-[34px] rounded-full border-[#E6E1D7] text-xs font-bold"
+                  >
                     {t("home.cta.apple")}
                   </Button>
-                  <Button variant="outline" className="h-[34px] rounded-full border-[#E6E1D7] text-xs font-bold">
+                  <Button
+                    variant="outline"
+                    className="h-[34px] rounded-full border-[#E6E1D7] text-xs font-bold"
+                  >
                     {t("home.cta.google")}
                   </Button>
                 </div>

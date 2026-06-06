@@ -1,7 +1,7 @@
 import { Link, useParams } from "@tanstack/react-router"
 import { Bookmark, Plus } from "lucide-react"
 import type { RacePublic } from "@/client"
-import { getMediaUrl, formatShortDate } from "@/lib/utils"
+import { formatShortDate, getMediaUrl } from "@/lib/utils"
 
 interface RaceCardProps {
   race: RacePublic & { ai_explanation?: string | null }
@@ -24,59 +24,72 @@ const difficultyLabels: Record<string, string> = {
 export function RaceCard({ race }: RaceCardProps) {
   const params = useParams({ strict: false }) as Record<string, any>
   const lang = params?.lang || "vi"
-  
+
   const aiExplanation = "ai_explanation" in race ? race.ai_explanation : null
-  
+
   // Format date to short format like "SEP 21"
   const eventDate = race.event_start_date
     ? formatShortDate(race.event_start_date)
     : null
 
-  const location = [race.city, race.state].filter(Boolean).join(", ").toUpperCase()
-  
+  const location = [race.city, race.state]
+    .filter(Boolean)
+    .join(", ")
+    .toUpperCase()
+
   // Get race distance from metadata or default
-  const raceDistance = typeof race.race_metadata?.distance === 'string' 
-    ? race.race_metadata.distance 
-    : "13.1mi"
-  
+  const raceDistance =
+    typeof race.race_metadata?.distance === "string"
+      ? race.race_metadata.distance
+      : "13.1mi"
+
   // Build feature highlights
   const features = []
-  if (race.terrain_type) features.push(terrainLabels[race.terrain_type]?.toLowerCase())
-  if (race.difficulty_level) features.push(difficultyLabels[race.difficulty_level]?.toLowerCase())
+  if (race.terrain_type)
+    features.push(terrainLabels[race.terrain_type]?.toLowerCase())
+  if (race.difficulty_level)
+    features.push(difficultyLabels[race.difficulty_level]?.toLowerCase())
   if (aiExplanation) features.push("your top match")
   const featureText = features.slice(0, 3).join(" + ") || "Scenic + rolling"
 
   // Participant count badge (mock for now, could come from race_metadata)
-  const participantCount = typeof race.race_metadata?.participant_count === 'number'
-    ? race.race_metadata.participant_count
-    : 97
+  const participantCount =
+    typeof race.race_metadata?.participant_count === "number"
+      ? race.race_metadata.participant_count
+      : 97
 
   // Get cover image URL from race_metadata if available
-  const coverUrl = typeof race.race_metadata?.cover_url === 'string' 
-    ? race.race_metadata.cover_url 
-    : null
+  const coverUrl =
+    typeof race.race_metadata?.cover_url === "string"
+      ? race.race_metadata.cover_url
+      : null
 
   return (
-    <Link to="/$lang/races/$raceId" params={{ lang, raceId: race.id }} className="block group">
+    <Link
+      to="/$lang/races/$raceId"
+      params={{ lang, raceId: race.id }}
+      className="block group"
+    >
       <div className="overflow-hidden rounded-[22px] bg-white border border-[#E6E1D7] transition-all duration-200 hover:shadow-lg hover:border-[#0F0E0C]/20">
         {/* Image/Header Area */}
         <div className="relative h-[200px] bg-gradient-to-br from-[#5D3A2E] to-[#3D2520] overflow-hidden">
           {/* Cover Image if available */}
           {coverUrl && (
-            <img 
-              src={getMediaUrl(coverUrl)} 
+            <img
+              src={getMediaUrl(coverUrl)}
               alt={race.name}
               className="absolute inset-0 w-full h-full object-cover"
             />
           )}
-          
+
           {/* Gradient overlay for better text visibility when image is present */}
           {coverUrl && (
             <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40" />
           )}
-          
+
           {/* Bookmark Icon - Top Left */}
           <button
+            type="button"
             onClick={(e) => {
               e.preventDefault()
               e.stopPropagation()
@@ -103,7 +116,10 @@ export function RaceCard({ race }: RaceCardProps) {
         <div className="p-5 space-y-3">
           {/* Location and Date Row */}
           <div className="flex items-center justify-between text-xs text-[#74716A] uppercase tracking-wide">
-            <span>{[race.city, race.state].filter(Boolean).join(", ") || race.location}</span>
+            <span>
+              {[race.city, race.state].filter(Boolean).join(", ") ||
+                race.location}
+            </span>
             <span className="font-bold">{eventDate}</span>
           </div>
 

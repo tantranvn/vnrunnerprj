@@ -1,9 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { TagsService } from "@/client"
 import type { TagPublic, TagTranslationUpdate } from "@/client"
-import { TranslationEditor, type AllTranslations, type TranslationField } from "./TranslationEditor"
-import useCustomToast from "@/hooks/useCustomToast"
+import { TagsService } from "@/client"
 import { Skeleton } from "@/components/ui/skeleton"
+import useCustomToast from "@/hooks/useCustomToast"
+import {
+  type AllTranslations,
+  TranslationEditor,
+  type TranslationField,
+} from "./TranslationEditor"
 
 interface TagTranslationManagerProps {
   tagId: string
@@ -20,7 +24,10 @@ const TAG_TRANSLATION_FIELDS: TranslationField[] = [
   },
 ]
 
-export function TagTranslationManager({ tagId, tag }: TagTranslationManagerProps) {
+export function TagTranslationManager({
+  tagId,
+  tag,
+}: TagTranslationManagerProps) {
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
 
@@ -31,7 +38,13 @@ export function TagTranslationManager({ tagId, tag }: TagTranslationManagerProps
   })
 
   const updateTranslationMutation = useMutation({
-    mutationFn: async ({ language, data }: { language: string; data: Partial<TagTranslationUpdate> }) => {
+    mutationFn: async ({
+      language,
+      data,
+    }: {
+      language: string
+      data: Partial<TagTranslationUpdate>
+    }) => {
       return TagsService.updateTagTranslations({
         tagId,
         requestBody: {
@@ -54,10 +67,10 @@ export function TagTranslationManager({ tagId, tag }: TagTranslationManagerProps
   const handleSave = async (allTranslations: AllTranslations) => {
     // Save each language separately
     const languages = Object.keys(allTranslations)
-    
+
     for (const language of languages) {
       const data = allTranslations[language]
-      if (data && data.name) {
+      if (data?.name) {
         await updateTranslationMutation.mutateAsync({ language, data })
       }
     }
@@ -73,11 +86,12 @@ export function TagTranslationManager({ tagId, tag }: TagTranslationManagerProps
   }
 
   // Build initial translations
-  const initialTranslations: AllTranslations = (translations as AllTranslations) || {}
+  const initialTranslations: AllTranslations =
+    (translations as AllTranslations) || {}
 
   // Ensure default language has values from the tag object
-  if (!initialTranslations["vi"]) {
-    initialTranslations["vi"] = {
+  if (!initialTranslations.vi) {
+    initialTranslations.vi = {
       name: tag.name,
     }
   }

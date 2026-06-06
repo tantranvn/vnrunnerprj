@@ -19,7 +19,7 @@ export const Route = createFileRoute("/_layout/admin")({
           to: "/",
         })
       }
-    } catch (error) {
+    } catch (_error) {
       // If API call fails (401/403), redirect to login
       throw redirect({
         to: "/login",

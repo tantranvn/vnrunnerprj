@@ -1,25 +1,19 @@
 // @ts-nocheck - Disabled due to strict type checking and potential duplicate type definitions
-import { useSuspenseQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { Link as RouterLink } from "@tanstack/react-router"
-import { Edit, Trash2, Eye, Calendar, Star } from "lucide-react"
 import {
-  ColumnDef,
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
+import { Link as RouterLink } from "@tanstack/react-router"
+import {
+  type ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import { Calendar, Edit, Eye, Star, Trash2 } from "lucide-react"
 
 import { type BlogPostPublic, CmsBlogPostsService } from "@/client"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,6 +25,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import useCustomToast from "@/hooks/useCustomToast"
 import { formatDate } from "@/lib/utils"
 
@@ -41,13 +45,16 @@ interface BlogPostListProps {
 }
 
 const getStatusBadge = (status: string) => {
-  const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+  const variants: Record<
+    string,
+    "default" | "secondary" | "destructive" | "outline"
+  > = {
     draft: "secondary",
     published: "default",
     scheduled: "outline",
     archived: "destructive",
   }
-  
+
   return (
     <Badge variant={variants[status] || "default"}>
       {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -55,14 +62,14 @@ const getStatusBadge = (status: string) => {
   )
 }
 
-function DeleteBlogPostDialog({ 
-  postId, 
-  postTitle, 
-  onSuccess 
-}: { 
+function DeleteBlogPostDialog({
+  postId,
+  postTitle,
+  onSuccess,
+}: {
   postId: string
   postTitle: string
-  onSuccess: () => void 
+  onSuccess: () => void
 }) {
   const { showSuccessToast, showErrorToast } = useCustomToast()
   const queryClient = useQueryClient()
@@ -90,7 +97,8 @@ function DeleteBlogPostDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Blog Post</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete "{postTitle}"? This action cannot be undone.
+            Are you sure you want to delete "{postTitle}"? This action cannot be
+            undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -104,14 +112,19 @@ function DeleteBlogPostDialog({
   )
 }
 
-export function BlogPostList({ status, categoryId, isFeatured }: BlogPostListProps) {
+export function BlogPostList({
+  status,
+  categoryId,
+  isFeatured,
+}: BlogPostListProps) {
   const { data: posts } = useSuspenseQuery({
     queryKey: ["cms-blog-posts", status, categoryId, isFeatured],
-    queryFn: () => CmsBlogPostsService.readBlogPosts({ 
-      status, 
-      categoryId,
-      isFeatured,
-    }),
+    queryFn: () =>
+      CmsBlogPostsService.readBlogPosts({
+        status,
+        categoryId,
+        isFeatured,
+      }),
   })
 
   const columns: ColumnDef<BlogPostPublic>[] = [
@@ -123,7 +136,9 @@ export function BlogPostList({ status, categoryId, isFeatured }: BlogPostListPro
         return (
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
-              {post.is_featured && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />}
+              {post.is_featured && (
+                <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+              )}
               {post.is_sticky && <Star className="h-4 w-4 text-blue-500" />}
               <span className="font-medium">{post.title}</span>
             </div>
@@ -181,12 +196,15 @@ export function BlogPostList({ status, categoryId, isFeatured }: BlogPostListPro
         return (
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" asChild>
-              <RouterLink to="/admin/cms/blog/posts/$postId/edit" params={{ postId: post.id }}>
+              <RouterLink
+                to="/admin/cms/blog/posts/$postId/edit"
+                params={{ postId: post.id }}
+              >
                 <Edit className="h-4 w-4" />
               </RouterLink>
             </Button>
-            <DeleteBlogPostDialog 
-              postId={post.id} 
+            <DeleteBlogPostDialog
+              postId={post.id}
               postTitle={post.title}
               onSuccess={() => {}}
             />
@@ -210,7 +228,9 @@ export function BlogPostList({ status, categoryId, isFeatured }: BlogPostListPro
         </div>
         <h3 className="text-lg font-semibold">No blog posts found</h3>
         <p className="text-muted-foreground">
-          {status ? `No ${status} posts found` : "Add a new blog post to get started"}
+          {status
+            ? `No ${status} posts found`
+            : "Add a new blog post to get started"}
         </p>
       </div>
     )
@@ -228,7 +248,7 @@ export function BlogPostList({ status, categoryId, isFeatured }: BlogPostListPro
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                 </TableHead>
               ))}

@@ -1,17 +1,30 @@
 // @ts-nocheck - Disabled due to duplicate react-hook-form type definitions in node_modules
+
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Plus, Edit, Trash2, Tag } from "lucide-react"
+import { Edit, Plus, Tag, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 
-import { 
-  type BlogTagPublic,
+import {
   type BlogTagCreate,
+  type BlogTagPublic,
   type BlogTagUpdate,
-  CmsBlogTagsService 
+  CmsBlogTagsService,
 } from "@/client"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -31,20 +44,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Switch } from "@/components/ui/switch"
 import { LoadingButton } from "@/components/ui/loading-button"
-import { Badge } from "@/components/ui/badge"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+import { Switch } from "@/components/ui/switch"
 import useCustomToast from "@/hooks/useCustomToast"
 
 const formSchema = z.object({
@@ -55,12 +56,12 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>
 
-function TagDialog({ 
-  tag, 
-  onClose 
-}: { 
+function TagDialog({
+  tag,
+  onClose,
+}: {
   tag?: BlogTagPublic
-  onClose: () => void 
+  onClose: () => void
 }) {
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
@@ -113,7 +114,10 @@ function TagDialog({
         <DialogTitle>{isEdit ? "Edit Tag" : "Create Tag"}</DialogTitle>
       </DialogHeader>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="space-y-4">
+        <form
+          onSubmit={form.handleSubmit((data) => mutation.mutate(data))}
+          className="space-y-4"
+        >
           <FormField
             control={form.control}
             name="name"
@@ -159,7 +163,10 @@ function TagDialog({
                   <FormDescription>Show this tag on the site</FormDescription>
                 </div>
                 <FormControl>
-                  <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 </FormControl>
               </FormItem>
             )}
@@ -191,8 +198,7 @@ export function BlogTagManager() {
   })
 
   const deleteMutation = useMutation({
-    mutationFn: (tagId: string) =>
-      CmsBlogTagsService.deleteBlogTag({ tagId }),
+    mutationFn: (tagId: string) => CmsBlogTagsService.deleteBlogTag({ tagId }),
     onSuccess: () => {
       showSuccessToast("Tag deleted successfully!")
       queryClient.invalidateQueries({ queryKey: ["cms-blog-tags"] })
@@ -240,7 +246,9 @@ export function BlogTagManager() {
               <Tag className="h-8 w-8 text-muted-foreground" />
             </div>
             <h3 className="text-lg font-semibold">No tags yet</h3>
-            <p className="text-muted-foreground">Create tags to categorize your blog posts</p>
+            <p className="text-muted-foreground">
+              Create tags to categorize your blog posts
+            </p>
           </div>
         ) : (
           <div className="flex flex-wrap gap-2">
@@ -271,13 +279,15 @@ export function BlogTagManager() {
                       <AlertDialogHeader>
                         <AlertDialogTitle>Delete Tag</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Are you sure you want to delete "{tag.name}"? This action cannot be
-                          undone.
+                          Are you sure you want to delete "{tag.name}"? This
+                          action cannot be undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => deleteMutation.mutate(tag.id)}>
+                        <AlertDialogAction
+                          onClick={() => deleteMutation.mutate(tag.id)}
+                        >
                           Delete
                         </AlertDialogAction>
                       </AlertDialogFooter>

@@ -4,14 +4,20 @@ import { useMemo, useState } from "react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import useCustomToast from "@/hooks/useCustomToast"
 import {
-  type MediaAsset,
   deleteMediaAsset,
   listMediaAssets,
+  type MediaAsset,
   updateMediaAsset,
   uploadMediaAsset,
 } from "@/lib/media-api"
@@ -40,7 +46,9 @@ export default function MediaGalleryManager({
   description = "Upload and manage cover, banner, and gallery images.",
 }: MediaGalleryManagerProps) {
   const [draggedGalleryId, setDraggedGalleryId] = useState<string | null>(null)
-  const [uploadProgressItems, setUploadProgressItems] = useState<UploadProgressItem[]>([])
+  const [uploadProgressItems, setUploadProgressItems] = useState<
+    UploadProgressItem[]
+  >([])
   const [dragActiveKind, setDragActiveKind] = useState<MediaKind | null>(null)
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
@@ -68,19 +76,19 @@ export default function MediaGalleryManager({
           contentType,
           contentId,
           kind,
-          isPrimary: kind !== "gallery" ? true : false,
+          isPrimary: kind !== "gallery",
           displayOrder: 0,
           onProgress: (percent) => {
             setUploadProgressItems((prev) =>
               prev.map((item) =>
-                item.id === uploadId ? { ...item, progress: percent } : item
-              )
+                item.id === uploadId ? { ...item, progress: percent } : item,
+              ),
             )
           },
         })
 
         setUploadProgressItems((prev) =>
-          prev.filter((item) => item.id !== uploadId)
+          prev.filter((item) => item.id !== uploadId),
         )
       }
     },
@@ -111,8 +119,8 @@ export default function MediaGalleryManager({
           updateMediaAsset(asset.id, {
             display_order: index,
             kind: "gallery",
-          })
-        )
+          }),
+        ),
       )
     },
     onSuccess: () => {
@@ -124,8 +132,17 @@ export default function MediaGalleryManager({
   })
 
   const updateMutation = useMutation({
-    mutationFn: ({ mediaId, payload }: { mediaId: string; payload: { kind?: MediaKind; is_primary?: boolean; display_order?: number } }) =>
-      updateMediaAsset(mediaId, payload),
+    mutationFn: ({
+      mediaId,
+      payload,
+    }: {
+      mediaId: string
+      payload: {
+        kind?: MediaKind
+        is_primary?: boolean
+        display_order?: number
+      }
+    }) => updateMediaAsset(mediaId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey })
     },
@@ -136,7 +153,7 @@ export default function MediaGalleryManager({
 
   const onFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
-    kind: MediaKind
+    kind: MediaKind,
   ) => {
     const files = event.target.files
     if (!files || files.length === 0) return
@@ -149,11 +166,19 @@ export default function MediaGalleryManager({
   const { coverAsset, bannerAsset, galleryAssets } = useMemo(() => {
     const cover = assets
       .filter((asset) => asset.kind === "cover")
-      .sort((a, b) => Number(b.is_primary) - Number(a.is_primary) || a.display_order - b.display_order)[0]
+      .sort(
+        (a, b) =>
+          Number(b.is_primary) - Number(a.is_primary) ||
+          a.display_order - b.display_order,
+      )[0]
 
     const banner = assets
       .filter((asset) => asset.kind === "banner")
-      .sort((a, b) => Number(b.is_primary) - Number(a.is_primary) || a.display_order - b.display_order)[0]
+      .sort(
+        (a, b) =>
+          Number(b.is_primary) - Number(a.is_primary) ||
+          a.display_order - b.display_order,
+      )[0]
 
     const gallery = assets
       .filter((asset) => asset.kind === "gallery")
@@ -166,11 +191,14 @@ export default function MediaGalleryManager({
     }
   }, [assets])
 
-  const handleDropUpload = (kind: MediaKind, event: React.DragEvent<HTMLDivElement>) => {
+  const handleDropUpload = (
+    kind: MediaKind,
+    event: React.DragEvent<HTMLDivElement>,
+  ) => {
     event.preventDefault()
     setDragActiveKind(null)
     const files = Array.from(event.dataTransfer.files || []).filter((file) =>
-      file.type.startsWith("image/")
+      file.type.startsWith("image/"),
     )
     if (files.length === 0) return
     uploadMutation.mutate({ files, kind })
@@ -179,7 +207,9 @@ export default function MediaGalleryManager({
   const onGalleryDrop = (targetId: string) => {
     if (!draggedGalleryId || draggedGalleryId === targetId) return
 
-    const sourceIndex = galleryAssets.findIndex((item) => item.id === draggedGalleryId)
+    const sourceIndex = galleryAssets.findIndex(
+      (item) => item.id === draggedGalleryId,
+    )
     const targetIndex = galleryAssets.findIndex((item) => item.id === targetId)
     if (sourceIndex === -1 || targetIndex === -1) return
 
@@ -232,7 +262,9 @@ export default function MediaGalleryManager({
             <section className="space-y-3">
               <div>
                 <h4 className="font-semibold">Cover Image</h4>
-                <p className="text-xs text-muted-foreground">Single primary hero image for cards and listings.</p>
+                <p className="text-xs text-muted-foreground">
+                  Single primary hero image for cards and listings.
+                </p>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="border rounded-lg overflow-hidden bg-muted aspect-[16/9]">
@@ -243,14 +275,18 @@ export default function MediaGalleryManager({
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="h-full w-full grid place-content-center text-muted-foreground text-sm">No cover image</div>
+                    <div className="h-full w-full grid place-content-center text-muted-foreground text-sm">
+                      No cover image
+                    </div>
                   )}
                 </div>
                 <div className="space-y-2">
                   {/* biome-ignore lint/a11y/noStaticElementInteractions: dropzone needs drag events */}
                   <div
                     className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
-                      dragActiveKind === "cover" ? "border-primary bg-primary/5" : "border-border"
+                      dragActiveKind === "cover"
+                        ? "border-primary bg-primary/5"
+                        : "border-border"
                     }`}
                     onDragOver={(e) => {
                       e.preventDefault()
@@ -261,9 +297,15 @@ export default function MediaGalleryManager({
                   >
                     <ImageUp className="mx-auto mb-2 h-5 w-5 text-muted-foreground" />
                     <p className="text-sm">Drag and drop cover image here</p>
-                    <p className="text-xs text-muted-foreground">or choose a file below</p>
+                    <p className="text-xs text-muted-foreground">
+                      or choose a file below
+                    </p>
                   </div>
-                  <Input type="file" accept="image/*" onChange={(e) => onFileChange(e, "cover")} />
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => onFileChange(e, "cover")}
+                  />
                   {coverAsset ? (
                     <div className="flex gap-2">
                       <Button
@@ -298,25 +340,33 @@ export default function MediaGalleryManager({
             <section className="space-y-3">
               <div>
                 <h4 className="font-semibold">Banner Image</h4>
-                <p className="text-xs text-muted-foreground">Single wide banner image for detail headers.</p>
+                <p className="text-xs text-muted-foreground">
+                  Single wide banner image for detail headers.
+                </p>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="border rounded-lg overflow-hidden bg-muted aspect-[21/9]">
                   {bannerAsset ? (
                     <img
                       src={getMediaUrl(bannerAsset.file_url)}
-                      alt={bannerAsset.alt_text || bannerAsset.original_filename}
+                      alt={
+                        bannerAsset.alt_text || bannerAsset.original_filename
+                      }
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="h-full w-full grid place-content-center text-muted-foreground text-sm">No banner image</div>
+                    <div className="h-full w-full grid place-content-center text-muted-foreground text-sm">
+                      No banner image
+                    </div>
                   )}
                 </div>
                 <div className="space-y-2">
                   {/* biome-ignore lint/a11y/noStaticElementInteractions: dropzone needs drag events */}
                   <div
                     className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
-                      dragActiveKind === "banner" ? "border-primary bg-primary/5" : "border-border"
+                      dragActiveKind === "banner"
+                        ? "border-primary bg-primary/5"
+                        : "border-border"
                     }`}
                     onDragOver={(e) => {
                       e.preventDefault()
@@ -327,9 +377,15 @@ export default function MediaGalleryManager({
                   >
                     <ImageUp className="mx-auto mb-2 h-5 w-5 text-muted-foreground" />
                     <p className="text-sm">Drag and drop banner image here</p>
-                    <p className="text-xs text-muted-foreground">or choose a file below</p>
+                    <p className="text-xs text-muted-foreground">
+                      or choose a file below
+                    </p>
                   </div>
-                  <Input type="file" accept="image/*" onChange={(e) => onFileChange(e, "banner")} />
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => onFileChange(e, "banner")}
+                  />
                   {bannerAsset ? (
                     <div className="flex gap-2">
                       <Button
@@ -365,7 +421,9 @@ export default function MediaGalleryManager({
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-semibold">Gallery</h4>
-                  <p className="text-xs text-muted-foreground">Drag items to reorder. Order is persisted automatically.</p>
+                  <p className="text-xs text-muted-foreground">
+                    Drag items to reorder. Order is persisted automatically.
+                  </p>
                 </div>
                 <Badge variant="outline" className="gap-1">
                   <ArrowUpDown className="h-3 w-3" />
@@ -376,7 +434,9 @@ export default function MediaGalleryManager({
               {/* biome-ignore lint/a11y/noStaticElementInteractions: dropzone needs drag events */}
               <div
                 className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
-                  dragActiveKind === "gallery" ? "border-primary bg-primary/5" : "border-border"
+                  dragActiveKind === "gallery"
+                    ? "border-primary bg-primary/5"
+                    : "border-border"
                 }`}
                 onDragOver={(e) => {
                   e.preventDefault()
@@ -387,13 +447,22 @@ export default function MediaGalleryManager({
               >
                 <ImageUp className="mx-auto mb-2 h-5 w-5 text-muted-foreground" />
                 <p className="text-sm">Drag and drop gallery images here</p>
-                <p className="text-xs text-muted-foreground">or choose files below</p>
+                <p className="text-xs text-muted-foreground">
+                  or choose files below
+                </p>
               </div>
-              <Input type="file" accept="image/*" multiple onChange={(e) => onFileChange(e, "gallery")} />
+              <Input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={(e) => onFileChange(e, "gallery")}
+              />
               {renderUploadProgress("gallery")}
 
               {galleryAssets.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No gallery images uploaded yet.</p>
+                <p className="text-sm text-muted-foreground">
+                  No gallery images uploaded yet.
+                </p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {galleryAssets.map((asset) => {
@@ -418,7 +487,9 @@ export default function MediaGalleryManager({
                             />
                           </div>
                           <div className="flex items-center gap-2 flex-wrap">
-                            <Badge variant="secondary">#{asset.display_order + 1}</Badge>
+                            <Badge variant="secondary">
+                              #{asset.display_order + 1}
+                            </Badge>
                             {asset.is_primary ? <Badge>Primary</Badge> : null}
                           </div>
                         </button>

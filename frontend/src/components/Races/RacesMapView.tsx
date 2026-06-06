@@ -6,7 +6,7 @@ interface RacesMapViewProps {
 
 export function RacesMapView({ races }: RacesMapViewProps) {
   const racesWithCoords = races.filter(
-    (r) => r.latitude != null && r.longitude != null
+    (r) => r.latitude != null && r.longitude != null,
   )
 
   if (racesWithCoords.length === 0) {
@@ -66,8 +66,12 @@ export function RacesMapView({ races }: RacesMapViewProps) {
           >
             <div className="mt-0.5 size-2 shrink-0 rounded-full bg-primary" />
             <div>
-              <div className="text-sm font-medium leading-tight">{race.name}</div>
-              <div className="text-xs text-muted-foreground">{race.location}</div>
+              <div className="text-sm font-medium leading-tight">
+                {race.name}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {race.location}
+              </div>
             </div>
           </a>
         ))}

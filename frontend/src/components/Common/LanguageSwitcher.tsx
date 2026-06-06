@@ -1,6 +1,6 @@
+import { useParams } from "@tanstack/react-router"
 import { Check, Globe } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useParams } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -22,28 +22,33 @@ interface LanguageSwitcherProps {
   noUrlChange?: boolean
 }
 
-export function LanguageSwitcher({ noUrlChange = false }: LanguageSwitcherProps) {
+export function LanguageSwitcher({
+  noUrlChange = false,
+}: LanguageSwitcherProps) {
   const { i18n } = useTranslation()
   const params = useParams({ strict: false }) as Record<string, any>
 
   const changeLanguage = (languageCode: string) => {
     i18n.changeLanguage(languageCode)
-    
+
     // If noUrlChange is true, just change the language in i18n without navigation
     if (noUrlChange) {
       return
     }
-    
+
     // Navigate to the same route with different language
     const currentPath = window.location.pathname
-    
+
     // Extract current language from URL path (more reliable than params in some cases)
     const pathMatch = currentPath.match(/^\/([a-z]{2})(\/|$)/)
-    const currentLang = pathMatch ? pathMatch[1] : (params?.lang || "vi")
-    
+    const currentLang = pathMatch ? pathMatch[1] : params?.lang || "vi"
+
     // More robust path replacement
     let newPath: string
-    if (currentPath === `/${currentLang}` || currentPath === `/${currentLang}/`) {
+    if (
+      currentPath === `/${currentLang}` ||
+      currentPath === `/${currentLang}/`
+    ) {
       // Homepage or base language route
       newPath = `/${languageCode}/`
     } else if (currentPath.startsWith(`/${currentLang}/`)) {
@@ -56,12 +61,13 @@ export function LanguageSwitcher({ noUrlChange = false }: LanguageSwitcherProps)
       // Fallback - just navigate to the language homepage
       newPath = `/${languageCode}/`
     }
-    
+
     // Use window.location.href to avoid nested anchor issues
     window.location.href = newPath
   }
 
-  const currentLanguage = languages.find((lang) => lang.code === i18n.language) || languages[0]
+  const currentLanguage =
+    languages.find((lang) => lang.code === i18n.language) || languages[0]
 
   return (
     <DropdownMenu>
@@ -80,7 +86,9 @@ export function LanguageSwitcher({ noUrlChange = false }: LanguageSwitcherProps)
           >
             <span className="flex items-center gap-2">
               <span className="text-sm font-medium">{language.nativeName}</span>
-              <span className="text-xs text-muted-foreground">({language.name})</span>
+              <span className="text-xs text-muted-foreground">
+                ({language.name})
+              </span>
             </span>
             {currentLanguage.code === language.code && (
               <Check className="h-4 w-4 text-primary ml-2" />

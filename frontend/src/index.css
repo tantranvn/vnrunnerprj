@@ -4,8 +4,13 @@
 @custom-variant dark (&:is(.dark *));
 
 /* Anton font for headings */
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Anton', sans-serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Anton", sans-serif;
   font-weight: 400;
 }
 
@@ -53,7 +58,7 @@ h1, h2, h3, h4, h5, h6 {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-  
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
@@ -97,7 +102,7 @@ h1, h2, h3, h4, h5, h6 {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  
+
   /* VNRunner Design System Semantic Colors */
   --color-success: oklch(0.67 0.17 150); /* #22C55E */
   --color-warning: oklch(0.75 0.15 75); /* #F59E0B */

@@ -9,7 +9,11 @@ interface SearchBarProps {
   placeholder?: string
 }
 
-export function SearchBar({ value, onChange, placeholder = "Search races..." }: SearchBarProps) {
+export function SearchBar({
+  value,
+  onChange,
+  placeholder = "Search races...",
+}: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   return (

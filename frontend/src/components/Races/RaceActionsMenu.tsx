@@ -30,7 +30,10 @@ export function RaceActionsMenu({ race }: RaceActionsMenuProps) {
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <RouterLink to="/admin/races/$raceId/edit" params={{ raceId: race.id }}>
+          <RouterLink
+            to="/admin/races/$raceId/edit"
+            params={{ raceId: race.id }}
+          >
             <Edit className="mr-2 h-4 w-4" />
             Edit
           </RouterLink>

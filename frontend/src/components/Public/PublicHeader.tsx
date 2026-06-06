@@ -1,12 +1,12 @@
 import { Link, useParams } from "@tanstack/react-router"
 import { Menu } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import { DynamicMenu } from "@/components/Common/DynamicMenu"
+import { LanguageSwitcher } from "@/components/Common/LanguageSwitcher"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { isLoggedIn } from "@/hooks/useAuth"
-import { LanguageSwitcher } from "@/components/Common/LanguageSwitcher"
 import { useMenuByLocation } from "@/hooks/useMenu"
-import { DynamicMenu } from "@/components/Common/DynamicMenu"
 
 export function PublicHeader() {
   const loggedIn = isLoggedIn()
@@ -98,46 +98,49 @@ export function PublicHeader() {
             >
               <div className="flex flex-col gap-4">
                 {/* Mobile Navigation - Use CMS menu if available */}
-                {headerMenu?.items && headerMenu.items.length > 0 ? (
-                  headerMenu.items.map((item) => {
-                    const isInternal = item.url.startsWith('/') && !item.url.startsWith('//')
-                    if (isInternal) {
+                {headerMenu?.items && headerMenu.items.length > 0
+                  ? headerMenu.items.map((item) => {
+                      const isInternal =
+                        item.url.startsWith("/") && !item.url.startsWith("//")
+                      if (isInternal) {
+                        return (
+                          <Link
+                            key={item.id}
+                            to={item.url as any}
+                            className="text-lg font-medium transition-colors hover:text-primary"
+                            activeProps={{ className: "text-primary" }}
+                          >
+                            {item.label}
+                          </Link>
+                        )
+                      }
                       return (
-                        <Link
+                        <a
                           key={item.id}
-                          to={item.url as any}
+                          href={item.url}
+                          target={item.target || "_self"}
+                          rel={
+                            item.target === "_blank"
+                              ? "noopener noreferrer"
+                              : undefined
+                          }
                           className="text-lg font-medium transition-colors hover:text-primary"
-                          activeProps={{ className: "text-primary" }}
                         >
                           {item.label}
-                        </Link>
+                        </a>
                       )
-                    }
-                    return (
-                      <a
-                        key={item.id}
-                        href={item.url}
-                        target={item.target || '_self'}
-                        rel={item.target === '_blank' ? 'noopener noreferrer' : undefined}
+                    })
+                  : defaultNavLinks.map(({ to, params, label }) => (
+                      <Link
+                        key={to}
+                        to={to}
+                        params={params}
                         className="text-lg font-medium transition-colors hover:text-primary"
+                        activeProps={{ className: "text-primary" }}
                       >
-                        {item.label}
-                      </a>
-                    )
-                  })
-                ) : (
-                  defaultNavLinks.map(({ to, params, label }) => (
-                    <Link
-                      key={to}
-                      to={to}
-                      params={params}
-                      className="text-lg font-medium transition-colors hover:text-primary"
-                      activeProps={{ className: "text-primary" }}
-                    >
-                      {label}
-                    </Link>
-                  ))
-                )}
+                        {label}
+                      </Link>
+                    ))}
               </div>
               <div className="border-t pt-6 flex flex-col gap-3">
                 <LanguageSwitcher />

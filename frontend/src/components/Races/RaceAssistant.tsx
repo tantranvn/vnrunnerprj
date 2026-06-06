@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from "react"
-import { MessageCircle, X, Send, Bot } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { Bot, MessageCircle, Send, X } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
 import { OpenAPI } from "@/client"
 import { request as __request } from "@/client/core/request"
+import { cn } from "@/lib/utils"
 
 interface Message {
   role: "user" | "assistant"
@@ -30,7 +30,7 @@ export function RaceAssistant({ raceId }: RaceAssistantProps) {
 
   useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages, open])
+  }, [open])
 
   const sendMessage = async (question: string) => {
     if (!question.trim() || loading) return
@@ -42,12 +42,12 @@ export function RaceAssistant({ raceId }: RaceAssistantProps) {
     setRateLimited(false)
 
     try {
-      const response = await __request(OpenAPI, {
+      const response = (await __request(OpenAPI, {
         method: "POST",
         url: `/api/v1/races/${raceId}/ask`,
         body: { question },
         mediaType: "application/json",
-      }) as { answer: string }
+      })) as { answer: string }
 
       setMessages((prev) => [
         ...prev,
@@ -67,7 +67,10 @@ export function RaceAssistant({ raceId }: RaceAssistantProps) {
       } else {
         setMessages((prev) => [
           ...prev,
-          { role: "assistant", text: "Sorry, I couldn't answer that right now. Please try again." },
+          {
+            role: "assistant",
+            text: "Sorry, I couldn't answer that right now. Please try again.",
+          },
         ])
       }
     } finally {
@@ -79,10 +82,11 @@ export function RaceAssistant({ raceId }: RaceAssistantProps) {
     <>
       {/* Floating button */}
       <button
+        type="button"
         onClick={() => setOpen(true)}
         className={cn(
           "fixed bottom-6 right-6 z-50 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105",
-          open && "hidden"
+          open && "hidden",
         )}
         title="Ask about this race"
       >
@@ -99,6 +103,7 @@ export function RaceAssistant({ raceId }: RaceAssistantProps) {
               <span className="font-semibold text-sm">Race Assistant</span>
             </div>
             <button
+              type="button"
               onClick={() => setOpen(false)}
               className="rounded p-1 text-muted-foreground hover:text-foreground"
             >
@@ -116,6 +121,7 @@ export function RaceAssistant({ raceId }: RaceAssistantProps) {
                 <div className="flex flex-wrap gap-2">
                   {SEED_QUESTIONS.map((q) => (
                     <button
+                      type="button"
                       key={q}
                       onClick={() => sendMessage(q)}
                       className="rounded-full border px-3 py-1 text-xs hover:bg-muted transition-colors"
@@ -134,7 +140,7 @@ export function RaceAssistant({ raceId }: RaceAssistantProps) {
                   "max-w-[85%] rounded-lg px-3 py-2 text-sm",
                   msg.role === "user"
                     ? "ml-auto bg-primary text-primary-foreground"
-                    : "bg-muted text-foreground"
+                    : "bg-muted text-foreground",
                 )}
               >
                 {msg.text}
@@ -162,7 +168,9 @@ export function RaceAssistant({ raceId }: RaceAssistantProps) {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={rateLimited ? "Rate limit reached…" : "Ask a question…"}
+              placeholder={
+                rateLimited ? "Rate limit reached…" : "Ask a question…"
+              }
               disabled={loading || rateLimited}
               className="flex-1 rounded-md border bg-background px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-ring disabled:opacity-50"
             />

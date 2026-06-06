@@ -4,10 +4,12 @@ import {
   Link as RouterLink,
   redirect,
 } from "@tanstack/react-router"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
 import { Sparkles } from "lucide-react"
+import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
+import { z } from "zod"
+import { LanguageSwitcher } from "@/components/Common/LanguageSwitcher"
+import { PublicFooter } from "@/components/Public/PublicFooter"
 import {
   Form,
   FormControl,
@@ -19,8 +21,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { LoadingButton } from "@/components/ui/loading-button"
 import { PasswordInput } from "@/components/ui/password-input"
-import { PublicFooter } from "@/components/Public/PublicFooter"
-import { LanguageSwitcher } from "@/components/Common/LanguageSwitcher"
 import useAuth, { isLoggedIn } from "@/hooks/useAuth"
 
 // We'll create the schema inside the component to access translations
@@ -52,12 +52,14 @@ export const Route = createFileRoute("/signup")({
 function SignUp() {
   const { t } = useTranslation()
   const { signUpMutation } = useAuth()
-  
+
   // Create schema with translated error messages
   const formSchema = z
     .object({
       email: z.email(),
-      full_name: z.string().min(1, { message: t("auth.signup.errors.fullNameRequired") }),
+      full_name: z
+        .string()
+        .min(1, { message: t("auth.signup.errors.fullNameRequired") }),
       password: z
         .string()
         .min(1, { message: t("auth.signup.errors.passwordRequired") })
@@ -70,7 +72,7 @@ function SignUp() {
       message: t("auth.signup.errors.passwordMismatch"),
       path: ["confirm_password"],
     })
-  
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     mode: "onBlur",
@@ -99,7 +101,9 @@ function SignUp() {
           <div className="flex items-center justify-between">
             <RouterLink to="/" className="flex items-center gap-2">
               <Sparkles className="size-6" />
-              <span className="text-2xl font-black tracking-wide uppercase">VNRUNNER</span>
+              <span className="text-2xl font-black tracking-wide uppercase">
+                VNRUNNER
+              </span>
             </RouterLink>
             <LanguageSwitcher noUrlChange />
           </div>
@@ -112,7 +116,9 @@ function SignUp() {
                 className="flex flex-col gap-6"
               >
                 <div className="flex flex-col items-center gap-2 text-center">
-                  <h1 className="text-2xl font-bold">{t("auth.signup.title")}</h1>
+                  <h1 className="text-2xl font-bold">
+                    {t("auth.signup.title")}
+                  </h1>
                   <p className="text-sm text-muted-foreground">
                     {t("auth.signup.subtitle")}
                   </p>
@@ -180,11 +186,15 @@ function SignUp() {
                     name="confirm_password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{t("auth.signup.confirmPassword")}</FormLabel>
+                        <FormLabel>
+                          {t("auth.signup.confirmPassword")}
+                        </FormLabel>
                         <FormControl>
                           <PasswordInput
                             data-testid="confirm-password-input"
-                            placeholder={t("auth.signup.confirmPasswordPlaceholder")}
+                            placeholder={t(
+                              "auth.signup.confirmPasswordPlaceholder",
+                            )}
                             {...field}
                           />
                         </FormControl>
@@ -204,7 +214,10 @@ function SignUp() {
 
                 <div className="text-center text-sm">
                   {t("auth.signup.alreadyHaveAccount")}{" "}
-                  <RouterLink to="/login" className="underline underline-offset-4 hover:text-primary">
+                  <RouterLink
+                    to="/login"
+                    className="underline underline-offset-4 hover:text-primary"
+                  >
                     {t("auth.signup.loginLink")}
                   </RouterLink>
                 </div>

@@ -1,15 +1,14 @@
 // @ts-nocheck - Disabled due to duplicate react-hook-form type definitions in node_modules
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { Save } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { type PageCreate, type PageUpdate, type PagePublic, CmsPagesService } from "@/client"
+import { CmsPagesService, type PageCreate, type PageUpdate } from "@/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Form,
   FormControl,
@@ -20,7 +19,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { LoadingButton } from "@/components/ui/loading-button"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import {
   Select,
   SelectContent,
@@ -29,8 +29,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { LoadingButton } from "@/components/ui/loading-button"
-import { RichTextEditor } from "@/components/ui/rich-text-editor"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
 import useCustomToast from "@/hooks/useCustomToast"
 import { toDateTimeLocalString } from "@/lib/utils"
 
@@ -105,12 +105,17 @@ export function CMSPageEditor({ pageId }: CMSPageEditorProps) {
   const mutation = useMutation({
     mutationFn: (data: PageCreate | PageUpdate) => {
       if (isEdit && pageId) {
-        return CmsPagesService.updatePage({ pageId, requestBody: data as PageUpdate })
+        return CmsPagesService.updatePage({
+          pageId,
+          requestBody: data as PageUpdate,
+        })
       }
       return CmsPagesService.createPage({ requestBody: data as PageCreate })
     },
     onSuccess: () => {
-      showSuccessToast(isEdit ? "Page updated successfully!" : "Page created successfully!")
+      showSuccessToast(
+        isEdit ? "Page updated successfully!" : "Page created successfully!",
+      )
       queryClient.invalidateQueries({ queryKey: ["cms-pages"] })
       navigate({ to: "/admin/cms/pages" })
     },
@@ -131,7 +136,10 @@ export function CMSPageEditor({ pageId }: CMSPageEditorProps) {
             {isEdit ? "Edit Page" : "Create New Page"}
           </h2>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => navigate({ to: "/admin/cms/pages" })}>
+            <Button
+              variant="outline"
+              onClick={() => navigate({ to: "/admin/cms/pages" })}
+            >
               Cancel
             </Button>
             <LoadingButton type="submit" loading={mutation.isPending}>
@@ -183,7 +191,9 @@ export function CMSPageEditor({ pageId }: CMSPageEditorProps) {
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
-                      <FormDescription>URL-friendly version of the title</FormDescription>
+                      <FormDescription>
+                        URL-friendly version of the title
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -198,7 +208,9 @@ export function CMSPageEditor({ pageId }: CMSPageEditorProps) {
                       <FormControl>
                         <Textarea {...field} rows={3} />
                       </FormControl>
-                      <FormDescription>Short description for previews</FormDescription>
+                      <FormDescription>
+                        Short description for previews
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -251,7 +263,11 @@ export function CMSPageEditor({ pageId }: CMSPageEditorProps) {
                     <FormItem>
                       <FormLabel>Meta Description</FormLabel>
                       <FormControl>
-                        <Textarea {...field} value={field.value || ""} rows={3} />
+                        <Textarea
+                          {...field}
+                          value={field.value || ""}
+                          rows={3}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -265,7 +281,11 @@ export function CMSPageEditor({ pageId }: CMSPageEditorProps) {
                     <FormItem>
                       <FormLabel>Meta Keywords</FormLabel>
                       <FormControl>
-                        <Input {...field} value={field.value || ""} placeholder="keyword1, keyword2, keyword3" />
+                        <Input
+                          {...field}
+                          value={field.value || ""}
+                          placeholder="keyword1, keyword2, keyword3"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -293,7 +313,11 @@ export function CMSPageEditor({ pageId }: CMSPageEditorProps) {
                     <FormItem>
                       <FormLabel>Open Graph Description</FormLabel>
                       <FormControl>
-                        <Textarea {...field} value={field.value || ""} rows={3} />
+                        <Textarea
+                          {...field}
+                          value={field.value || ""}
+                          rows={3}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -343,7 +367,10 @@ export function CMSPageEditor({ pageId }: CMSPageEditorProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Status</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue />
@@ -370,7 +397,9 @@ export function CMSPageEditor({ pageId }: CMSPageEditorProps) {
                       <FormControl>
                         <Input {...field} value={field.value || "default"} />
                       </FormControl>
-                      <FormDescription>Template name for custom layouts</FormDescription>
+                      <FormDescription>
+                        Template name for custom layouts
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -382,7 +411,10 @@ export function CMSPageEditor({ pageId }: CMSPageEditorProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Default Language</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue />
@@ -408,7 +440,11 @@ export function CMSPageEditor({ pageId }: CMSPageEditorProps) {
                         <Input
                           type="datetime-local"
                           {...field}
-                          value={field.value ? toDateTimeLocalString(field.value) : ""}
+                          value={
+                            field.value
+                              ? toDateTimeLocalString(field.value)
+                              : ""
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -426,7 +462,11 @@ export function CMSPageEditor({ pageId }: CMSPageEditorProps) {
                         <Input
                           type="datetime-local"
                           {...field}
-                          value={field.value ? toDateTimeLocalString(field.value) : ""}
+                          value={
+                            field.value
+                              ? toDateTimeLocalString(field.value)
+                              : ""
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -455,10 +495,15 @@ export function CMSPageEditor({ pageId }: CMSPageEditorProps) {
                     <FormItem className="flex items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Homepage</FormLabel>
-                        <FormDescription>Set this page as the homepage</FormDescription>
+                        <FormDescription>
+                          Set this page as the homepage
+                        </FormDescription>
                       </div>
                       <FormControl>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -470,11 +515,18 @@ export function CMSPageEditor({ pageId }: CMSPageEditorProps) {
                   render={({ field }) => (
                     <FormItem className="flex items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
-                        <FormLabel className="text-base">Visible in Menu</FormLabel>
-                        <FormDescription>Show this page in navigation menus</FormDescription>
+                        <FormLabel className="text-base">
+                          Visible in Menu
+                        </FormLabel>
+                        <FormDescription>
+                          Show this page in navigation menus
+                        </FormDescription>
                       </div>
                       <FormControl>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
                       </FormControl>
                     </FormItem>
                   )}

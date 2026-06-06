@@ -4,8 +4,14 @@ import { Suspense } from "react"
 import { TagsService } from "@/client"
 import { TagTranslationManager } from "@/components/Admin/TagTranslationManager"
 import PendingItems from "@/components/Pending/PendingItems"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
 export const Route = createFileRoute("/_layout/admin/tags")({
   component: AdminTags,
@@ -48,9 +54,7 @@ function TagsContent() {
                     {tag.name}
                     <Badge variant="outline">{tag.slug}</Badge>
                   </CardTitle>
-                  <CardDescription>
-                    Tag ID: {tag.id}
-                  </CardDescription>
+                  <CardDescription>Tag ID: {tag.id}</CardDescription>
                 </div>
               </div>
             </CardHeader>

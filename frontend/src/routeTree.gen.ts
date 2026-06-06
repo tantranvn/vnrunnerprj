@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecoverPasswordRouteImport } from './routes/recover-password'
@@ -18,6 +19,7 @@ import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as LangRouteImport } from './routes/$lang'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LayoutSavedRouteImport } from './routes/_layout.saved'
+import { Route as LayoutProfileRouteImport } from './routes/_layout/profile'
 import { Route as LayoutOnboardingRouteImport } from './routes/_layout.onboarding'
 import { Route as LayoutHistoryRouteImport } from './routes/_layout.history'
 import { Route as LayoutAdminRouteImport } from './routes/_layout.admin'
@@ -59,6 +61,11 @@ import { Route as LayoutAdminCmsMenusMenuIdEditRouteImport } from './routes/_lay
 import { Route as LayoutAdminCmsBlogPostsNewRouteImport } from './routes/_layout.admin/cms.blog.posts.new'
 import { Route as LayoutAdminCmsBlogPostsPostIdEditRouteImport } from './routes/_layout.admin/cms.blog.posts.$postId.edit'
 
+const VerifyEmailRoute = VerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -100,6 +107,11 @@ const IndexRoute = IndexRouteImport.update({
 const LayoutSavedRoute = LayoutSavedRouteImport.update({
   id: '/saved',
   path: '/saved',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutProfileRoute = LayoutProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => LayoutRoute,
 } as any)
 const LayoutOnboardingRoute = LayoutOnboardingRouteImport.update({
@@ -318,9 +330,11 @@ export interface FileRoutesByFullPath {
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/admin': typeof LayoutAdminRouteWithChildren
   '/history': typeof LayoutHistoryRoute
   '/onboarding': typeof LayoutOnboardingRoute
+  '/profile': typeof LayoutProfileRoute
   '/saved': typeof LayoutSavedRoute
   '/$lang/about': typeof LangPublicAboutRoute
   '/admin/cms': typeof LayoutAdminCmsRouteWithChildren
@@ -366,8 +380,10 @@ export interface FileRoutesByTo {
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/history': typeof LayoutHistoryRoute
   '/onboarding': typeof LayoutOnboardingRoute
+  '/profile': typeof LayoutProfileRoute
   '/saved': typeof LayoutSavedRoute
   '/$lang/about': typeof LangPublicAboutRoute
   '/admin/dashboard': typeof LayoutAdminDashboardRoute
@@ -410,10 +426,12 @@ export interface FileRoutesById {
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/$lang/_public': typeof LangPublicRouteWithChildren
   '/_layout/admin': typeof LayoutAdminRouteWithChildren
   '/_layout/history': typeof LayoutHistoryRoute
   '/_layout/onboarding': typeof LayoutOnboardingRoute
+  '/_layout/profile': typeof LayoutProfileRoute
   '/_layout/saved': typeof LayoutSavedRoute
   '/$lang/_public/about': typeof LangPublicAboutRoute
   '/_layout/admin/cms': typeof LayoutAdminCmsRouteWithChildren
@@ -461,9 +479,11 @@ export interface FileRouteTypes {
     | '/recover-password'
     | '/reset-password'
     | '/signup'
+    | '/verify-email'
     | '/admin'
     | '/history'
     | '/onboarding'
+    | '/profile'
     | '/saved'
     | '/$lang/about'
     | '/admin/cms'
@@ -509,8 +529,10 @@ export interface FileRouteTypes {
     | '/recover-password'
     | '/reset-password'
     | '/signup'
+    | '/verify-email'
     | '/history'
     | '/onboarding'
+    | '/profile'
     | '/saved'
     | '/$lang/about'
     | '/admin/dashboard'
@@ -552,10 +574,12 @@ export interface FileRouteTypes {
     | '/recover-password'
     | '/reset-password'
     | '/signup'
+    | '/verify-email'
     | '/$lang/_public'
     | '/_layout/admin'
     | '/_layout/history'
     | '/_layout/onboarding'
+    | '/_layout/profile'
     | '/_layout/saved'
     | '/$lang/_public/about'
     | '/_layout/admin/cms'
@@ -604,10 +628,18 @@ export interface RootRouteChildren {
   RecoverPasswordRoute: typeof RecoverPasswordRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
+  VerifyEmailRoute: typeof VerifyEmailRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify-email': {
+      id: '/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof VerifyEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -669,6 +701,13 @@ declare module '@tanstack/react-router' {
       path: '/saved'
       fullPath: '/saved'
       preLoaderRoute: typeof LayoutSavedRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/profile': {
+      id: '/_layout/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof LayoutProfileRouteImport
       parentRoute: typeof LayoutRoute
     }
     '/_layout/onboarding': {
@@ -1113,6 +1152,7 @@ interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRouteWithChildren
   LayoutHistoryRoute: typeof LayoutHistoryRoute
   LayoutOnboardingRoute: typeof LayoutOnboardingRoute
+  LayoutProfileRoute: typeof LayoutProfileRoute
   LayoutSavedRoute: typeof LayoutSavedRoute
 }
 
@@ -1120,6 +1160,7 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAdminRoute: LayoutAdminRouteWithChildren,
   LayoutHistoryRoute: LayoutHistoryRoute,
   LayoutOnboardingRoute: LayoutOnboardingRoute,
+  LayoutProfileRoute: LayoutProfileRoute,
   LayoutSavedRoute: LayoutSavedRoute,
 }
 
@@ -1150,6 +1191,7 @@ const rootRouteChildren: RootRouteChildren = {
   RecoverPasswordRoute: RecoverPasswordRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
+  VerifyEmailRoute: VerifyEmailRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

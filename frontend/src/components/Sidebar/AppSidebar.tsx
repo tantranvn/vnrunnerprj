@@ -1,4 +1,15 @@
-import { Briefcase, Flag, Home, Settings, Users, FileText, PenTool, Menu } from "lucide-react"
+import {
+  Bookmark,
+  Briefcase,
+  FileText,
+  Flag,
+  Home,
+  Menu,
+  PenTool,
+  Settings,
+  User as UserIcon,
+  Users,
+} from "lucide-react"
 
 import { SidebarAppearance } from "@/components/Common/Appearance"
 import { Logo } from "@/components/Common/Logo"
@@ -23,10 +34,15 @@ const adminItems: Item[] = [
   { icon: Settings, title: "Settings", path: "/admin/settings" },
 ]
 
+const userItems: Item[] = [
+  { icon: Bookmark, title: "Saved Races", path: "/saved" },
+  { icon: UserIcon, title: "Profile", path: "/profile" },
+]
+
 export function AppSidebar() {
   const { user: currentUser } = useAuth()
 
-  const items = currentUser?.is_superuser ? adminItems : []
+  const items = currentUser?.is_superuser ? adminItems : userItems
 
   return (
     <Sidebar collapsible="icon">

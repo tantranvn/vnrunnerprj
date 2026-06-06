@@ -1,9 +1,22 @@
 import { createFileRoute, Link as RouterLink } from "@tanstack/react-router"
-import { FileText, BookOpen, Menu, Users, Box, Calendar, Tag } from "lucide-react"
-
-import useAuth from "@/hooks/useAuth"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  BookOpen,
+  Box,
+  Calendar,
+  FileText,
+  Menu,
+  Tag,
+  Users,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import useAuth from "@/hooks/useAuth"
 
 export const Route = createFileRoute("/_layout/admin/dashboard")({
   component: Dashboard,
@@ -86,7 +99,10 @@ function Dashboard() {
         {adminSections.map((section) => {
           const Icon = section.icon
           return (
-            <Card key={section.href} className="hover:shadow-md transition-shadow">
+            <Card
+              key={section.href}
+              className="hover:shadow-md transition-shadow"
+            >
               <CardHeader>
                 <div className="flex items-center gap-4">
                   <div className={`p-2 rounded-lg bg-muted ${section.color}`}>

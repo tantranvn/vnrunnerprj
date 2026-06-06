@@ -1,25 +1,34 @@
 // @ts-nocheck - Disabled due to duplicate react-hook-form type definitions in node_modules
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
-import { Save, Plus, Edit, Trash2, GripVertical, Link2 } from "lucide-react"
+import { Edit, GripVertical, Link2, Plus, Save, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { 
-  type MenuPublic,
-  type MenuCreate,
-  type MenuUpdate,
-  type MenuItemPublic,
-  type MenuItemCreate,
-  type MenuItemUpdate,
+import {
   CmsMenusService,
-  CmsPagesService
+  CmsPagesService,
+  type MenuCreate,
+  type MenuItemCreate,
+  type MenuItemPublic,
+  type MenuItemUpdate,
+  type MenuUpdate,
 } from "@/client"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Dialog,
   DialogContent,
@@ -37,7 +46,12 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { LoadingButton } from "@/components/ui/loading-button"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import {
   Select,
   SelectContent,
@@ -46,7 +60,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { LoadingButton } from "@/components/ui/loading-button"
 import {
   Table,
   TableBody,
@@ -55,22 +68,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
 import useCustomToast from "@/hooks/useCustomToast"
 
 const menuFormSchema = z.object({
@@ -96,14 +95,14 @@ const menuItemFormSchema = z.object({
 type MenuFormData = z.infer<typeof menuFormSchema>
 type MenuItemFormData = z.infer<typeof menuItemFormSchema>
 
-function MenuItemDialog({ 
+function MenuItemDialog({
   menuId,
-  item, 
-  onClose 
-}: { 
+  item,
+  onClose,
+}: {
   menuId: string
   item?: MenuItemPublic
-  onClose: () => void 
+  onClose: () => void
 }) {
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
@@ -159,7 +158,10 @@ function MenuItemDialog({
         <DialogTitle>{isEdit ? "Edit Menu Item" : "Add Menu Item"}</DialogTitle>
       </DialogHeader>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="space-y-4">
+        <form
+          onSubmit={form.handleSubmit((data) => mutation.mutate(data))}
+          className="space-y-4"
+        >
           <FormField
             control={form.control}
             name="label"
@@ -193,7 +195,9 @@ function MenuItemDialog({
                       </PopoverTrigger>
                       <PopoverContent className="w-80" align="end">
                         <div className="space-y-2">
-                          <h4 className="font-medium text-sm">Select CMS Page</h4>
+                          <h4 className="font-medium text-sm">
+                            Select CMS Page
+                          </h4>
                           <div className="max-h-60 overflow-y-auto space-y-1">
                             {pagesData.data
                               .filter((p) => p.status === "published")
@@ -211,7 +215,9 @@ function MenuItemDialog({
                                   }}
                                 >
                                   <div className="flex flex-col items-start">
-                                    <span className="font-medium">{page.title}</span>
+                                    <span className="font-medium">
+                                      {page.title}
+                                    </span>
                                     <span className="text-xs text-muted-foreground">
                                       /page/{page.slug}
                                     </span>
@@ -225,7 +231,8 @@ function MenuItemDialog({
                   )}
                 </div>
                 <FormDescription>
-                  Internal path (e.g., /) or external URL (e.g., https://example.com)
+                  Internal path (e.g., /) or external URL (e.g.,
+                  https://example.com)
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -290,7 +297,11 @@ function MenuItemDialog({
               <FormItem>
                 <FormLabel>Icon (optional)</FormLabel>
                 <FormControl>
-                  <Input {...field} value={field.value || ""} placeholder="home-icon" />
+                  <Input
+                    {...field}
+                    value={field.value || ""}
+                    placeholder="home-icon"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -306,7 +317,10 @@ function MenuItemDialog({
                   <FormLabel className="text-base">Active</FormLabel>
                 </div>
                 <FormControl>
-                  <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 </FormControl>
               </FormItem>
             )}
@@ -366,15 +380,23 @@ export function MenuEditor({ menuId }: MenuEditorProps) {
   const mutation = useMutation({
     mutationFn: (data: MenuCreate | MenuUpdate) => {
       if (isEdit && menuId) {
-        return CmsMenusService.updateMenu({ menuId, requestBody: data as MenuUpdate })
+        return CmsMenusService.updateMenu({
+          menuId,
+          requestBody: data as MenuUpdate,
+        })
       }
       return CmsMenusService.createMenu({ requestBody: data as MenuCreate })
     },
     onSuccess: (menu) => {
-      showSuccessToast(isEdit ? "Menu updated successfully!" : "Menu created successfully!")
+      showSuccessToast(
+        isEdit ? "Menu updated successfully!" : "Menu created successfully!",
+      )
       queryClient.invalidateQueries({ queryKey: ["cms-menus"] })
       if (!isEdit) {
-        navigate({ to: "/admin/cms/menus/$menuId/edit", params: { menuId: menu.id } })
+        navigate({
+          to: "/admin/cms/menus/$menuId/edit",
+          params: { menuId: menu.id },
+        })
       }
     },
     onError: (error) => {
@@ -430,7 +452,10 @@ export function MenuEditor({ menuId }: MenuEditorProps) {
             {isEdit ? "Edit Menu" : "Create New Menu"}
           </h2>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => navigate({ to: "/admin/cms/menus" })}>
+            <Button
+              variant="outline"
+              onClick={() => navigate({ to: "/admin/cms/menus" })}
+            >
               Cancel
             </Button>
             <LoadingButton type="submit" loading={mutation.isPending}>
@@ -494,7 +519,11 @@ export function MenuEditor({ menuId }: MenuEditorProps) {
                     <FormItem>
                       <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <Textarea {...field} value={field.value || ""} rows={3} />
+                        <Textarea
+                          {...field}
+                          value={field.value || ""}
+                          rows={3}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -507,7 +536,10 @@ export function MenuEditor({ menuId }: MenuEditorProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Location</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue />
@@ -520,7 +552,9 @@ export function MenuEditor({ menuId }: MenuEditorProps) {
                           <SelectItem value="mobile">Mobile</SelectItem>
                         </SelectContent>
                       </Select>
-                      <FormDescription>Where the menu will be displayed</FormDescription>
+                      <FormDescription>
+                        Where the menu will be displayed
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -533,10 +567,15 @@ export function MenuEditor({ menuId }: MenuEditorProps) {
                     <FormItem className="flex items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Active</FormLabel>
-                        <FormDescription>Show this menu on the site</FormDescription>
+                        <FormDescription>
+                          Show this menu on the site
+                        </FormDescription>
                       </div>
                       <FormControl>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -558,10 +597,10 @@ export function MenuEditor({ menuId }: MenuEditorProps) {
                           Add Item
                         </Button>
                       </DialogTrigger>
-                      <MenuItemDialog 
-                        menuId={menuId!} 
-                        item={selectedItem} 
-                        onClose={handleCloseDialog} 
+                      <MenuItemDialog
+                        menuId={menuId!}
+                        item={selectedItem}
+                        onClose={handleCloseDialog}
                       />
                     </Dialog>
                   </div>
@@ -575,7 +614,7 @@ export function MenuEditor({ menuId }: MenuEditorProps) {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="w-12"></TableHead>
+                          <TableHead className="w-12" />
                           <TableHead>Label</TableHead>
                           <TableHead>URL</TableHead>
                           <TableHead>Order</TableHead>
@@ -591,21 +630,27 @@ export function MenuEditor({ menuId }: MenuEditorProps) {
                               <TableCell>
                                 <GripVertical className="h-4 w-4 text-muted-foreground" />
                               </TableCell>
-                              <TableCell className="font-medium">{item.label}</TableCell>
-                              <TableCell className="text-muted-foreground">{item.url}</TableCell>
+                              <TableCell className="font-medium">
+                                {item.label}
+                              </TableCell>
+                              <TableCell className="text-muted-foreground">
+                                {item.url}
+                              </TableCell>
                               <TableCell>{item.display_order}</TableCell>
                               <TableCell>
                                 {item.is_active ? (
                                   <span className="text-green-600">Active</span>
                                 ) : (
-                                  <span className="text-muted-foreground">Inactive</span>
+                                  <span className="text-muted-foreground">
+                                    Inactive
+                                  </span>
                                 )}
                               </TableCell>
                               <TableCell className="text-right">
                                 <div className="flex items-center justify-end gap-2">
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
                                     onClick={() => handleEditItem(item)}
                                   >
                                     <Edit className="h-4 w-4" />
@@ -618,16 +663,23 @@ export function MenuEditor({ menuId }: MenuEditorProps) {
                                     </AlertDialogTrigger>
                                     <AlertDialogContent>
                                       <AlertDialogHeader>
-                                        <AlertDialogTitle>Delete Menu Item</AlertDialogTitle>
+                                        <AlertDialogTitle>
+                                          Delete Menu Item
+                                        </AlertDialogTitle>
                                         <AlertDialogDescription>
-                                          Are you sure you want to delete "{item.label}"? This action
-                                          cannot be undone.
+                                          Are you sure you want to delete "
+                                          {item.label}"? This action cannot be
+                                          undone.
                                         </AlertDialogDescription>
                                       </AlertDialogHeader>
                                       <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogCancel>
+                                          Cancel
+                                        </AlertDialogCancel>
                                         <AlertDialogAction
-                                          onClick={() => deleteItemMutation.mutate(item.id)}
+                                          onClick={() =>
+                                            deleteItemMutation.mutate(item.id)
+                                          }
                                         >
                                           Delete
                                         </AlertDialogAction>

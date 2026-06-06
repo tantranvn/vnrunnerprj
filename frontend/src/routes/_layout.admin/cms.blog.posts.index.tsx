@@ -1,5 +1,5 @@
 import { createFileRoute, Link as RouterLink } from "@tanstack/react-router"
-import { Plus, Filter } from "lucide-react"
+import { Filter, Plus } from "lucide-react"
 import { Suspense, useState } from "react"
 
 import { BlogPostList } from "@/components/Admin/CMS/BlogPostList"
@@ -60,13 +60,19 @@ function CMSBlogPosts() {
           </SelectContent>
         </Select>
         {statusFilter && statusFilter !== "all" && (
-          <Button variant="ghost" size="sm" onClick={() => setStatusFilter("all")}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setStatusFilter("all")}
+          >
             Clear filter
           </Button>
         )}
       </div>
 
-      <CMSBlogPostsContent status={statusFilter === "all" ? "" : statusFilter} />
+      <CMSBlogPostsContent
+        status={statusFilter === "all" ? "" : statusFilter}
+      />
     </div>
   )
 }
