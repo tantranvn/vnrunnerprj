@@ -195,6 +195,61 @@ export function generateFAQSchema(items: FAQItem[]) {
   }
 }
 
+export interface ArticleSchema {
+  headline: string
+  description: string
+  image?: string
+  datePublished: string
+  dateModified: string
+  authorName: string
+  publisherName: string
+  publisherLogo: string
+}
+
+export function generateArticleSchema(config: ArticleSchema) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: config.headline,
+    description: config.description,
+    ...(config.image && { image: config.image }),
+    datePublished: config.datePublished,
+    dateModified: config.dateModified,
+    author: {
+      "@type": "Person",
+      name: config.authorName,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: config.publisherName,
+      logo: {
+        "@type": "ImageObject",
+        url: config.publisherLogo,
+      },
+    },
+  }
+}
+
+export interface WebPageSchema {
+  name: string
+  description: string
+  url: string
+  datePublished?: string
+  dateModified?: string
+}
+
+export function generateWebPageSchema(config: WebPageSchema) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: config.name,
+    description: config.description,
+    url: config.url,
+    ...(config.datePublished && { datePublished: config.datePublished }),
+    ...(config.dateModified && { dateModified: config.dateModified }),
+  }
+}
+
 /**
  * Component to inject JSON-LD structured data
  */

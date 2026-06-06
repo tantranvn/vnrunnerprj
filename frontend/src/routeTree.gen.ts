@@ -13,6 +13,7 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecoverPasswordRouteImport } from './routes/recover-password'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as PublicRouteImport } from './routes/_public'
 import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as LangRouteImport } from './routes/$lang'
 import { Route as IndexRouteImport } from './routes/index'
@@ -21,20 +22,42 @@ import { Route as LayoutOnboardingRouteImport } from './routes/_layout.onboardin
 import { Route as LayoutHistoryRouteImport } from './routes/_layout.history'
 import { Route as LayoutAdminRouteImport } from './routes/_layout.admin'
 import { Route as LangPublicRouteImport } from './routes/$lang._public'
+import { Route as PublicBlogIndexRouteImport } from './routes/_public/blog.index'
 import { Route as LayoutAdminIndexRouteImport } from './routes/_layout.admin/index'
 import { Route as LangPublicIndexRouteImport } from './routes/$lang._public/index'
+import { Route as PublicPageSlugRouteImport } from './routes/_public/page.$slug'
+import { Route as PublicBlogSlugRouteImport } from './routes/_public/blog.$slug'
 import { Route as LayoutAdminUsersRouteImport } from './routes/_layout.admin/users'
 import { Route as LayoutAdminTagsRouteImport } from './routes/_layout.admin/tags'
 import { Route as LayoutAdminSettingsRouteImport } from './routes/_layout.admin/settings'
 import { Route as LayoutAdminRacesRouteImport } from './routes/_layout.admin/races'
 import { Route as LayoutAdminItemsRouteImport } from './routes/_layout.admin/items'
 import { Route as LayoutAdminDashboardRouteImport } from './routes/_layout.admin/dashboard'
+import { Route as LayoutAdminCmsRouteImport } from './routes/_layout.admin/cms'
 import { Route as LangPublicAboutRouteImport } from './routes/$lang._public/about'
 import { Route as LayoutAdminRacesIndexRouteImport } from './routes/_layout.admin/races.index'
+import { Route as LayoutAdminCmsIndexRouteImport } from './routes/_layout.admin/cms.index'
 import { Route as LangPublicRacesIndexRouteImport } from './routes/$lang._public/races/index'
+import { Route as LangPublicBlogIndexRouteImport } from './routes/$lang._public/blog.index'
 import { Route as LayoutAdminRacesNewRouteImport } from './routes/_layout.admin/races.new'
+import { Route as LayoutAdminCmsPagesRouteImport } from './routes/_layout.admin/cms.pages'
+import { Route as LayoutAdminCmsMenusRouteImport } from './routes/_layout.admin/cms.menus'
+import { Route as LayoutAdminCmsBlogRouteImport } from './routes/_layout.admin/cms.blog'
 import { Route as LangPublicRacesRaceIdRouteImport } from './routes/$lang._public/races/$raceId'
+import { Route as LangPublicPageSlugRouteImport } from './routes/$lang._public/page.$slug'
+import { Route as LangPublicBlogSlugRouteImport } from './routes/$lang._public/blog.$slug'
+import { Route as LayoutAdminCmsPagesIndexRouteImport } from './routes/_layout.admin/cms.pages.index'
+import { Route as LayoutAdminCmsMenusIndexRouteImport } from './routes/_layout.admin/cms.menus.index'
 import { Route as LayoutAdminRacesRaceIdEditRouteImport } from './routes/_layout.admin/races.$raceId.edit'
+import { Route as LayoutAdminCmsPagesNewRouteImport } from './routes/_layout.admin/cms.pages.new'
+import { Route as LayoutAdminCmsMenusNewRouteImport } from './routes/_layout.admin/cms.menus.new'
+import { Route as LayoutAdminCmsBlogPostsRouteImport } from './routes/_layout.admin/cms.blog.posts'
+import { Route as LayoutAdminCmsBlogCategoriesRouteImport } from './routes/_layout.admin/cms.blog.categories'
+import { Route as LayoutAdminCmsBlogPostsIndexRouteImport } from './routes/_layout.admin/cms.blog.posts.index'
+import { Route as LayoutAdminCmsPagesPageIdEditRouteImport } from './routes/_layout.admin/cms.pages.$pageId.edit'
+import { Route as LayoutAdminCmsMenusMenuIdEditRouteImport } from './routes/_layout.admin/cms.menus.$menuId.edit'
+import { Route as LayoutAdminCmsBlogPostsNewRouteImport } from './routes/_layout.admin/cms.blog.posts.new'
+import { Route as LayoutAdminCmsBlogPostsPostIdEditRouteImport } from './routes/_layout.admin/cms.blog.posts.$postId.edit'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -54,6 +77,10 @@ const RecoverPasswordRoute = RecoverPasswordRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublicRoute = PublicRouteImport.update({
+  id: '/_public',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LayoutRoute = LayoutRouteImport.update({
@@ -94,6 +121,11 @@ const LangPublicRoute = LangPublicRouteImport.update({
   id: '/_public',
   getParentRoute: () => LangRoute,
 } as any)
+const PublicBlogIndexRoute = PublicBlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => PublicRoute,
+} as any)
 const LayoutAdminIndexRoute = LayoutAdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -103,6 +135,16 @@ const LangPublicIndexRoute = LangPublicIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => LangPublicRoute,
+} as any)
+const PublicPageSlugRoute = PublicPageSlugRouteImport.update({
+  id: '/page/$slug',
+  path: '/page/$slug',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicBlogSlugRoute = PublicBlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => PublicRoute,
 } as any)
 const LayoutAdminUsersRoute = LayoutAdminUsersRouteImport.update({
   id: '/users',
@@ -134,6 +176,11 @@ const LayoutAdminDashboardRoute = LayoutAdminDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => LayoutAdminRoute,
 } as any)
+const LayoutAdminCmsRoute = LayoutAdminCmsRouteImport.update({
+  id: '/cms',
+  path: '/cms',
+  getParentRoute: () => LayoutAdminRoute,
+} as any)
 const LangPublicAboutRoute = LangPublicAboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -144,9 +191,19 @@ const LayoutAdminRacesIndexRoute = LayoutAdminRacesIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LayoutAdminRacesRoute,
 } as any)
+const LayoutAdminCmsIndexRoute = LayoutAdminCmsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LayoutAdminCmsRoute,
+} as any)
 const LangPublicRacesIndexRoute = LangPublicRacesIndexRouteImport.update({
   id: '/races/',
   path: '/races/',
+  getParentRoute: () => LangPublicRoute,
+} as any)
+const LangPublicBlogIndexRoute = LangPublicBlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
   getParentRoute: () => LangPublicRoute,
 } as any)
 const LayoutAdminRacesNewRoute = LayoutAdminRacesNewRouteImport.update({
@@ -154,16 +211,104 @@ const LayoutAdminRacesNewRoute = LayoutAdminRacesNewRouteImport.update({
   path: '/new',
   getParentRoute: () => LayoutAdminRacesRoute,
 } as any)
+const LayoutAdminCmsPagesRoute = LayoutAdminCmsPagesRouteImport.update({
+  id: '/pages',
+  path: '/pages',
+  getParentRoute: () => LayoutAdminCmsRoute,
+} as any)
+const LayoutAdminCmsMenusRoute = LayoutAdminCmsMenusRouteImport.update({
+  id: '/menus',
+  path: '/menus',
+  getParentRoute: () => LayoutAdminCmsRoute,
+} as any)
+const LayoutAdminCmsBlogRoute = LayoutAdminCmsBlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => LayoutAdminCmsRoute,
+} as any)
 const LangPublicRacesRaceIdRoute = LangPublicRacesRaceIdRouteImport.update({
   id: '/races/$raceId',
   path: '/races/$raceId',
   getParentRoute: () => LangPublicRoute,
 } as any)
+const LangPublicPageSlugRoute = LangPublicPageSlugRouteImport.update({
+  id: '/page/$slug',
+  path: '/page/$slug',
+  getParentRoute: () => LangPublicRoute,
+} as any)
+const LangPublicBlogSlugRoute = LangPublicBlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => LangPublicRoute,
+} as any)
+const LayoutAdminCmsPagesIndexRoute =
+  LayoutAdminCmsPagesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => LayoutAdminCmsPagesRoute,
+  } as any)
+const LayoutAdminCmsMenusIndexRoute =
+  LayoutAdminCmsMenusIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => LayoutAdminCmsMenusRoute,
+  } as any)
 const LayoutAdminRacesRaceIdEditRoute =
   LayoutAdminRacesRaceIdEditRouteImport.update({
     id: '/$raceId/edit',
     path: '/$raceId/edit',
     getParentRoute: () => LayoutAdminRacesRoute,
+  } as any)
+const LayoutAdminCmsPagesNewRoute = LayoutAdminCmsPagesNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => LayoutAdminCmsPagesRoute,
+} as any)
+const LayoutAdminCmsMenusNewRoute = LayoutAdminCmsMenusNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => LayoutAdminCmsMenusRoute,
+} as any)
+const LayoutAdminCmsBlogPostsRoute = LayoutAdminCmsBlogPostsRouteImport.update({
+  id: '/posts',
+  path: '/posts',
+  getParentRoute: () => LayoutAdminCmsBlogRoute,
+} as any)
+const LayoutAdminCmsBlogCategoriesRoute =
+  LayoutAdminCmsBlogCategoriesRouteImport.update({
+    id: '/categories',
+    path: '/categories',
+    getParentRoute: () => LayoutAdminCmsBlogRoute,
+  } as any)
+const LayoutAdminCmsBlogPostsIndexRoute =
+  LayoutAdminCmsBlogPostsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => LayoutAdminCmsBlogPostsRoute,
+  } as any)
+const LayoutAdminCmsPagesPageIdEditRoute =
+  LayoutAdminCmsPagesPageIdEditRouteImport.update({
+    id: '/$pageId/edit',
+    path: '/$pageId/edit',
+    getParentRoute: () => LayoutAdminCmsPagesRoute,
+  } as any)
+const LayoutAdminCmsMenusMenuIdEditRoute =
+  LayoutAdminCmsMenusMenuIdEditRouteImport.update({
+    id: '/$menuId/edit',
+    path: '/$menuId/edit',
+    getParentRoute: () => LayoutAdminCmsMenusRoute,
+  } as any)
+const LayoutAdminCmsBlogPostsNewRoute =
+  LayoutAdminCmsBlogPostsNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => LayoutAdminCmsBlogPostsRoute,
+  } as any)
+const LayoutAdminCmsBlogPostsPostIdEditRoute =
+  LayoutAdminCmsBlogPostsPostIdEditRouteImport.update({
+    id: '/$postId/edit',
+    path: '/$postId/edit',
+    getParentRoute: () => LayoutAdminCmsBlogPostsRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -178,19 +323,41 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof LayoutOnboardingRoute
   '/saved': typeof LayoutSavedRoute
   '/$lang/about': typeof LangPublicAboutRoute
+  '/admin/cms': typeof LayoutAdminCmsRouteWithChildren
   '/admin/dashboard': typeof LayoutAdminDashboardRoute
   '/admin/items': typeof LayoutAdminItemsRoute
   '/admin/races': typeof LayoutAdminRacesRouteWithChildren
   '/admin/settings': typeof LayoutAdminSettingsRoute
   '/admin/tags': typeof LayoutAdminTagsRoute
   '/admin/users': typeof LayoutAdminUsersRoute
+  '/blog/$slug': typeof PublicBlogSlugRoute
+  '/page/$slug': typeof PublicPageSlugRoute
   '/$lang/': typeof LangPublicIndexRoute
   '/admin/': typeof LayoutAdminIndexRoute
+  '/blog/': typeof PublicBlogIndexRoute
+  '/$lang/blog/$slug': typeof LangPublicBlogSlugRoute
+  '/$lang/page/$slug': typeof LangPublicPageSlugRoute
   '/$lang/races/$raceId': typeof LangPublicRacesRaceIdRoute
+  '/admin/cms/blog': typeof LayoutAdminCmsBlogRouteWithChildren
+  '/admin/cms/menus': typeof LayoutAdminCmsMenusRouteWithChildren
+  '/admin/cms/pages': typeof LayoutAdminCmsPagesRouteWithChildren
   '/admin/races/new': typeof LayoutAdminRacesNewRoute
+  '/$lang/blog/': typeof LangPublicBlogIndexRoute
   '/$lang/races/': typeof LangPublicRacesIndexRoute
+  '/admin/cms/': typeof LayoutAdminCmsIndexRoute
   '/admin/races/': typeof LayoutAdminRacesIndexRoute
+  '/admin/cms/blog/categories': typeof LayoutAdminCmsBlogCategoriesRoute
+  '/admin/cms/blog/posts': typeof LayoutAdminCmsBlogPostsRouteWithChildren
+  '/admin/cms/menus/new': typeof LayoutAdminCmsMenusNewRoute
+  '/admin/cms/pages/new': typeof LayoutAdminCmsPagesNewRoute
   '/admin/races/$raceId/edit': typeof LayoutAdminRacesRaceIdEditRoute
+  '/admin/cms/menus/': typeof LayoutAdminCmsMenusIndexRoute
+  '/admin/cms/pages/': typeof LayoutAdminCmsPagesIndexRoute
+  '/admin/cms/blog/posts/new': typeof LayoutAdminCmsBlogPostsNewRoute
+  '/admin/cms/menus/$menuId/edit': typeof LayoutAdminCmsMenusMenuIdEditRoute
+  '/admin/cms/pages/$pageId/edit': typeof LayoutAdminCmsPagesPageIdEditRoute
+  '/admin/cms/blog/posts/': typeof LayoutAdminCmsBlogPostsIndexRoute
+  '/admin/cms/blog/posts/$postId/edit': typeof LayoutAdminCmsBlogPostsPostIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -208,18 +375,37 @@ export interface FileRoutesByTo {
   '/admin/settings': typeof LayoutAdminSettingsRoute
   '/admin/tags': typeof LayoutAdminTagsRoute
   '/admin/users': typeof LayoutAdminUsersRoute
+  '/blog/$slug': typeof PublicBlogSlugRoute
+  '/page/$slug': typeof PublicPageSlugRoute
   '/admin': typeof LayoutAdminIndexRoute
+  '/blog': typeof PublicBlogIndexRoute
+  '/$lang/blog/$slug': typeof LangPublicBlogSlugRoute
+  '/$lang/page/$slug': typeof LangPublicPageSlugRoute
   '/$lang/races/$raceId': typeof LangPublicRacesRaceIdRoute
+  '/admin/cms/blog': typeof LayoutAdminCmsBlogRouteWithChildren
   '/admin/races/new': typeof LayoutAdminRacesNewRoute
+  '/$lang/blog': typeof LangPublicBlogIndexRoute
   '/$lang/races': typeof LangPublicRacesIndexRoute
+  '/admin/cms': typeof LayoutAdminCmsIndexRoute
   '/admin/races': typeof LayoutAdminRacesIndexRoute
+  '/admin/cms/blog/categories': typeof LayoutAdminCmsBlogCategoriesRoute
+  '/admin/cms/menus/new': typeof LayoutAdminCmsMenusNewRoute
+  '/admin/cms/pages/new': typeof LayoutAdminCmsPagesNewRoute
   '/admin/races/$raceId/edit': typeof LayoutAdminRacesRaceIdEditRoute
+  '/admin/cms/menus': typeof LayoutAdminCmsMenusIndexRoute
+  '/admin/cms/pages': typeof LayoutAdminCmsPagesIndexRoute
+  '/admin/cms/blog/posts/new': typeof LayoutAdminCmsBlogPostsNewRoute
+  '/admin/cms/menus/$menuId/edit': typeof LayoutAdminCmsMenusMenuIdEditRoute
+  '/admin/cms/pages/$pageId/edit': typeof LayoutAdminCmsPagesPageIdEditRoute
+  '/admin/cms/blog/posts': typeof LayoutAdminCmsBlogPostsIndexRoute
+  '/admin/cms/blog/posts/$postId/edit': typeof LayoutAdminCmsBlogPostsPostIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$lang': typeof LangRouteWithChildren
   '/_layout': typeof LayoutRouteWithChildren
+  '/_public': typeof PublicRouteWithChildren
   '/login': typeof LoginRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -230,19 +416,41 @@ export interface FileRoutesById {
   '/_layout/onboarding': typeof LayoutOnboardingRoute
   '/_layout/saved': typeof LayoutSavedRoute
   '/$lang/_public/about': typeof LangPublicAboutRoute
+  '/_layout/admin/cms': typeof LayoutAdminCmsRouteWithChildren
   '/_layout/admin/dashboard': typeof LayoutAdminDashboardRoute
   '/_layout/admin/items': typeof LayoutAdminItemsRoute
   '/_layout/admin/races': typeof LayoutAdminRacesRouteWithChildren
   '/_layout/admin/settings': typeof LayoutAdminSettingsRoute
   '/_layout/admin/tags': typeof LayoutAdminTagsRoute
   '/_layout/admin/users': typeof LayoutAdminUsersRoute
+  '/_public/blog/$slug': typeof PublicBlogSlugRoute
+  '/_public/page/$slug': typeof PublicPageSlugRoute
   '/$lang/_public/': typeof LangPublicIndexRoute
   '/_layout/admin/': typeof LayoutAdminIndexRoute
+  '/_public/blog/': typeof PublicBlogIndexRoute
+  '/$lang/_public/blog/$slug': typeof LangPublicBlogSlugRoute
+  '/$lang/_public/page/$slug': typeof LangPublicPageSlugRoute
   '/$lang/_public/races/$raceId': typeof LangPublicRacesRaceIdRoute
+  '/_layout/admin/cms/blog': typeof LayoutAdminCmsBlogRouteWithChildren
+  '/_layout/admin/cms/menus': typeof LayoutAdminCmsMenusRouteWithChildren
+  '/_layout/admin/cms/pages': typeof LayoutAdminCmsPagesRouteWithChildren
   '/_layout/admin/races/new': typeof LayoutAdminRacesNewRoute
+  '/$lang/_public/blog/': typeof LangPublicBlogIndexRoute
   '/$lang/_public/races/': typeof LangPublicRacesIndexRoute
+  '/_layout/admin/cms/': typeof LayoutAdminCmsIndexRoute
   '/_layout/admin/races/': typeof LayoutAdminRacesIndexRoute
+  '/_layout/admin/cms/blog/categories': typeof LayoutAdminCmsBlogCategoriesRoute
+  '/_layout/admin/cms/blog/posts': typeof LayoutAdminCmsBlogPostsRouteWithChildren
+  '/_layout/admin/cms/menus/new': typeof LayoutAdminCmsMenusNewRoute
+  '/_layout/admin/cms/pages/new': typeof LayoutAdminCmsPagesNewRoute
   '/_layout/admin/races/$raceId/edit': typeof LayoutAdminRacesRaceIdEditRoute
+  '/_layout/admin/cms/menus/': typeof LayoutAdminCmsMenusIndexRoute
+  '/_layout/admin/cms/pages/': typeof LayoutAdminCmsPagesIndexRoute
+  '/_layout/admin/cms/blog/posts/new': typeof LayoutAdminCmsBlogPostsNewRoute
+  '/_layout/admin/cms/menus/$menuId/edit': typeof LayoutAdminCmsMenusMenuIdEditRoute
+  '/_layout/admin/cms/pages/$pageId/edit': typeof LayoutAdminCmsPagesPageIdEditRoute
+  '/_layout/admin/cms/blog/posts/': typeof LayoutAdminCmsBlogPostsIndexRoute
+  '/_layout/admin/cms/blog/posts/$postId/edit': typeof LayoutAdminCmsBlogPostsPostIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -258,19 +466,41 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/saved'
     | '/$lang/about'
+    | '/admin/cms'
     | '/admin/dashboard'
     | '/admin/items'
     | '/admin/races'
     | '/admin/settings'
     | '/admin/tags'
     | '/admin/users'
+    | '/blog/$slug'
+    | '/page/$slug'
     | '/$lang/'
     | '/admin/'
+    | '/blog/'
+    | '/$lang/blog/$slug'
+    | '/$lang/page/$slug'
     | '/$lang/races/$raceId'
+    | '/admin/cms/blog'
+    | '/admin/cms/menus'
+    | '/admin/cms/pages'
     | '/admin/races/new'
+    | '/$lang/blog/'
     | '/$lang/races/'
+    | '/admin/cms/'
     | '/admin/races/'
+    | '/admin/cms/blog/categories'
+    | '/admin/cms/blog/posts'
+    | '/admin/cms/menus/new'
+    | '/admin/cms/pages/new'
     | '/admin/races/$raceId/edit'
+    | '/admin/cms/menus/'
+    | '/admin/cms/pages/'
+    | '/admin/cms/blog/posts/new'
+    | '/admin/cms/menus/$menuId/edit'
+    | '/admin/cms/pages/$pageId/edit'
+    | '/admin/cms/blog/posts/'
+    | '/admin/cms/blog/posts/$postId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -288,17 +518,36 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/tags'
     | '/admin/users'
+    | '/blog/$slug'
+    | '/page/$slug'
     | '/admin'
+    | '/blog'
+    | '/$lang/blog/$slug'
+    | '/$lang/page/$slug'
     | '/$lang/races/$raceId'
+    | '/admin/cms/blog'
     | '/admin/races/new'
+    | '/$lang/blog'
     | '/$lang/races'
+    | '/admin/cms'
     | '/admin/races'
+    | '/admin/cms/blog/categories'
+    | '/admin/cms/menus/new'
+    | '/admin/cms/pages/new'
     | '/admin/races/$raceId/edit'
+    | '/admin/cms/menus'
+    | '/admin/cms/pages'
+    | '/admin/cms/blog/posts/new'
+    | '/admin/cms/menus/$menuId/edit'
+    | '/admin/cms/pages/$pageId/edit'
+    | '/admin/cms/blog/posts'
+    | '/admin/cms/blog/posts/$postId/edit'
   id:
     | '__root__'
     | '/'
     | '/$lang'
     | '/_layout'
+    | '/_public'
     | '/login'
     | '/recover-password'
     | '/reset-password'
@@ -309,25 +558,48 @@ export interface FileRouteTypes {
     | '/_layout/onboarding'
     | '/_layout/saved'
     | '/$lang/_public/about'
+    | '/_layout/admin/cms'
     | '/_layout/admin/dashboard'
     | '/_layout/admin/items'
     | '/_layout/admin/races'
     | '/_layout/admin/settings'
     | '/_layout/admin/tags'
     | '/_layout/admin/users'
+    | '/_public/blog/$slug'
+    | '/_public/page/$slug'
     | '/$lang/_public/'
     | '/_layout/admin/'
+    | '/_public/blog/'
+    | '/$lang/_public/blog/$slug'
+    | '/$lang/_public/page/$slug'
     | '/$lang/_public/races/$raceId'
+    | '/_layout/admin/cms/blog'
+    | '/_layout/admin/cms/menus'
+    | '/_layout/admin/cms/pages'
     | '/_layout/admin/races/new'
+    | '/$lang/_public/blog/'
     | '/$lang/_public/races/'
+    | '/_layout/admin/cms/'
     | '/_layout/admin/races/'
+    | '/_layout/admin/cms/blog/categories'
+    | '/_layout/admin/cms/blog/posts'
+    | '/_layout/admin/cms/menus/new'
+    | '/_layout/admin/cms/pages/new'
     | '/_layout/admin/races/$raceId/edit'
+    | '/_layout/admin/cms/menus/'
+    | '/_layout/admin/cms/pages/'
+    | '/_layout/admin/cms/blog/posts/new'
+    | '/_layout/admin/cms/menus/$menuId/edit'
+    | '/_layout/admin/cms/pages/$pageId/edit'
+    | '/_layout/admin/cms/blog/posts/'
+    | '/_layout/admin/cms/blog/posts/$postId/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LangRoute: typeof LangRouteWithChildren
   LayoutRoute: typeof LayoutRouteWithChildren
+  PublicRoute: typeof PublicRouteWithChildren
   LoginRoute: typeof LoginRoute
   RecoverPasswordRoute: typeof RecoverPasswordRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -362,6 +634,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_public': {
+      id: '/_public'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof PublicRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_layout': {
@@ -420,6 +699,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LangPublicRouteImport
       parentRoute: typeof LangRoute
     }
+    '/_public/blog/': {
+      id: '/_public/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof PublicBlogIndexRouteImport
+      parentRoute: typeof PublicRoute
+    }
     '/_layout/admin/': {
       id: '/_layout/admin/'
       path: '/'
@@ -433,6 +719,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/$lang/'
       preLoaderRoute: typeof LangPublicIndexRouteImport
       parentRoute: typeof LangPublicRoute
+    }
+    '/_public/page/$slug': {
+      id: '/_public/page/$slug'
+      path: '/page/$slug'
+      fullPath: '/page/$slug'
+      preLoaderRoute: typeof PublicPageSlugRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/blog/$slug': {
+      id: '/_public/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof PublicBlogSlugRouteImport
+      parentRoute: typeof PublicRoute
     }
     '/_layout/admin/users': {
       id: '/_layout/admin/users'
@@ -476,6 +776,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAdminDashboardRouteImport
       parentRoute: typeof LayoutAdminRoute
     }
+    '/_layout/admin/cms': {
+      id: '/_layout/admin/cms'
+      path: '/cms'
+      fullPath: '/admin/cms'
+      preLoaderRoute: typeof LayoutAdminCmsRouteImport
+      parentRoute: typeof LayoutAdminRoute
+    }
     '/$lang/_public/about': {
       id: '/$lang/_public/about'
       path: '/about'
@@ -490,11 +797,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAdminRacesIndexRouteImport
       parentRoute: typeof LayoutAdminRacesRoute
     }
+    '/_layout/admin/cms/': {
+      id: '/_layout/admin/cms/'
+      path: '/'
+      fullPath: '/admin/cms/'
+      preLoaderRoute: typeof LayoutAdminCmsIndexRouteImport
+      parentRoute: typeof LayoutAdminCmsRoute
+    }
     '/$lang/_public/races/': {
       id: '/$lang/_public/races/'
       path: '/races'
       fullPath: '/$lang/races/'
       preLoaderRoute: typeof LangPublicRacesIndexRouteImport
+      parentRoute: typeof LangPublicRoute
+    }
+    '/$lang/_public/blog/': {
+      id: '/$lang/_public/blog/'
+      path: '/blog'
+      fullPath: '/$lang/blog/'
+      preLoaderRoute: typeof LangPublicBlogIndexRouteImport
       parentRoute: typeof LangPublicRoute
     }
     '/_layout/admin/races/new': {
@@ -504,12 +825,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAdminRacesNewRouteImport
       parentRoute: typeof LayoutAdminRacesRoute
     }
+    '/_layout/admin/cms/pages': {
+      id: '/_layout/admin/cms/pages'
+      path: '/pages'
+      fullPath: '/admin/cms/pages'
+      preLoaderRoute: typeof LayoutAdminCmsPagesRouteImport
+      parentRoute: typeof LayoutAdminCmsRoute
+    }
+    '/_layout/admin/cms/menus': {
+      id: '/_layout/admin/cms/menus'
+      path: '/menus'
+      fullPath: '/admin/cms/menus'
+      preLoaderRoute: typeof LayoutAdminCmsMenusRouteImport
+      parentRoute: typeof LayoutAdminCmsRoute
+    }
+    '/_layout/admin/cms/blog': {
+      id: '/_layout/admin/cms/blog'
+      path: '/blog'
+      fullPath: '/admin/cms/blog'
+      preLoaderRoute: typeof LayoutAdminCmsBlogRouteImport
+      parentRoute: typeof LayoutAdminCmsRoute
+    }
     '/$lang/_public/races/$raceId': {
       id: '/$lang/_public/races/$raceId'
       path: '/races/$raceId'
       fullPath: '/$lang/races/$raceId'
       preLoaderRoute: typeof LangPublicRacesRaceIdRouteImport
       parentRoute: typeof LangPublicRoute
+    }
+    '/$lang/_public/page/$slug': {
+      id: '/$lang/_public/page/$slug'
+      path: '/page/$slug'
+      fullPath: '/$lang/page/$slug'
+      preLoaderRoute: typeof LangPublicPageSlugRouteImport
+      parentRoute: typeof LangPublicRoute
+    }
+    '/$lang/_public/blog/$slug': {
+      id: '/$lang/_public/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/$lang/blog/$slug'
+      preLoaderRoute: typeof LangPublicBlogSlugRouteImport
+      parentRoute: typeof LangPublicRoute
+    }
+    '/_layout/admin/cms/pages/': {
+      id: '/_layout/admin/cms/pages/'
+      path: '/'
+      fullPath: '/admin/cms/pages/'
+      preLoaderRoute: typeof LayoutAdminCmsPagesIndexRouteImport
+      parentRoute: typeof LayoutAdminCmsPagesRoute
+    }
+    '/_layout/admin/cms/menus/': {
+      id: '/_layout/admin/cms/menus/'
+      path: '/'
+      fullPath: '/admin/cms/menus/'
+      preLoaderRoute: typeof LayoutAdminCmsMenusIndexRouteImport
+      parentRoute: typeof LayoutAdminCmsMenusRoute
     }
     '/_layout/admin/races/$raceId/edit': {
       id: '/_layout/admin/races/$raceId/edit'
@@ -518,20 +888,89 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAdminRacesRaceIdEditRouteImport
       parentRoute: typeof LayoutAdminRacesRoute
     }
+    '/_layout/admin/cms/pages/new': {
+      id: '/_layout/admin/cms/pages/new'
+      path: '/new'
+      fullPath: '/admin/cms/pages/new'
+      preLoaderRoute: typeof LayoutAdminCmsPagesNewRouteImport
+      parentRoute: typeof LayoutAdminCmsPagesRoute
+    }
+    '/_layout/admin/cms/menus/new': {
+      id: '/_layout/admin/cms/menus/new'
+      path: '/new'
+      fullPath: '/admin/cms/menus/new'
+      preLoaderRoute: typeof LayoutAdminCmsMenusNewRouteImport
+      parentRoute: typeof LayoutAdminCmsMenusRoute
+    }
+    '/_layout/admin/cms/blog/posts': {
+      id: '/_layout/admin/cms/blog/posts'
+      path: '/posts'
+      fullPath: '/admin/cms/blog/posts'
+      preLoaderRoute: typeof LayoutAdminCmsBlogPostsRouteImport
+      parentRoute: typeof LayoutAdminCmsBlogRoute
+    }
+    '/_layout/admin/cms/blog/categories': {
+      id: '/_layout/admin/cms/blog/categories'
+      path: '/categories'
+      fullPath: '/admin/cms/blog/categories'
+      preLoaderRoute: typeof LayoutAdminCmsBlogCategoriesRouteImport
+      parentRoute: typeof LayoutAdminCmsBlogRoute
+    }
+    '/_layout/admin/cms/blog/posts/': {
+      id: '/_layout/admin/cms/blog/posts/'
+      path: '/'
+      fullPath: '/admin/cms/blog/posts/'
+      preLoaderRoute: typeof LayoutAdminCmsBlogPostsIndexRouteImport
+      parentRoute: typeof LayoutAdminCmsBlogPostsRoute
+    }
+    '/_layout/admin/cms/pages/$pageId/edit': {
+      id: '/_layout/admin/cms/pages/$pageId/edit'
+      path: '/$pageId/edit'
+      fullPath: '/admin/cms/pages/$pageId/edit'
+      preLoaderRoute: typeof LayoutAdminCmsPagesPageIdEditRouteImport
+      parentRoute: typeof LayoutAdminCmsPagesRoute
+    }
+    '/_layout/admin/cms/menus/$menuId/edit': {
+      id: '/_layout/admin/cms/menus/$menuId/edit'
+      path: '/$menuId/edit'
+      fullPath: '/admin/cms/menus/$menuId/edit'
+      preLoaderRoute: typeof LayoutAdminCmsMenusMenuIdEditRouteImport
+      parentRoute: typeof LayoutAdminCmsMenusRoute
+    }
+    '/_layout/admin/cms/blog/posts/new': {
+      id: '/_layout/admin/cms/blog/posts/new'
+      path: '/new'
+      fullPath: '/admin/cms/blog/posts/new'
+      preLoaderRoute: typeof LayoutAdminCmsBlogPostsNewRouteImport
+      parentRoute: typeof LayoutAdminCmsBlogPostsRoute
+    }
+    '/_layout/admin/cms/blog/posts/$postId/edit': {
+      id: '/_layout/admin/cms/blog/posts/$postId/edit'
+      path: '/$postId/edit'
+      fullPath: '/admin/cms/blog/posts/$postId/edit'
+      preLoaderRoute: typeof LayoutAdminCmsBlogPostsPostIdEditRouteImport
+      parentRoute: typeof LayoutAdminCmsBlogPostsRoute
+    }
   }
 }
 
 interface LangPublicRouteChildren {
   LangPublicAboutRoute: typeof LangPublicAboutRoute
   LangPublicIndexRoute: typeof LangPublicIndexRoute
+  LangPublicBlogSlugRoute: typeof LangPublicBlogSlugRoute
+  LangPublicPageSlugRoute: typeof LangPublicPageSlugRoute
   LangPublicRacesRaceIdRoute: typeof LangPublicRacesRaceIdRoute
+  LangPublicBlogIndexRoute: typeof LangPublicBlogIndexRoute
   LangPublicRacesIndexRoute: typeof LangPublicRacesIndexRoute
 }
 
 const LangPublicRouteChildren: LangPublicRouteChildren = {
   LangPublicAboutRoute: LangPublicAboutRoute,
   LangPublicIndexRoute: LangPublicIndexRoute,
+  LangPublicBlogSlugRoute: LangPublicBlogSlugRoute,
+  LangPublicPageSlugRoute: LangPublicPageSlugRoute,
   LangPublicRacesRaceIdRoute: LangPublicRacesRaceIdRoute,
+  LangPublicBlogIndexRoute: LangPublicBlogIndexRoute,
   LangPublicRacesIndexRoute: LangPublicRacesIndexRoute,
 }
 
@@ -549,6 +988,86 @@ const LangRouteChildren: LangRouteChildren = {
 
 const LangRouteWithChildren = LangRoute._addFileChildren(LangRouteChildren)
 
+interface LayoutAdminCmsBlogPostsRouteChildren {
+  LayoutAdminCmsBlogPostsNewRoute: typeof LayoutAdminCmsBlogPostsNewRoute
+  LayoutAdminCmsBlogPostsIndexRoute: typeof LayoutAdminCmsBlogPostsIndexRoute
+  LayoutAdminCmsBlogPostsPostIdEditRoute: typeof LayoutAdminCmsBlogPostsPostIdEditRoute
+}
+
+const LayoutAdminCmsBlogPostsRouteChildren: LayoutAdminCmsBlogPostsRouteChildren =
+  {
+    LayoutAdminCmsBlogPostsNewRoute: LayoutAdminCmsBlogPostsNewRoute,
+    LayoutAdminCmsBlogPostsIndexRoute: LayoutAdminCmsBlogPostsIndexRoute,
+    LayoutAdminCmsBlogPostsPostIdEditRoute:
+      LayoutAdminCmsBlogPostsPostIdEditRoute,
+  }
+
+const LayoutAdminCmsBlogPostsRouteWithChildren =
+  LayoutAdminCmsBlogPostsRoute._addFileChildren(
+    LayoutAdminCmsBlogPostsRouteChildren,
+  )
+
+interface LayoutAdminCmsBlogRouteChildren {
+  LayoutAdminCmsBlogCategoriesRoute: typeof LayoutAdminCmsBlogCategoriesRoute
+  LayoutAdminCmsBlogPostsRoute: typeof LayoutAdminCmsBlogPostsRouteWithChildren
+}
+
+const LayoutAdminCmsBlogRouteChildren: LayoutAdminCmsBlogRouteChildren = {
+  LayoutAdminCmsBlogCategoriesRoute: LayoutAdminCmsBlogCategoriesRoute,
+  LayoutAdminCmsBlogPostsRoute: LayoutAdminCmsBlogPostsRouteWithChildren,
+}
+
+const LayoutAdminCmsBlogRouteWithChildren =
+  LayoutAdminCmsBlogRoute._addFileChildren(LayoutAdminCmsBlogRouteChildren)
+
+interface LayoutAdminCmsMenusRouteChildren {
+  LayoutAdminCmsMenusNewRoute: typeof LayoutAdminCmsMenusNewRoute
+  LayoutAdminCmsMenusIndexRoute: typeof LayoutAdminCmsMenusIndexRoute
+  LayoutAdminCmsMenusMenuIdEditRoute: typeof LayoutAdminCmsMenusMenuIdEditRoute
+}
+
+const LayoutAdminCmsMenusRouteChildren: LayoutAdminCmsMenusRouteChildren = {
+  LayoutAdminCmsMenusNewRoute: LayoutAdminCmsMenusNewRoute,
+  LayoutAdminCmsMenusIndexRoute: LayoutAdminCmsMenusIndexRoute,
+  LayoutAdminCmsMenusMenuIdEditRoute: LayoutAdminCmsMenusMenuIdEditRoute,
+}
+
+const LayoutAdminCmsMenusRouteWithChildren =
+  LayoutAdminCmsMenusRoute._addFileChildren(LayoutAdminCmsMenusRouteChildren)
+
+interface LayoutAdminCmsPagesRouteChildren {
+  LayoutAdminCmsPagesNewRoute: typeof LayoutAdminCmsPagesNewRoute
+  LayoutAdminCmsPagesIndexRoute: typeof LayoutAdminCmsPagesIndexRoute
+  LayoutAdminCmsPagesPageIdEditRoute: typeof LayoutAdminCmsPagesPageIdEditRoute
+}
+
+const LayoutAdminCmsPagesRouteChildren: LayoutAdminCmsPagesRouteChildren = {
+  LayoutAdminCmsPagesNewRoute: LayoutAdminCmsPagesNewRoute,
+  LayoutAdminCmsPagesIndexRoute: LayoutAdminCmsPagesIndexRoute,
+  LayoutAdminCmsPagesPageIdEditRoute: LayoutAdminCmsPagesPageIdEditRoute,
+}
+
+const LayoutAdminCmsPagesRouteWithChildren =
+  LayoutAdminCmsPagesRoute._addFileChildren(LayoutAdminCmsPagesRouteChildren)
+
+interface LayoutAdminCmsRouteChildren {
+  LayoutAdminCmsBlogRoute: typeof LayoutAdminCmsBlogRouteWithChildren
+  LayoutAdminCmsMenusRoute: typeof LayoutAdminCmsMenusRouteWithChildren
+  LayoutAdminCmsPagesRoute: typeof LayoutAdminCmsPagesRouteWithChildren
+  LayoutAdminCmsIndexRoute: typeof LayoutAdminCmsIndexRoute
+}
+
+const LayoutAdminCmsRouteChildren: LayoutAdminCmsRouteChildren = {
+  LayoutAdminCmsBlogRoute: LayoutAdminCmsBlogRouteWithChildren,
+  LayoutAdminCmsMenusRoute: LayoutAdminCmsMenusRouteWithChildren,
+  LayoutAdminCmsPagesRoute: LayoutAdminCmsPagesRouteWithChildren,
+  LayoutAdminCmsIndexRoute: LayoutAdminCmsIndexRoute,
+}
+
+const LayoutAdminCmsRouteWithChildren = LayoutAdminCmsRoute._addFileChildren(
+  LayoutAdminCmsRouteChildren,
+)
+
 interface LayoutAdminRacesRouteChildren {
   LayoutAdminRacesNewRoute: typeof LayoutAdminRacesNewRoute
   LayoutAdminRacesIndexRoute: typeof LayoutAdminRacesIndexRoute
@@ -565,6 +1084,7 @@ const LayoutAdminRacesRouteWithChildren =
   LayoutAdminRacesRoute._addFileChildren(LayoutAdminRacesRouteChildren)
 
 interface LayoutAdminRouteChildren {
+  LayoutAdminCmsRoute: typeof LayoutAdminCmsRouteWithChildren
   LayoutAdminDashboardRoute: typeof LayoutAdminDashboardRoute
   LayoutAdminItemsRoute: typeof LayoutAdminItemsRoute
   LayoutAdminRacesRoute: typeof LayoutAdminRacesRouteWithChildren
@@ -575,6 +1095,7 @@ interface LayoutAdminRouteChildren {
 }
 
 const LayoutAdminRouteChildren: LayoutAdminRouteChildren = {
+  LayoutAdminCmsRoute: LayoutAdminCmsRouteWithChildren,
   LayoutAdminDashboardRoute: LayoutAdminDashboardRoute,
   LayoutAdminItemsRoute: LayoutAdminItemsRoute,
   LayoutAdminRacesRoute: LayoutAdminRacesRouteWithChildren,
@@ -605,10 +1126,26 @@ const LayoutRouteChildren: LayoutRouteChildren = {
 const LayoutRouteWithChildren =
   LayoutRoute._addFileChildren(LayoutRouteChildren)
 
+interface PublicRouteChildren {
+  PublicBlogSlugRoute: typeof PublicBlogSlugRoute
+  PublicPageSlugRoute: typeof PublicPageSlugRoute
+  PublicBlogIndexRoute: typeof PublicBlogIndexRoute
+}
+
+const PublicRouteChildren: PublicRouteChildren = {
+  PublicBlogSlugRoute: PublicBlogSlugRoute,
+  PublicPageSlugRoute: PublicPageSlugRoute,
+  PublicBlogIndexRoute: PublicBlogIndexRoute,
+}
+
+const PublicRouteWithChildren =
+  PublicRoute._addFileChildren(PublicRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LangRoute: LangRouteWithChildren,
   LayoutRoute: LayoutRouteWithChildren,
+  PublicRoute: PublicRouteWithChildren,
   LoginRoute: LoginRoute,
   RecoverPasswordRoute: RecoverPasswordRoute,
   ResetPasswordRoute: ResetPasswordRoute,

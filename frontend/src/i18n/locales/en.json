@@ -215,6 +215,22 @@
       "a4": "VNRunner features a variety of races including road races, trail runs, marathons, half marathons, ultramarathons, 5K, 10K events, and more across Vietnam."
     }
   },
+  "blog": {
+    "title": "Blog",
+    "description": "Discover running tips, race reports, and stories from Vietnam's running community",
+    "noPosts": "No blog posts available yet. Check back soon!",
+    "featured": "Featured",
+    "sticky": "Pinned",
+    "minRead": "min read",
+    "views": "views",
+    "backToList": "Back to Blog",
+    "share": "Share",
+    "published": "Published",
+    "lastUpdated": "Last updated"
+  },
+  "page": {
+    "lastUpdated": "Last updated"
+  },
   "footer": {
     "tagline": "Your premier running race platform in Vietnam",
     "copyright": "© {{year}} VNRunner. All rights reserved.",

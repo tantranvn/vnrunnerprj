@@ -1,6 +1,12 @@
 from fastapi import APIRouter
 
 from app.api.routes import (
+    cms_blog_categories,
+    cms_blog_posts,
+    cms_blog_tags,
+    cms_media_folders,
+    cms_menus,
+    cms_pages,
     items,
     login,
     media,
@@ -39,6 +45,14 @@ api_router.include_router(race_attributes.router)
 api_router.include_router(tags.router)
 api_router.include_router(profiles.router)
 api_router.include_router(provinces.router)
+
+# CMS routes
+api_router.include_router(cms_pages.router)
+api_router.include_router(cms_blog_posts.router)
+api_router.include_router(cms_blog_categories.router)
+api_router.include_router(cms_blog_tags.router)
+api_router.include_router(cms_menus.router)
+api_router.include_router(cms_media_folders.router)
 
 # Admin utilities
 api_router.include_router(races_admin_router)

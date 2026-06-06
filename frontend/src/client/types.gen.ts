@@ -32,6 +32,218 @@ export type AskRequest = {
 
 export type AttributeTypeEnum = 'string' | 'text' | 'url' | 'date' | 'datetime' | 'number' | 'boolean' | 'email' | 'phone';
 
+export type BlogCategoriesPublic = {
+    data: Array<BlogCategoryPublic>;
+    count: number;
+};
+
+export type BlogCategoryCreate = {
+    name: string;
+    slug: string;
+    description?: (string | null);
+    parent_id?: (string | null);
+    is_active?: boolean;
+    display_order?: number;
+    meta_title?: (string | null);
+    meta_description?: (string | null);
+    translations?: ({
+    [key: string]: unknown;
+} | null);
+};
+
+export type BlogCategoryPublic = {
+    name: string;
+    slug: string;
+    description?: (string | null);
+    parent_id?: (string | null);
+    is_active?: boolean;
+    display_order?: number;
+    meta_title?: (string | null);
+    meta_description?: (string | null);
+    translations?: ({
+    [key: string]: unknown;
+} | null);
+    id: string;
+    created_at: string;
+    updated_at: string;
+};
+
+/**
+ * Update translations for a blog category
+ */
+export type BlogCategoryTranslationUpdate = {
+    language: string;
+    name?: (string | null);
+    description?: (string | null);
+};
+
+export type BlogCategoryUpdate = {
+    name?: (string | null);
+    slug?: (string | null);
+    description?: (string | null);
+    parent_id?: (string | null);
+    is_active?: (boolean | null);
+    display_order?: (number | null);
+    meta_title?: (string | null);
+    meta_description?: (string | null);
+};
+
+export type BlogPostCreate = {
+    title: string;
+    slug: string;
+    content?: (string | null);
+    excerpt?: (string | null);
+    featured_image_url?: (string | null);
+    featured_image_alt?: (string | null);
+    meta_title?: (string | null);
+    meta_description?: (string | null);
+    meta_keywords?: (string | null);
+    og_title?: (string | null);
+    og_description?: (string | null);
+    og_image_url?: (string | null);
+    canonical_url?: (string | null);
+    status?: BlogPostStatusEnum;
+    published_at?: (string | null);
+    scheduled_at?: (string | null);
+    is_featured?: boolean;
+    is_sticky?: boolean;
+    view_count?: number;
+    like_count?: number;
+    comment_count?: number;
+    reading_time_minutes?: (number | null);
+    default_language?: string;
+    translations?: ({
+    [key: string]: unknown;
+} | null);
+    post_metadata?: ({
+    [key: string]: unknown;
+} | null);
+    category_id?: (string | null);
+    tag_ids?: (Array<(string)> | null);
+};
+
+export type BlogPostPublic = {
+    title: string;
+    slug: string;
+    content?: (string | null);
+    excerpt?: (string | null);
+    featured_image_url?: (string | null);
+    featured_image_alt?: (string | null);
+    meta_title?: (string | null);
+    meta_description?: (string | null);
+    meta_keywords?: (string | null);
+    og_title?: (string | null);
+    og_description?: (string | null);
+    og_image_url?: (string | null);
+    canonical_url?: (string | null);
+    status?: BlogPostStatusEnum;
+    published_at?: (string | null);
+    scheduled_at?: (string | null);
+    is_featured?: boolean;
+    is_sticky?: boolean;
+    view_count?: number;
+    like_count?: number;
+    comment_count?: number;
+    reading_time_minutes?: (number | null);
+    default_language?: string;
+    translations?: ({
+    [key: string]: unknown;
+} | null);
+    post_metadata?: ({
+    [key: string]: unknown;
+} | null);
+    id: string;
+    created_at: string;
+    updated_at: string;
+    category_id?: (string | null);
+    author_id: string;
+};
+
+export type BlogPostsPublic = {
+    data: Array<BlogPostPublic>;
+    count: number;
+};
+
+export type BlogPostStatusEnum = 'draft' | 'published' | 'scheduled' | 'archived';
+
+/**
+ * Update translations for a blog post
+ */
+export type BlogPostTranslationUpdate = {
+    language: string;
+    title?: (string | null);
+    content?: (string | null);
+    excerpt?: (string | null);
+    meta_title?: (string | null);
+    meta_description?: (string | null);
+};
+
+export type BlogPostUpdate = {
+    title?: (string | null);
+    slug?: (string | null);
+    content?: (string | null);
+    excerpt?: (string | null);
+    featured_image_url?: (string | null);
+    featured_image_alt?: (string | null);
+    meta_title?: (string | null);
+    meta_description?: (string | null);
+    meta_keywords?: (string | null);
+    og_title?: (string | null);
+    og_description?: (string | null);
+    og_image_url?: (string | null);
+    canonical_url?: (string | null);
+    status?: (BlogPostStatusEnum | null);
+    published_at?: (string | null);
+    scheduled_at?: (string | null);
+    is_featured?: (boolean | null);
+    is_sticky?: (boolean | null);
+    reading_time_minutes?: (number | null);
+    category_id?: (string | null);
+    tag_ids?: (Array<(string)> | null);
+    post_metadata?: ({
+    [key: string]: unknown;
+} | null);
+};
+
+export type BlogTagCreate = {
+    name: string;
+    slug: string;
+    is_active?: boolean;
+    translations?: ({
+    [key: string]: unknown;
+} | null);
+};
+
+export type BlogTagPublic = {
+    name: string;
+    slug: string;
+    is_active?: boolean;
+    translations?: ({
+    [key: string]: unknown;
+} | null);
+    id: string;
+    created_at: string;
+};
+
+export type BlogTagsPublic = {
+    data: Array<BlogTagPublic>;
+    count: number;
+};
+
+/**
+ * Update translations for a blog tag
+ */
+export type BlogTagTranslationUpdate = {
+    language: string;
+    name?: (string | null);
+};
+
+export type BlogTagUpdate = {
+    name?: (string | null);
+    slug?: (string | null);
+    is_active?: (boolean | null);
+};
+
 export type Body_login_login_access_token = {
     grant_type?: (string | null);
     username: string;
@@ -138,6 +350,128 @@ export type MediaAssetUpdate = {
     is_public?: (boolean | null);
 };
 
+export type MediaFolderCreate = {
+    name: string;
+    description?: (string | null);
+    parent_id?: (string | null);
+    is_active?: boolean;
+};
+
+export type MediaFolderPublic = {
+    name: string;
+    description?: (string | null);
+    parent_id?: (string | null);
+    is_active?: boolean;
+    id: string;
+    created_at: string;
+    updated_at: string;
+    created_by_id: string;
+};
+
+export type MediaFoldersPublic = {
+    data: Array<MediaFolderPublic>;
+    count: number;
+};
+
+export type MediaFolderUpdate = {
+    name?: (string | null);
+    description?: (string | null);
+    parent_id?: (string | null);
+    is_active?: (boolean | null);
+};
+
+export type MenuCreate = {
+    name: string;
+    slug: string;
+    description?: (string | null);
+    location?: string;
+    is_active?: boolean;
+};
+
+export type MenuItemCreate = {
+    label: string;
+    url: string;
+    title?: (string | null);
+    target?: string;
+    icon?: (string | null);
+    parent_id?: (string | null);
+    display_order?: number;
+    is_active?: boolean;
+    css_classes?: (string | null);
+    translations?: ({
+    [key: string]: unknown;
+} | null);
+    menu_id: string;
+};
+
+export type MenuItemPublic = {
+    label: string;
+    url: string;
+    title?: (string | null);
+    target?: string;
+    icon?: (string | null);
+    parent_id?: (string | null);
+    display_order?: number;
+    is_active?: boolean;
+    css_classes?: (string | null);
+    translations?: ({
+    [key: string]: unknown;
+} | null);
+    id: string;
+    menu_id: string;
+    created_at: string;
+    updated_at: string;
+};
+
+export type MenuItemsPublic = {
+    data: Array<MenuItemPublic>;
+    count: number;
+};
+
+/**
+ * Update translations for a menu item
+ */
+export type MenuItemTranslationUpdate = {
+    language: string;
+    label?: (string | null);
+};
+
+export type MenuItemUpdate = {
+    label?: (string | null);
+    url?: (string | null);
+    title?: (string | null);
+    target?: (string | null);
+    icon?: (string | null);
+    parent_id?: (string | null);
+    display_order?: (number | null);
+    is_active?: (boolean | null);
+    css_classes?: (string | null);
+};
+
+export type MenuPublic = {
+    name: string;
+    slug: string;
+    description?: (string | null);
+    location?: string;
+    is_active?: boolean;
+    id: string;
+    created_at: string;
+    updated_at: string;
+};
+
+export type MenusPublic = {
+    data: Array<MenuPublic>;
+    count: number;
+};
+
+export type MenuUpdate = {
+    name?: (string | null);
+    slug?: (string | null);
+    description?: (string | null);
+    location?: (string | null);
+    is_active?: (boolean | null);
+};
+
 export type Message = {
     message: string;
 };
@@ -145,6 +479,110 @@ export type Message = {
 export type NewPassword = {
     token: string;
     new_password: string;
+};
+
+export type PageCreate = {
+    title: string;
+    slug: string;
+    content?: (string | null);
+    excerpt?: (string | null);
+    meta_title?: (string | null);
+    meta_description?: (string | null);
+    meta_keywords?: (string | null);
+    og_title?: (string | null);
+    og_description?: (string | null);
+    og_image_url?: (string | null);
+    canonical_url?: (string | null);
+    status?: PageStatusEnum;
+    published_at?: (string | null);
+    scheduled_at?: (string | null);
+    template?: string;
+    is_homepage?: boolean;
+    is_visible_in_menu?: boolean;
+    display_order?: number;
+    default_language?: string;
+    translations?: ({
+    [key: string]: unknown;
+} | null);
+    page_metadata?: ({
+    [key: string]: unknown;
+} | null);
+};
+
+export type PagePublic = {
+    title: string;
+    slug: string;
+    content?: (string | null);
+    excerpt?: (string | null);
+    meta_title?: (string | null);
+    meta_description?: (string | null);
+    meta_keywords?: (string | null);
+    og_title?: (string | null);
+    og_description?: (string | null);
+    og_image_url?: (string | null);
+    canonical_url?: (string | null);
+    status?: PageStatusEnum;
+    published_at?: (string | null);
+    scheduled_at?: (string | null);
+    template?: string;
+    is_homepage?: boolean;
+    is_visible_in_menu?: boolean;
+    display_order?: number;
+    default_language?: string;
+    translations?: ({
+    [key: string]: unknown;
+} | null);
+    page_metadata?: ({
+    [key: string]: unknown;
+} | null);
+    id: string;
+    created_at: string;
+    updated_at: string;
+    created_by_id: string;
+    updated_by_id?: (string | null);
+};
+
+export type PagesPublic = {
+    data: Array<PagePublic>;
+    count: number;
+};
+
+export type PageStatusEnum = 'draft' | 'published' | 'scheduled' | 'archived';
+
+/**
+ * Update translations for a page
+ */
+export type PageTranslationUpdate = {
+    language: string;
+    title?: (string | null);
+    content?: (string | null);
+    excerpt?: (string | null);
+    meta_title?: (string | null);
+    meta_description?: (string | null);
+};
+
+export type PageUpdate = {
+    title?: (string | null);
+    slug?: (string | null);
+    content?: (string | null);
+    excerpt?: (string | null);
+    meta_title?: (string | null);
+    meta_description?: (string | null);
+    meta_keywords?: (string | null);
+    og_title?: (string | null);
+    og_description?: (string | null);
+    og_image_url?: (string | null);
+    canonical_url?: (string | null);
+    status?: (PageStatusEnum | null);
+    published_at?: (string | null);
+    scheduled_at?: (string | null);
+    template?: (string | null);
+    is_homepage?: (boolean | null);
+    is_visible_in_menu?: (boolean | null);
+    display_order?: (number | null);
+    page_metadata?: ({
+    [key: string]: unknown;
+} | null);
 };
 
 export type PaymentStatusEnum = 'unpaid' | 'paid' | 'refunded' | 'partial';
@@ -953,6 +1391,337 @@ export type AdminReindexRaceEmbeddingsData = {
 };
 
 export type AdminReindexRaceEmbeddingsResponse = (Message);
+
+export type CmsBlogCategoriesReadBlogCategoriesData = {
+    isActive?: (boolean | null);
+    limit?: number;
+    skip?: number;
+};
+
+export type CmsBlogCategoriesReadBlogCategoriesResponse = (BlogCategoriesPublic);
+
+export type CmsBlogCategoriesCreateBlogCategoryData = {
+    requestBody: BlogCategoryCreate;
+};
+
+export type CmsBlogCategoriesCreateBlogCategoryResponse = (BlogCategoryPublic);
+
+export type CmsBlogCategoriesReadBlogCategoryData = {
+    categoryId: string;
+};
+
+export type CmsBlogCategoriesReadBlogCategoryResponse = (BlogCategoryPublic);
+
+export type CmsBlogCategoriesUpdateBlogCategoryData = {
+    categoryId: string;
+    requestBody: BlogCategoryUpdate;
+};
+
+export type CmsBlogCategoriesUpdateBlogCategoryResponse = (BlogCategoryPublic);
+
+export type CmsBlogCategoriesDeleteBlogCategoryData = {
+    categoryId: string;
+};
+
+export type CmsBlogCategoriesDeleteBlogCategoryResponse = (Message);
+
+export type CmsBlogCategoriesReadBlogCategoryBySlugData = {
+    slug: string;
+};
+
+export type CmsBlogCategoriesReadBlogCategoryBySlugResponse = (BlogCategoryPublic);
+
+export type CmsBlogCategoriesUpdateBlogCategoryTranslationData = {
+    categoryId: string;
+    requestBody: BlogCategoryTranslationUpdate;
+};
+
+export type CmsBlogCategoriesUpdateBlogCategoryTranslationResponse = (BlogCategoryPublic);
+
+export type CmsBlogPostsReadBlogPostsData = {
+    /**
+     * Filter by author
+     */
+    authorId?: (string | null);
+    /**
+     * Filter by category
+     */
+    categoryId?: (string | null);
+    /**
+     * Filter by featured
+     */
+    isFeatured?: (boolean | null);
+    limit?: number;
+    skip?: number;
+    /**
+     * Filter by status
+     */
+    status?: (string | null);
+    /**
+     * Filter by tag
+     */
+    tagId?: (string | null);
+};
+
+export type CmsBlogPostsReadBlogPostsResponse = (BlogPostsPublic);
+
+export type CmsBlogPostsCreateBlogPostData = {
+    requestBody: BlogPostCreate;
+};
+
+export type CmsBlogPostsCreateBlogPostResponse = (BlogPostPublic);
+
+export type CmsBlogPostsReadBlogPostData = {
+    postId: string;
+};
+
+export type CmsBlogPostsReadBlogPostResponse = (BlogPostPublic);
+
+export type CmsBlogPostsUpdateBlogPostData = {
+    postId: string;
+    requestBody: BlogPostUpdate;
+};
+
+export type CmsBlogPostsUpdateBlogPostResponse = (BlogPostPublic);
+
+export type CmsBlogPostsDeleteBlogPostData = {
+    postId: string;
+};
+
+export type CmsBlogPostsDeleteBlogPostResponse = (Message);
+
+export type CmsBlogPostsReadBlogPostBySlugData = {
+    slug: string;
+};
+
+export type CmsBlogPostsReadBlogPostBySlugResponse = (BlogPostPublic);
+
+export type CmsBlogPostsUpdateBlogPostTranslationData = {
+    postId: string;
+    requestBody: BlogPostTranslationUpdate;
+};
+
+export type CmsBlogPostsUpdateBlogPostTranslationResponse = (BlogPostPublic);
+
+export type CmsBlogTagsReadBlogTagsData = {
+    isActive?: (boolean | null);
+    limit?: number;
+    skip?: number;
+};
+
+export type CmsBlogTagsReadBlogTagsResponse = (BlogTagsPublic);
+
+export type CmsBlogTagsCreateBlogTagData = {
+    requestBody: BlogTagCreate;
+};
+
+export type CmsBlogTagsCreateBlogTagResponse = (BlogTagPublic);
+
+export type CmsBlogTagsReadBlogTagData = {
+    tagId: string;
+};
+
+export type CmsBlogTagsReadBlogTagResponse = (BlogTagPublic);
+
+export type CmsBlogTagsUpdateBlogTagData = {
+    requestBody: BlogTagUpdate;
+    tagId: string;
+};
+
+export type CmsBlogTagsUpdateBlogTagResponse = (BlogTagPublic);
+
+export type CmsBlogTagsDeleteBlogTagData = {
+    tagId: string;
+};
+
+export type CmsBlogTagsDeleteBlogTagResponse = (Message);
+
+export type CmsBlogTagsReadBlogTagBySlugData = {
+    slug: string;
+};
+
+export type CmsBlogTagsReadBlogTagBySlugResponse = (BlogTagPublic);
+
+export type CmsBlogTagsUpdateBlogTagTranslationData = {
+    requestBody: BlogTagTranslationUpdate;
+    tagId: string;
+};
+
+export type CmsBlogTagsUpdateBlogTagTranslationResponse = (BlogTagPublic);
+
+export type CmsMediaFoldersReadMediaFoldersData = {
+    limit?: number;
+    /**
+     * Filter by parent folder
+     */
+    parentId?: (string | null);
+    skip?: number;
+};
+
+export type CmsMediaFoldersReadMediaFoldersResponse = (MediaFoldersPublic);
+
+export type CmsMediaFoldersCreateMediaFolderData = {
+    requestBody: MediaFolderCreate;
+};
+
+export type CmsMediaFoldersCreateMediaFolderResponse = (MediaFolderPublic);
+
+export type CmsMediaFoldersReadMediaFolderData = {
+    folderId: string;
+};
+
+export type CmsMediaFoldersReadMediaFolderResponse = (MediaFolderPublic);
+
+export type CmsMediaFoldersUpdateMediaFolderData = {
+    folderId: string;
+    requestBody: MediaFolderUpdate;
+};
+
+export type CmsMediaFoldersUpdateMediaFolderResponse = (MediaFolderPublic);
+
+export type CmsMediaFoldersDeleteMediaFolderData = {
+    folderId: string;
+};
+
+export type CmsMediaFoldersDeleteMediaFolderResponse = (Message);
+
+export type CmsMenusReadMenusData = {
+    limit?: number;
+    /**
+     * Filter by location
+     */
+    location?: (string | null);
+    skip?: number;
+};
+
+export type CmsMenusReadMenusResponse = (MenusPublic);
+
+export type CmsMenusCreateMenuData = {
+    requestBody: MenuCreate;
+};
+
+export type CmsMenusCreateMenuResponse = (MenuPublic);
+
+export type CmsMenusReadMenuData = {
+    menuId: string;
+};
+
+export type CmsMenusReadMenuResponse = (MenuPublic);
+
+export type CmsMenusUpdateMenuData = {
+    menuId: string;
+    requestBody: MenuUpdate;
+};
+
+export type CmsMenusUpdateMenuResponse = (MenuPublic);
+
+export type CmsMenusDeleteMenuData = {
+    menuId: string;
+};
+
+export type CmsMenusDeleteMenuResponse = (Message);
+
+export type CmsMenusReadMenuBySlugData = {
+    slug: string;
+};
+
+export type CmsMenusReadMenuBySlugResponse = (MenuPublic);
+
+export type CmsMenusReadMenuItemsData = {
+    menuId: string;
+    /**
+     * Filter by parent
+     */
+    parentId?: (string | null);
+};
+
+export type CmsMenusReadMenuItemsResponse = (MenuItemsPublic);
+
+export type CmsMenusCreateMenuItemData = {
+    menuId: string;
+    requestBody: MenuItemCreate;
+};
+
+export type CmsMenusCreateMenuItemResponse = (MenuItemPublic);
+
+export type CmsMenusReadMenuItemData = {
+    itemId: string;
+};
+
+export type CmsMenusReadMenuItemResponse = (MenuItemPublic);
+
+export type CmsMenusUpdateMenuItemData = {
+    itemId: string;
+    requestBody: MenuItemUpdate;
+};
+
+export type CmsMenusUpdateMenuItemResponse = (MenuItemPublic);
+
+export type CmsMenusDeleteMenuItemData = {
+    itemId: string;
+};
+
+export type CmsMenusDeleteMenuItemResponse = (Message);
+
+export type CmsMenusUpdateMenuItemTranslationData = {
+    itemId: string;
+    requestBody: MenuItemTranslationUpdate;
+};
+
+export type CmsMenusUpdateMenuItemTranslationResponse = (MenuItemPublic);
+
+export type CmsPagesReadPagesData = {
+    /**
+     * Filter by homepage
+     */
+    isHomepage?: (boolean | null);
+    limit?: number;
+    skip?: number;
+    /**
+     * Filter by status
+     */
+    status?: (string | null);
+};
+
+export type CmsPagesReadPagesResponse = (PagesPublic);
+
+export type CmsPagesCreatePageData = {
+    requestBody: PageCreate;
+};
+
+export type CmsPagesCreatePageResponse = (PagePublic);
+
+export type CmsPagesReadPageData = {
+    pageId: string;
+};
+
+export type CmsPagesReadPageResponse = (PagePublic);
+
+export type CmsPagesUpdatePageData = {
+    pageId: string;
+    requestBody: PageUpdate;
+};
+
+export type CmsPagesUpdatePageResponse = (PagePublic);
+
+export type CmsPagesDeletePageData = {
+    pageId: string;
+};
+
+export type CmsPagesDeletePageResponse = (Message);
+
+export type CmsPagesReadPageBySlugData = {
+    slug: string;
+};
+
+export type CmsPagesReadPageBySlugResponse = (PagePublic);
+
+export type CmsPagesUpdatePageTranslationData = {
+    pageId: string;
+    requestBody: PageTranslationUpdate;
+};
+
+export type CmsPagesUpdatePageTranslationResponse = (PagePublic);
 
 export type ItemsReadItemsData = {
     limit?: number;

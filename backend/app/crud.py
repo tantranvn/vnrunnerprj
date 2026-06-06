@@ -1568,3 +1568,690 @@ def get_recommended_races(
                 break
 
     return results
+
+
+# =============================================================================
+# CMS CRUD Operations
+# =============================================================================
+
+
+# MediaFolder CRUD operations
+
+
+def create_media_folder(
+    *, session: Session, folder_create: Any, created_by_id: uuid.UUID
+) -> Any:
+    """Create a new media folder."""
+    from app.models import MediaFolder
+    
+    db_obj = MediaFolder.model_validate(
+        folder_create, update={"created_by_id": created_by_id}
+    )
+    session.add(db_obj)
+    session.commit()
+    session.refresh(db_obj)
+    return db_obj
+
+
+def get_media_folder(*, session: Session, folder_id: uuid.UUID) -> Any:
+    """Get a media folder by ID."""
+    from app.models import MediaFolder
+    
+    return session.get(MediaFolder, folder_id)
+
+
+def get_media_folders(
+    *, session: Session, skip: int = 0, limit: int = 100, parent_id: uuid.UUID | None = None
+) -> list[Any]:
+    """Get all media folders with optional parent filter."""
+    from app.models import MediaFolder
+    
+    statement = select(MediaFolder)
+    if parent_id is not None:
+        statement = statement.where(MediaFolder.parent_id == parent_id)
+    else:
+        statement = statement.where(MediaFolder.parent_id.is_(None))
+    
+    statement = statement.offset(skip).limit(limit)
+    return list(session.exec(statement).all())
+
+
+def update_media_folder(
+    *, session: Session, db_folder: Any, folder_in: Any
+) -> Any:
+    """Update a media folder."""
+    folder_data = folder_in.model_dump(exclude_unset=True)
+    db_folder.sqlmodel_update(folder_data)
+    session.add(db_folder)
+    session.commit()
+    session.refresh(db_folder)
+    return db_folder
+
+
+def delete_media_folder(*, session: Session, folder_id: uuid.UUID) -> bool:
+    """Delete a media folder."""
+    from app.models import MediaFolder
+    
+    folder = session.get(MediaFolder, folder_id)
+    if folder:
+        session.delete(folder)
+        session.commit()
+        return True
+    return False
+
+
+# Page CRUD operations
+
+
+def create_page(*, session: Session, page_create: Any, created_by_id: uuid.UUID) -> Any:
+    """Create a new CMS page."""
+    from app.models import Page
+    
+    db_obj = Page.model_validate(
+        page_create, update={"created_by_id": created_by_id}
+    )
+    session.add(db_obj)
+    session.commit()
+    session.refresh(db_obj)
+    return db_obj
+
+
+def get_page(*, session: Session, page_id: uuid.UUID) -> Any:
+    """Get a page by ID."""
+    from app.models import Page
+    
+    return session.get(Page, page_id)
+
+
+def get_page_by_slug(*, session: Session, slug: str) -> Any:
+    """Get a page by slug."""
+    from app.models import Page
+    
+    statement = select(Page).where(Page.slug == slug)
+    return session.exec(statement).first()
+
+
+def get_pages(
+    *,
+    session: Session,
+    skip: int = 0,
+    limit: int = 100,
+    status: str | None = None,
+    is_homepage: bool | None = None
+) -> list[Any]:
+    """Get all pages with optional filters."""
+    from app.models import Page, PageStatusEnum
+    
+    statement = select(Page)
+    if status:
+        statement = statement.where(Page.status == PageStatusEnum(status))
+    if is_homepage is not None:
+        statement = statement.where(Page.is_homepage == is_homepage)
+    
+    statement = (
+        statement.order_by(col(Page.display_order).asc(), col(Page.title).asc())
+        .offset(skip)
+        .limit(limit)
+    )
+    return list(session.exec(statement).all())
+
+
+def update_page(
+    *, session: Session, db_page: Any, page_in: Any, updated_by_id: uuid.UUID
+) -> Any:
+    """Update a page."""
+    page_data = page_in.model_dump(exclude_unset=True)
+    db_page.sqlmodel_update(page_data, update={"updated_by_id": updated_by_id})
+    session.add(db_page)
+    session.commit()
+    session.refresh(db_page)
+    return db_page
+
+
+def delete_page(*, session: Session, page_id: uuid.UUID) -> bool:
+    """Delete a page."""
+    from app.models import Page
+    
+    page = session.get(Page, page_id)
+    if page:
+        session.delete(page)
+        session.commit()
+        return True
+    return False
+
+
+def update_page_translation(
+    *, session: Session, page_id: uuid.UUID, translation_update: Any
+) -> Any:
+    """Update translations for a page."""
+    from app.models import Page
+    
+    page = session.get(Page, page_id)
+    if not page:
+        return None
+    
+    if not page.translations:
+        page.translations = {}
+    
+    lang = translation_update.language
+    if lang not in page.translations:
+        page.translations[lang] = {}
+    
+    for field, value in translation_update.model_dump(exclude={"language"}, exclude_unset=True).items():
+        page.translations[lang][field] = value
+    
+    session.add(page)
+    session.commit()
+    session.refresh(page)
+    return page
+
+
+# BlogCategory CRUD operations
+
+
+def create_blog_category(*, session: Session, category_create: Any) -> Any:
+    """Create a new blog category."""
+    from app.models import BlogCategory
+    
+    db_obj = BlogCategory.model_validate(category_create)
+    session.add(db_obj)
+    session.commit()
+    session.refresh(db_obj)
+    return db_obj
+
+
+def get_blog_category(*, session: Session, category_id: uuid.UUID) -> Any:
+    """Get a blog category by ID."""
+    from app.models import BlogCategory
+    
+    return session.get(BlogCategory, category_id)
+
+
+def get_blog_category_by_slug(*, session: Session, slug: str) -> Any:
+    """Get a blog category by slug."""
+    from app.models import BlogCategory
+    
+    statement = select(BlogCategory).where(BlogCategory.slug == slug)
+    return session.exec(statement).first()
+
+
+def get_blog_categories(
+    *, session: Session, skip: int = 0, limit: int = 100, is_active: bool | None = None
+) -> list[Any]:
+    """Get all blog categories with optional filters."""
+    from app.models import BlogCategory
+    
+    statement = select(BlogCategory)
+    if is_active is not None:
+        statement = statement.where(BlogCategory.is_active == is_active)
+    
+    statement = (
+        statement.order_by(col(BlogCategory.display_order).asc(), col(BlogCategory.name).asc())
+        .offset(skip)
+        .limit(limit)
+    )
+    return list(session.exec(statement).all())
+
+
+def update_blog_category(*, session: Session, db_category: Any, category_in: Any) -> Any:
+    """Update a blog category."""
+    category_data = category_in.model_dump(exclude_unset=True)
+    db_category.sqlmodel_update(category_data)
+    session.add(db_category)
+    session.commit()
+    session.refresh(db_category)
+    return db_category
+
+
+def delete_blog_category(*, session: Session, category_id: uuid.UUID) -> bool:
+    """Delete a blog category."""
+    from app.models import BlogCategory
+    
+    category = session.get(BlogCategory, category_id)
+    if category:
+        session.delete(category)
+        session.commit()
+        return True
+    return False
+
+
+def update_blog_category_translation(
+    *, session: Session, category_id: uuid.UUID, translation_update: Any
+) -> Any:
+    """Update translations for a blog category."""
+    from app.models import BlogCategory
+    
+    category = session.get(BlogCategory, category_id)
+    if not category:
+        return None
+    
+    if not category.translations:
+        category.translations = {}
+    
+    lang = translation_update.language
+    if lang not in category.translations:
+        category.translations[lang] = {}
+    
+    for field, value in translation_update.model_dump(exclude={"language"}, exclude_unset=True).items():
+        category.translations[lang][field] = value
+    
+    session.add(category)
+    session.commit()
+    session.refresh(category)
+    return category
+
+
+# BlogTag CRUD operations
+
+
+def create_blog_tag(*, session: Session, tag_create: Any) -> Any:
+    """Create a new blog tag."""
+    from app.models import BlogTag
+    
+    db_obj = BlogTag.model_validate(tag_create)
+    session.add(db_obj)
+    session.commit()
+    session.refresh(db_obj)
+    return db_obj
+
+
+def get_blog_tag(*, session: Session, tag_id: uuid.UUID) -> Any:
+    """Get a blog tag by ID."""
+    from app.models import BlogTag
+    
+    return session.get(BlogTag, tag_id)
+
+
+def get_blog_tag_by_slug(*, session: Session, slug: str) -> Any:
+    """Get a blog tag by slug."""
+    from app.models import BlogTag
+    
+    statement = select(BlogTag).where(BlogTag.slug == slug)
+    return session.exec(statement).first()
+
+
+def get_blog_tags(
+    *, session: Session, skip: int = 0, limit: int = 100, is_active: bool | None = None
+) -> list[Any]:
+    """Get all blog tags with optional filters."""
+    from app.models import BlogTag
+    
+    statement = select(BlogTag)
+    if is_active is not None:
+        statement = statement.where(BlogTag.is_active == is_active)
+    
+    statement = (
+        statement.order_by(col(BlogTag.name).asc())
+        .offset(skip)
+        .limit(limit)
+    )
+    return list(session.exec(statement).all())
+
+
+def update_blog_tag(*, session: Session, db_tag: Any, tag_in: Any) -> Any:
+    """Update a blog tag."""
+    tag_data = tag_in.model_dump(exclude_unset=True)
+    db_tag.sqlmodel_update(tag_data)
+    session.add(db_tag)
+    session.commit()
+    session.refresh(db_tag)
+    return db_tag
+
+
+def delete_blog_tag(*, session: Session, tag_id: uuid.UUID) -> bool:
+    """Delete a blog tag."""
+    from app.models import BlogTag
+    
+    tag = session.get(BlogTag, tag_id)
+    if tag:
+        session.delete(tag)
+        session.commit()
+        return True
+    return False
+
+
+def update_blog_tag_translation(
+    *, session: Session, tag_id: uuid.UUID, translation_update: Any
+) -> Any:
+    """Update translations for a blog tag."""
+    from app.models import BlogTag
+    
+    tag = session.get(BlogTag, tag_id)
+    if not tag:
+        return None
+    
+    if not tag.translations:
+        tag.translations = {}
+    
+    lang = translation_update.language
+    if lang not in tag.translations:
+        tag.translations[lang] = {}
+    
+    for field, value in translation_update.model_dump(exclude={"language"}, exclude_unset=True).items():
+        tag.translations[lang][field] = value
+    
+    session.add(tag)
+    session.commit()
+    session.refresh(tag)
+    return tag
+
+
+# BlogPost CRUD operations
+
+
+def create_blog_post(
+    *, session: Session, post_create: Any, author_id: uuid.UUID
+) -> Any:
+    """Create a new blog post."""
+    from app.models import BlogPost, BlogTagLink
+    
+    post_data = post_create.model_dump(exclude={"tag_ids"})
+    tag_ids = post_create.tag_ids or []
+    
+    db_obj = BlogPost.model_validate(
+        post_data, update={"author_id": author_id}
+    )
+    session.add(db_obj)
+    session.commit()
+    session.refresh(db_obj)
+    
+    # Add tags if provided
+    if tag_ids:
+        for tag_id in tag_ids:
+            link = BlogTagLink(blog_post_id=db_obj.id, blog_tag_id=tag_id)
+            session.add(link)
+        session.commit()
+        session.refresh(db_obj)
+    
+    return db_obj
+
+
+def get_blog_post(*, session: Session, post_id: uuid.UUID) -> Any:
+    """Get a blog post by ID."""
+    from app.models import BlogPost
+    
+    return session.get(BlogPost, post_id)
+
+
+def get_blog_post_by_slug(*, session: Session, slug: str) -> Any:
+    """Get a blog post by slug."""
+    from app.models import BlogPost
+    
+    statement = select(BlogPost).where(BlogPost.slug == slug)
+    return session.exec(statement).first()
+
+
+def get_blog_posts(
+    *,
+    session: Session,
+    skip: int = 0,
+    limit: int = 100,
+    status: str | None = None,
+    category_id: uuid.UUID | None = None,
+    tag_id: uuid.UUID | None = None,
+    is_featured: bool | None = None,
+    author_id: uuid.UUID | None = None
+) -> list[Any]:
+    """Get all blog posts with optional filters."""
+    from app.models import BlogPost, BlogPostStatusEnum, BlogTagLink
+    
+    statement = select(BlogPost)
+    
+    if status:
+        statement = statement.where(BlogPost.status == BlogPostStatusEnum(status))
+    if category_id:
+        statement = statement.where(BlogPost.category_id == category_id)
+    if is_featured is not None:
+        statement = statement.where(BlogPost.is_featured == is_featured)
+    if author_id:
+        statement = statement.where(BlogPost.author_id == author_id)
+    if tag_id:
+        tag_links_subq = select(BlogTagLink.blog_post_id).where(
+            BlogTagLink.blog_tag_id == tag_id
+        )
+        statement = statement.where(col(BlogPost.id).in_(tag_links_subq))
+    
+    # Sticky posts first, then by published date descending
+    statement = (
+        statement.order_by(
+            col(BlogPost.is_sticky).desc(),
+            col(BlogPost.published_at).desc()
+        )
+        .offset(skip)
+        .limit(limit)
+    )
+    return list(session.exec(statement).all())
+
+
+def update_blog_post(
+    *, session: Session, db_post: Any, post_in: Any, updated_by_id: uuid.UUID
+) -> Any:
+    """Update a blog post."""
+    from app.models import BlogTagLink
+    
+    post_data = post_in.model_dump(exclude={"tag_ids"}, exclude_unset=True)
+    tag_ids = post_in.tag_ids if hasattr(post_in, "tag_ids") and post_in.tag_ids is not None else None
+    
+    db_post.sqlmodel_update(post_data, update={"updated_by_id": updated_by_id})
+    session.add(db_post)
+    
+    # Update tags if provided
+    if tag_ids is not None:
+        # Remove existing tag links
+        statement = select(BlogTagLink).where(BlogTagLink.blog_post_id == db_post.id)
+        existing_links = session.exec(statement).all()
+        for link in existing_links:
+            session.delete(link)
+        
+        # Add new tag links
+        for tag_id in tag_ids:
+            link = BlogTagLink(blog_post_id=db_post.id, blog_tag_id=tag_id)
+            session.add(link)
+    
+    session.commit()
+    session.refresh(db_post)
+    return db_post
+
+
+def delete_blog_post(*, session: Session, post_id: uuid.UUID) -> bool:
+    """Delete a blog post."""
+    from app.models import BlogPost
+    
+    post = session.get(BlogPost, post_id)
+    if post:
+        session.delete(post)
+        session.commit()
+        return True
+    return False
+
+
+def increment_blog_post_view_count(*, session: Session, post_id: uuid.UUID) -> Any:
+    """Increment view count for a blog post."""
+    from app.models import BlogPost
+    
+    post = session.get(BlogPost, post_id)
+    if post:
+        post.view_count += 1
+        session.add(post)
+        session.commit()
+        session.refresh(post)
+        return post
+    return None
+
+
+def update_blog_post_translation(
+    *, session: Session, post_id: uuid.UUID, translation_update: Any
+) -> Any:
+    """Update translations for a blog post."""
+    from app.models import BlogPost
+    
+    post = session.get(BlogPost, post_id)
+    if not post:
+        return None
+    
+    if not post.translations:
+        post.translations = {}
+    
+    lang = translation_update.language
+    if lang not in post.translations:
+        post.translations[lang] = {}
+    
+    for field, value in translation_update.model_dump(exclude={"language"}, exclude_unset=True).items():
+        post.translations[lang][field] = value
+    
+    session.add(post)
+    session.commit()
+    session.refresh(post)
+    return post
+
+
+# Menu CRUD operations
+
+
+def create_menu(*, session: Session, menu_create: Any) -> Any:
+    """Create a new menu."""
+    from app.models import Menu
+    
+    db_obj = Menu.model_validate(menu_create)
+    session.add(db_obj)
+    session.commit()
+    session.refresh(db_obj)
+    return db_obj
+
+
+def get_menu(*, session: Session, menu_id: uuid.UUID) -> Any:
+    """Get a menu by ID."""
+    from app.models import Menu
+    
+    return session.get(Menu, menu_id)
+
+
+def get_menu_by_slug(*, session: Session, slug: str) -> Any:
+    """Get a menu by slug."""
+    from app.models import Menu
+    
+    statement = select(Menu).where(Menu.slug == slug)
+    return session.exec(statement).first()
+
+
+def get_menus(
+    *, session: Session, skip: int = 0, limit: int = 100, location: str | None = None
+) -> list[Any]:
+    """Get all menus with optional location filter."""
+    from app.models import Menu
+    
+    statement = select(Menu)
+    if location:
+        statement = statement.where(Menu.location == location)
+    
+    statement = statement.order_by(col(Menu.name).asc()).offset(skip).limit(limit)
+    return list(session.exec(statement).all())
+
+
+def update_menu(*, session: Session, db_menu: Any, menu_in: Any) -> Any:
+    """Update a menu."""
+    menu_data = menu_in.model_dump(exclude_unset=True)
+    db_menu.sqlmodel_update(menu_data)
+    session.add(db_menu)
+    session.commit()
+    session.refresh(db_menu)
+    return db_menu
+
+
+def delete_menu(*, session: Session, menu_id: uuid.UUID) -> bool:
+    """Delete a menu."""
+    from app.models import Menu
+    
+    menu = session.get(Menu, menu_id)
+    if menu:
+        session.delete(menu)
+        session.commit()
+        return True
+    return False
+
+
+# MenuItem CRUD operations
+
+
+def create_menu_item(*, session: Session, item_create: Any) -> Any:
+    """Create a new menu item."""
+    from app.models import MenuItem
+    
+    db_obj = MenuItem.model_validate(item_create)
+    session.add(db_obj)
+    session.commit()
+    session.refresh(db_obj)
+    return db_obj
+
+
+def get_menu_item(*, session: Session, item_id: uuid.UUID) -> Any:
+    """Get a menu item by ID."""
+    from app.models import MenuItem
+    
+    return session.get(MenuItem, item_id)
+
+
+def get_menu_items(
+    *, session: Session, menu_id: uuid.UUID, parent_id: uuid.UUID | None = None
+) -> list[Any]:
+    """Get all menu items for a menu, optionally filtered by parent."""
+    from app.models import MenuItem
+    
+    statement = select(MenuItem).where(MenuItem.menu_id == menu_id)
+    if parent_id is not None:
+        statement = statement.where(MenuItem.parent_id == parent_id)
+    else:
+        statement = statement.where(MenuItem.parent_id.is_(None))
+    
+    statement = statement.where(MenuItem.is_active == True).order_by(
+        col(MenuItem.display_order).asc()
+    )
+    return list(session.exec(statement).all())
+
+
+def update_menu_item(*, session: Session, db_item: Any, item_in: Any) -> Any:
+    """Update a menu item."""
+    item_data = item_in.model_dump(exclude_unset=True)
+    db_item.sqlmodel_update(item_data)
+    session.add(db_item)
+    session.commit()
+    session.refresh(db_item)
+    return db_item
+
+
+def delete_menu_item(*, session: Session, item_id: uuid.UUID) -> bool:
+    """Delete a menu item."""
+    from app.models import MenuItem
+    
+    item = session.get(MenuItem, item_id)
+    if item:
+        session.delete(item)
+        session.commit()
+        return True
+    return False
+
+
+def update_menu_item_translation(
+    *, session: Session, item_id: uuid.UUID, translation_update: Any
+) -> Any:
+    """Update translations for a menu item."""
+    from app.models import MenuItem
+    
+    item = session.get(MenuItem, item_id)
+    if not item:
+        return None
+    
+    if not item.translations:
+        item.translations = {}
+    
+    lang = translation_update.language
+    if lang not in item.translations:
+        item.translations[lang] = {}
+    
+    for field, value in translation_update.model_dump(exclude={"language"}, exclude_unset=True).items():
+        item.translations[lang][field] = value
+    
+    session.add(item)
+    session.commit()
+    session.refresh(item)
+    return item

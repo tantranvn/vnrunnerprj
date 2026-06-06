@@ -1239,6 +1239,583 @@ class WardsPublic(SQLModel):
 # =============================================================================
 
 
+# =============================================================================
+# CMS Module Models
+# =============================================================================
+
+
+# Enum for CMS page status
+class PageStatusEnum(str, Enum):
+    DRAFT = "draft"
+    PUBLISHED = "published"
+    SCHEDULED = "scheduled"
+    ARCHIVED = "archived"
+
+
+# Enum for blog post status
+class BlogPostStatusEnum(str, Enum):
+    DRAFT = "draft"
+    PUBLISHED = "published"
+    SCHEDULED = "scheduled"
+    ARCHIVED = "archived"
+
+
+# =============================================================================
+# MediaFolder - Organize media into folders
+# =============================================================================
+
+
+class MediaFolderBase(SQLModel):
+    name: str = Field(min_length=1, max_length=255, index=True)
+    description: str | None = Field(default=None, max_length=500)
+    parent_id: uuid.UUID | None = None
+    is_active: bool = True
+
+
+class MediaFolderCreate(MediaFolderBase):
+    pass
+
+
+class MediaFolderUpdate(SQLModel):
+    name: str | None = Field(default=None, max_length=255)
+    description: str | None = None
+    parent_id: uuid.UUID | None = None
+    is_active: bool | None = None
+
+
+class MediaFolder(MediaFolderBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    parent_id: uuid.UUID | None = Field(default=None, foreign_key="mediafolder.id")
+    created_at: datetime = Field(
+        default_factory=get_datetime_utc, sa_column=Column(DateTime(timezone=True))
+    )
+    updated_at: datetime = Field(
+        default_factory=get_datetime_utc, sa_column=Column(DateTime(timezone=True))
+    )
+    created_by_id: uuid.UUID = Field(foreign_key="user.id", nullable=False)
+
+
+class MediaFolderPublic(MediaFolderBase):
+    id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+    created_by_id: uuid.UUID
+
+
+class MediaFoldersPublic(SQLModel):
+    data: list[MediaFolderPublic]
+    count: int
+
+
+# =============================================================================
+# Page - CMS pages with SEO and multilingual support
+# =============================================================================
+
+
+class PageBase(SQLModel):
+    title: str = Field(min_length=1, max_length=255, index=True)
+    slug: str = Field(min_length=1, max_length=255, unique=True, index=True)
+    content: str | None = Field(default=None, sa_column=Column(Text))
+    excerpt: str | None = Field(default=None, max_length=500)
+    
+    # SEO fields
+    meta_title: str | None = Field(default=None, max_length=255)
+    meta_description: str | None = Field(default=None, max_length=500)
+    meta_keywords: str | None = Field(default=None, max_length=500)
+    og_title: str | None = Field(default=None, max_length=255)
+    og_description: str | None = Field(default=None, max_length=500)
+    og_image_url: str | None = Field(default=None, max_length=1000)
+    canonical_url: str | None = Field(default=None, max_length=1000)
+    
+    # Publishing
+    status: PageStatusEnum = Field(
+        default=PageStatusEnum.DRAFT,
+        sa_column=Column(AutoString(), nullable=False),
+    )
+    published_at: datetime | None = Field(
+        default=None, sa_column=Column(DateTime(timezone=True))
+    )
+    scheduled_at: datetime | None = Field(
+        default=None, sa_column=Column(DateTime(timezone=True))
+    )
+    
+    # Layout and visibility
+    template: str = Field(default="default", max_length=50)
+    is_homepage: bool = False
+    is_visible_in_menu: bool = True
+    display_order: int = Field(default=0)
+    
+    # Multi-language support
+    default_language: str = Field(default="vi", max_length=10)
+    translations: dict[str, Any] | None = Field(default=None, sa_column=Column(JSON))
+    
+    # Additional metadata
+    page_metadata: dict[str, Any] | None = Field(default=None, sa_column=Column(JSON))
+
+
+class PageCreate(PageBase):
+    pass
+
+
+class PageUpdate(SQLModel):
+    title: str | None = Field(default=None, max_length=255)
+    slug: str | None = Field(default=None, max_length=255)
+    content: str | None = None
+    excerpt: str | None = None
+    meta_title: str | None = None
+    meta_description: str | None = None
+    meta_keywords: str | None = None
+    og_title: str | None = None
+    og_description: str | None = None
+    og_image_url: str | None = None
+    canonical_url: str | None = None
+    status: PageStatusEnum | None = None
+    published_at: datetime | None = None
+    scheduled_at: datetime | None = None
+    template: str | None = None
+    is_homepage: bool | None = None
+    is_visible_in_menu: bool | None = None
+    display_order: int | None = None
+    page_metadata: dict[str, Any] | None = None
+
+
+class Page(PageBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    created_at: datetime = Field(
+        default_factory=get_datetime_utc, sa_column=Column(DateTime(timezone=True))
+    )
+    updated_at: datetime = Field(
+        default_factory=get_datetime_utc, sa_column=Column(DateTime(timezone=True))
+    )
+    created_by_id: uuid.UUID = Field(foreign_key="user.id", nullable=False)
+    updated_by_id: uuid.UUID | None = Field(default=None, foreign_key="user.id")
+
+
+class PagePublic(PageBase):
+    id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+    created_by_id: uuid.UUID
+    updated_by_id: uuid.UUID | None = None
+
+
+class PagePublicWithDetails(PagePublic):
+    view_count: int = 0
+
+
+class PagesPublic(SQLModel):
+    data: list[PagePublic]
+    count: int
+
+
+class PageTranslationUpdate(SQLModel):
+    """Update translations for a page"""
+    language: str = Field(min_length=2, max_length=10)
+    title: str | None = Field(default=None, max_length=255)
+    content: str | None = None
+    excerpt: str | None = Field(default=None, max_length=500)
+    meta_title: str | None = Field(default=None, max_length=255)
+    meta_description: str | None = Field(default=None, max_length=500)
+
+
+# =============================================================================
+# BlogCategory - Categories for blog posts
+# =============================================================================
+
+
+class BlogCategoryBase(SQLModel):
+    name: str = Field(min_length=1, max_length=100, unique=True, index=True)
+    slug: str = Field(min_length=1, max_length=100, unique=True, index=True)
+    description: str | None = Field(default=None, max_length=500)
+    parent_id: uuid.UUID | None = None
+    is_active: bool = True
+    display_order: int = Field(default=0)
+    
+    # SEO fields
+    meta_title: str | None = Field(default=None, max_length=255)
+    meta_description: str | None = Field(default=None, max_length=500)
+    
+    # Multi-language support
+    translations: dict[str, Any] | None = Field(default=None, sa_column=Column(JSON))
+
+
+class BlogCategoryCreate(BlogCategoryBase):
+    pass
+
+
+class BlogCategoryUpdate(SQLModel):
+    name: str | None = Field(default=None, max_length=100)
+    slug: str | None = Field(default=None, max_length=100)
+    description: str | None = None
+    parent_id: uuid.UUID | None = None
+    is_active: bool | None = None
+    display_order: int | None = None
+    meta_title: str | None = None
+    meta_description: str | None = None
+
+
+class BlogCategory(BlogCategoryBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    parent_id: uuid.UUID | None = Field(default=None, foreign_key="blogcategory.id")
+    created_at: datetime = Field(
+        default_factory=get_datetime_utc, sa_column=Column(DateTime(timezone=True))
+    )
+    updated_at: datetime = Field(
+        default_factory=get_datetime_utc, sa_column=Column(DateTime(timezone=True))
+    )
+    
+    # Relationships
+    blog_posts: list["BlogPost"] = Relationship(back_populates="category")
+
+
+class BlogCategoryPublic(BlogCategoryBase):
+    id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+
+
+class BlogCategoryPublicWithDetails(BlogCategoryPublic):
+    post_count: int = 0
+
+
+class BlogCategoriesPublic(SQLModel):
+    data: list[BlogCategoryPublic]
+    count: int
+
+
+class BlogCategoryTranslationUpdate(SQLModel):
+    """Update translations for a blog category"""
+    language: str = Field(min_length=2, max_length=10)
+    name: str | None = Field(default=None, max_length=100)
+    description: str | None = Field(default=None, max_length=500)
+
+
+# =============================================================================
+# BlogTag - Tags for blog posts
+# =============================================================================
+
+
+class BlogTagLink(SQLModel, table=True):
+    """Junction table for many-to-many BlogPost ↔ BlogTag"""
+    blog_post_id: uuid.UUID = Field(
+        foreign_key="blogpost.id", primary_key=True, ondelete="CASCADE"
+    )
+    blog_tag_id: uuid.UUID = Field(
+        foreign_key="blogtag.id", primary_key=True, ondelete="CASCADE"
+    )
+
+
+class BlogTagBase(SQLModel):
+    name: str = Field(min_length=1, max_length=50, unique=True, index=True)
+    slug: str = Field(min_length=1, max_length=50, unique=True, index=True)
+    is_active: bool = True
+    
+    # Multi-language support
+    translations: dict[str, Any] | None = Field(default=None, sa_column=Column(JSON))
+
+
+class BlogTagCreate(BlogTagBase):
+    pass
+
+
+class BlogTagUpdate(SQLModel):
+    name: str | None = Field(default=None, max_length=50)
+    slug: str | None = Field(default=None, max_length=50)
+    is_active: bool | None = None
+
+
+class BlogTag(BlogTagBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    created_at: datetime = Field(
+        default_factory=get_datetime_utc, sa_column=Column(DateTime(timezone=True))
+    )
+    
+    # Relationships
+    blog_posts: list["BlogPost"] = Relationship(
+        back_populates="tags", link_model=BlogTagLink
+    )
+
+
+class BlogTagPublic(BlogTagBase):
+    id: uuid.UUID
+    created_at: datetime
+
+
+class BlogTagPublicWithDetails(BlogTagPublic):
+    post_count: int = 0
+
+
+class BlogTagsPublic(SQLModel):
+    data: list[BlogTagPublic]
+    count: int
+
+
+class BlogTagTranslationUpdate(SQLModel):
+    """Update translations for a blog tag"""
+    language: str = Field(min_length=2, max_length=10)
+    name: str | None = Field(default=None, max_length=50)
+
+
+# =============================================================================
+# BlogPost - Blog articles
+# =============================================================================
+
+
+class BlogPostBase(SQLModel):
+    title: str = Field(min_length=1, max_length=255, index=True)
+    slug: str = Field(min_length=1, max_length=255, unique=True, index=True)
+    content: str | None = Field(default=None, sa_column=Column(Text))
+    excerpt: str | None = Field(default=None, max_length=500)
+    
+    # Featured image
+    featured_image_url: str | None = Field(default=None, max_length=1000)
+    featured_image_alt: str | None = Field(default=None, max_length=255)
+    
+    # SEO fields
+    meta_title: str | None = Field(default=None, max_length=255)
+    meta_description: str | None = Field(default=None, max_length=500)
+    meta_keywords: str | None = Field(default=None, max_length=500)
+    og_title: str | None = Field(default=None, max_length=255)
+    og_description: str | None = Field(default=None, max_length=500)
+    og_image_url: str | None = Field(default=None, max_length=1000)
+    canonical_url: str | None = Field(default=None, max_length=1000)
+    
+    # Publishing
+    status: BlogPostStatusEnum = Field(
+        default=BlogPostStatusEnum.DRAFT,
+        sa_column=Column(AutoString(), nullable=False),
+    )
+    published_at: datetime | None = Field(
+        default=None, sa_column=Column(DateTime(timezone=True))
+    )
+    scheduled_at: datetime | None = Field(
+        default=None, sa_column=Column(DateTime(timezone=True))
+    )
+    
+    # Featured and sticky
+    is_featured: bool = False
+    is_sticky: bool = False
+    
+    # Engagement metrics
+    view_count: int = Field(default=0, ge=0)
+    like_count: int = Field(default=0, ge=0)
+    comment_count: int = Field(default=0, ge=0)
+    
+    # Reading time (in minutes)
+    reading_time_minutes: int | None = Field(default=None, ge=1)
+    
+    # Multi-language support
+    default_language: str = Field(default="vi", max_length=10)
+    translations: dict[str, Any] | None = Field(default=None, sa_column=Column(JSON))
+    
+    # Additional metadata
+    post_metadata: dict[str, Any] | None = Field(default=None, sa_column=Column(JSON))
+
+
+class BlogPostCreate(BlogPostBase):
+    category_id: uuid.UUID | None = None
+    tag_ids: list[uuid.UUID] | None = None
+
+
+class BlogPostUpdate(SQLModel):
+    title: str | None = Field(default=None, max_length=255)
+    slug: str | None = Field(default=None, max_length=255)
+    content: str | None = None
+    excerpt: str | None = None
+    featured_image_url: str | None = None
+    featured_image_alt: str | None = None
+    meta_title: str | None = None
+    meta_description: str | None = None
+    meta_keywords: str | None = None
+    og_title: str | None = None
+    og_description: str | None = None
+    og_image_url: str | None = None
+    canonical_url: str | None = None
+    status: BlogPostStatusEnum | None = None
+    published_at: datetime | None = None
+    scheduled_at: datetime | None = None
+    is_featured: bool | None = None
+    is_sticky: bool | None = None
+    reading_time_minutes: int | None = None
+    category_id: uuid.UUID | None = None
+    tag_ids: list[uuid.UUID] | None = None
+    post_metadata: dict[str, Any] | None = None
+
+
+class BlogPost(BlogPostBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    created_at: datetime = Field(
+        default_factory=get_datetime_utc, sa_column=Column(DateTime(timezone=True))
+    )
+    updated_at: datetime = Field(
+        default_factory=get_datetime_utc, sa_column=Column(DateTime(timezone=True))
+    )
+    
+    # Foreign keys
+    category_id: uuid.UUID | None = Field(default=None, foreign_key="blogcategory.id")
+    author_id: uuid.UUID = Field(foreign_key="user.id", nullable=False)
+    updated_by_id: uuid.UUID | None = Field(default=None, foreign_key="user.id")
+    
+    # Relationships
+    category: BlogCategory | None = Relationship(back_populates="blog_posts")
+    tags: list[BlogTag] = Relationship(
+        back_populates="blog_posts", link_model=BlogTagLink
+    )
+
+
+class BlogPostPublic(BlogPostBase):
+    id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+    category_id: uuid.UUID | None = None
+    author_id: uuid.UUID
+
+
+class BlogPostPublicWithDetails(BlogPostPublic):
+    category: BlogCategoryPublic | None = None
+    tags: list[BlogTagPublic] = []
+    author: UserPublic
+
+
+class BlogPostsPublic(SQLModel):
+    data: list[BlogPostPublic]
+    count: int
+
+
+class BlogPostTranslationUpdate(SQLModel):
+    """Update translations for a blog post"""
+    language: str = Field(min_length=2, max_length=10)
+    title: str | None = Field(default=None, max_length=255)
+    content: str | None = None
+    excerpt: str | None = Field(default=None, max_length=500)
+    meta_title: str | None = Field(default=None, max_length=255)
+    meta_description: str | None = Field(default=None, max_length=500)
+
+
+# =============================================================================
+# Menu and MenuItem - Navigation management
+# =============================================================================
+
+
+class MenuBase(SQLModel):
+    name: str = Field(min_length=1, max_length=100, unique=True, index=True)
+    slug: str = Field(min_length=1, max_length=100, unique=True, index=True)
+    description: str | None = Field(default=None, max_length=500)
+    location: str = Field(default="header", max_length=50)  # header, footer, sidebar, etc.
+    is_active: bool = True
+
+
+class MenuCreate(MenuBase):
+    pass
+
+
+class MenuUpdate(SQLModel):
+    name: str | None = Field(default=None, max_length=100)
+    slug: str | None = Field(default=None, max_length=100)
+    description: str | None = None
+    location: str | None = None
+    is_active: bool | None = None
+
+
+class Menu(MenuBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    created_at: datetime = Field(
+        default_factory=get_datetime_utc, sa_column=Column(DateTime(timezone=True))
+    )
+    updated_at: datetime = Field(
+        default_factory=get_datetime_utc, sa_column=Column(DateTime(timezone=True))
+    )
+    
+    # Relationships
+    items: list["MenuItem"] = Relationship(back_populates="menu", cascade_delete=True)
+
+
+class MenuPublic(MenuBase):
+    id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+
+
+class MenuPublicWithItems(MenuPublic):
+    items: list["MenuItemPublic"] = []
+
+
+class MenusPublic(SQLModel):
+    data: list[MenuPublic]
+    count: int
+
+
+class MenuItemBase(SQLModel):
+    label: str = Field(min_length=1, max_length=100)
+    url: str = Field(max_length=1000)
+    title: str | None = Field(default=None, max_length=255)  # HTML title attribute
+    target: str = Field(default="_self", max_length=20)  # _self, _blank, etc.
+    icon: str | None = Field(default=None, max_length=50)  # Icon class or name
+    parent_id: uuid.UUID | None = None
+    display_order: int = Field(default=0)
+    is_active: bool = True
+    css_classes: str | None = Field(default=None, max_length=255)
+    
+    # Multi-language support
+    translations: dict[str, Any] | None = Field(default=None, sa_column=Column(JSON))
+
+
+class MenuItemCreate(MenuItemBase):
+    menu_id: uuid.UUID
+
+
+class MenuItemUpdate(SQLModel):
+    label: str | None = Field(default=None, max_length=100)
+    url: str | None = None
+    title: str | None = None
+    target: str | None = None
+    icon: str | None = None
+    parent_id: uuid.UUID | None = None
+    display_order: int | None = None
+    is_active: bool | None = None
+    css_classes: str | None = None
+
+
+class MenuItem(MenuItemBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    menu_id: uuid.UUID = Field(
+        foreign_key="menu.id", nullable=False, ondelete="CASCADE"
+    )
+    parent_id: uuid.UUID | None = Field(default=None, foreign_key="menuitem.id")
+    created_at: datetime = Field(
+        default_factory=get_datetime_utc, sa_column=Column(DateTime(timezone=True))
+    )
+    updated_at: datetime = Field(
+        default_factory=get_datetime_utc, sa_column=Column(DateTime(timezone=True))
+    )
+    
+    # Relationships
+    menu: Menu = Relationship(back_populates="items")
+
+
+class MenuItemPublic(MenuItemBase):
+    id: uuid.UUID
+    menu_id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+
+
+class MenuItemsPublic(SQLModel):
+    data: list[MenuItemPublic]
+    count: int
+
+
+class MenuItemTranslationUpdate(SQLModel):
+    """Update translations for a menu item"""
+    language: str = Field(min_length=2, max_length=10)
+    label: str | None = Field(default=None, max_length=100)
+
+
+# =============================================================================
+# End of CMS Module Models
+# =============================================================================
+
+
 # Generic message
 class Message(SQLModel):
     message: str

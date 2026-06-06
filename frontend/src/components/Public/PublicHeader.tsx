@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { isLoggedIn } from "@/hooks/useAuth"
 import { LanguageSwitcher } from "@/components/Common/LanguageSwitcher"
+import { useMenuByLocation } from "@/hooks/useMenu"
+import { DynamicMenu } from "@/components/Common/DynamicMenu"
 
 export function PublicHeader() {
   const loggedIn = isLoggedIn()
@@ -12,14 +14,17 @@ export function PublicHeader() {
   const params = useParams({ strict: false }) as Record<string, any>
   const lang = params?.lang || i18n.language || "vi"
 
-  const navLinks = [
+  // Fetch header menu from CMS
+  const { data: headerMenu } = useMenuByLocation("header")
+
+  const defaultNavLinks = [
     { to: "/$lang", params: { lang }, label: t("nav.home") },
     { to: "/$lang/races", params: { lang }, label: t("nav.races") },
     { to: "/$lang/about", params: { lang }, label: t("nav.about") },
   ]
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo and Desktop Navigation */}
         <div className="flex items-center gap-8">
@@ -31,22 +36,32 @@ export function PublicHeader() {
             <span>VNRUNNER</span>
           </Link>
 
-          <nav
-            className="hidden md:flex items-center gap-6"
-            aria-label="Main navigation"
-          >
-            {navLinks.map(({ to, params, label }) => (
-              <Link
-                key={to}
-                to={to}
-                params={params}
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-                activeProps={{ className: "text-primary" }}
-              >
-                {label}
-              </Link>
-            ))}
-          </nav>
+          {/* Desktop Navigation - Use CMS menu if available, otherwise fallback to default */}
+          {headerMenu?.items && headerMenu.items.length > 0 ? (
+            <DynamicMenu
+              items={headerMenu.items}
+              className="hidden md:flex items-center gap-6"
+              itemClassName="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+              activeClassName="text-primary"
+            />
+          ) : (
+            <nav
+              className="hidden md:flex items-center gap-6"
+              aria-label="Main navigation"
+            >
+              {defaultNavLinks.map(({ to, params, label }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  params={params}
+                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+                  activeProps={{ className: "text-primary" }}
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
+          )}
         </div>
 
         {/* Desktop Auth Buttons */}
@@ -82,17 +97,47 @@ export function PublicHeader() {
               aria-label="Mobile navigation"
             >
               <div className="flex flex-col gap-4">
-                {navLinks.map(({ to, params, label }) => (
-                  <Link
-                    key={to}
-                    to={to}
-                    params={params}
-                    className="text-lg font-medium transition-colors hover:text-primary"
-                    activeProps={{ className: "text-primary" }}
-                  >
-                    {label}
-                  </Link>
-                ))}
+                {/* Mobile Navigation - Use CMS menu if available */}
+                {headerMenu?.items && headerMenu.items.length > 0 ? (
+                  headerMenu.items.map((item) => {
+                    const isInternal = item.url.startsWith('/') && !item.url.startsWith('//')
+                    if (isInternal) {
+                      return (
+                        <Link
+                          key={item.id}
+                          to={item.url as any}
+                          className="text-lg font-medium transition-colors hover:text-primary"
+                          activeProps={{ className: "text-primary" }}
+                        >
+                          {item.label}
+                        </Link>
+                      )
+                    }
+                    return (
+                      <a
+                        key={item.id}
+                        href={item.url}
+                        target={item.target || '_self'}
+                        rel={item.target === '_blank' ? 'noopener noreferrer' : undefined}
+                        className="text-lg font-medium transition-colors hover:text-primary"
+                      >
+                        {item.label}
+                      </a>
+                    )
+                  })
+                ) : (
+                  defaultNavLinks.map(({ to, params, label }) => (
+                    <Link
+                      key={to}
+                      to={to}
+                      params={params}
+                      className="text-lg font-medium transition-colors hover:text-primary"
+                      activeProps={{ className: "text-primary" }}
+                    >
+                      {label}
+                    </Link>
+                  ))
+                )}
               </div>
               <div className="border-t pt-6 flex flex-col gap-3">
                 <LanguageSwitcher />

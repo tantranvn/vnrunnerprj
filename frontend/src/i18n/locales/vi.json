@@ -215,6 +215,22 @@
       "a4": "VNRunner có nhiều loại giải chạy bao gồm đường trường, đường mòn, marathon, half marathon, siêu marathon, giải 5K, 10K và nhiều hơn nữa trên khắp Việt Nam."
     }
   },
+  "blog": {
+    "title": "Blog",
+    "description": "Khám phá mẹo chạy bộ, báo cáo giải chạy và câu chuyện từ cộng đồng chạy Việt Nam",
+    "noPosts": "Chưa có bài viết nào. Hãy quay lại sau!",
+    "featured": "Nổi bật",
+    "sticky": "Ghim",
+    "minRead": "phút đọc",
+    "views": "lượt xem",
+    "backToList": "Quay lại Blog",
+    "share": "Chia sẻ",
+    "published": "Xuất bản",
+    "lastUpdated": "Cập nhật lần cuối"
+  },
+  "page": {
+    "lastUpdated": "Cập nhật lần cuối"
+  },
   "footer": {
     "tagline": "Nền tảng giải chạy hàng đầu của bạn tại Việt Nam",
     "copyright": "© {{year}} VNRunner. Tất cả quyền được bảo lưu.",

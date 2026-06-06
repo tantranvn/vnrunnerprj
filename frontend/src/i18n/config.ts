@@ -19,6 +19,7 @@ i18n
   .use(initReactI18next) // Pass i18n instance to react-i18next
   .init({
     resources,
+    lng: "vi", // Set Vietnamese as default language
     fallbackLng: "vi",
     supportedLngs: ["vi", "en"],
     debug: false,
@@ -29,13 +30,16 @@ i18n
     
     detection: {
       // Order of language detection methods
-      order: ["localStorage", "navigator", "htmlTag"],
+      order: ["path", "querystring", "localStorage", "navigator", "htmlTag"],
       
       // Cache user language in localStorage
       caches: ["localStorage"],
       
       // localStorage key
       lookupLocalStorage: "i18nextLng",
+      
+      // Look for language in URL path
+      lookupFromPathIndex: 0,
     },
   })
 

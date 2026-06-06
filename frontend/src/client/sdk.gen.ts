@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { AdminReindexRaceEmbeddingsData, AdminReindexRaceEmbeddingsResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, MediaReadMediaAssetsData, MediaReadMediaAssetsResponse, MediaUploadMediaAssetData, MediaUploadMediaAssetResponse, MediaReadMediaFileData, MediaReadMediaFileResponse, MediaUpdateMediaAssetData, MediaUpdateMediaAssetResponse, MediaDeleteMediaAssetData, MediaDeleteMediaAssetResponse, PrivateCreateUserData, PrivateCreateUserResponse, ProfilesGetMyProfileResponse, ProfilesUpsertMyProfileData, ProfilesUpsertMyProfileResponse, ProfilesDeleteMyProfileResponse, ProfilesUpdateMyProfileData, ProfilesUpdateMyProfileResponse, ProfilesGetMySavedRacesResponse, ProfilesSaveRaceData, ProfilesSaveRaceResponse, ProfilesUnsaveRaceData, ProfilesUnsaveRaceResponse, ProfilesTrackRaceViewData, ProfilesTrackRaceViewResponse, ProvincesReadAdministrativeRegionsResponse, ProvincesReadAdministrativeUnitsResponse, ProvincesReadProvincesData, ProvincesReadProvincesResponse, ProvincesReadProvinceData, ProvincesReadProvinceResponse, ProvincesReadWardsByProvinceData, ProvincesReadWardsByProvinceResponse, ProvincesReadWardData, ProvincesReadWardResponse, RaceAttributesReadRaceAttributesData, RaceAttributesReadRaceAttributesResponse, RaceAttributesCreateRaceAttributeData, RaceAttributesCreateRaceAttributeResponse, RaceAttributesReadRaceAttributeData, RaceAttributesReadRaceAttributeResponse, RaceAttributesUpdateRaceAttributeData, RaceAttributesUpdateRaceAttributeResponse, RaceAttributesDeleteRaceAttributeData, RaceAttributesDeleteRaceAttributeResponse, RaceCategoriesReadRaceCategoriesData, RaceCategoriesReadRaceCategoriesResponse, RaceCategoriesCreateRaceCategoryData, RaceCategoriesCreateRaceCategoryResponse, RaceCategoriesReadRaceCategoryData, RaceCategoriesReadRaceCategoryResponse, RaceCategoriesUpdateRaceCategoryData, RaceCategoriesUpdateRaceCategoryResponse, RaceCategoriesDeleteRaceCategoryData, RaceCategoriesDeleteRaceCategoryResponse, RaceCategoriesUpdateCategoryTranslationsData, RaceCategoriesUpdateCategoryTranslationsResponse, RaceCategoriesGetCategoryTranslationsData, RaceCategoriesGetCategoryTranslationsResponse, RaceRegistrationsReadRaceRegistrationsData, RaceRegistrationsReadRaceRegistrationsResponse, RaceRegistrationsCreateRaceRegistrationData, RaceRegistrationsCreateRaceRegistrationResponse, RaceRegistrationsReadMyRegistrationsData, RaceRegistrationsReadMyRegistrationsResponse, RaceRegistrationsReadRaceRegistrationData, RaceRegistrationsReadRaceRegistrationResponse, RaceRegistrationsUpdateRaceRegistrationData, RaceRegistrationsUpdateRaceRegistrationResponse, RaceRegistrationsDeleteRaceRegistrationData, RaceRegistrationsDeleteRaceRegistrationResponse, RaceResultsReadRaceResultsData, RaceResultsReadRaceResultsResponse, RaceResultsCreateRaceResultData, RaceResultsCreateRaceResultResponse, RaceResultsReadRaceResultData, RaceResultsReadRaceResultResponse, RaceResultsUpdateRaceResultData, RaceResultsUpdateRaceResultResponse, RaceResultsDeleteRaceResultData, RaceResultsDeleteRaceResultResponse, RaceResultsReadRaceResultByRegistrationData, RaceResultsReadRaceResultByRegistrationResponse, RacesSearchRacesData, RacesSearchRacesResponse, RacesGetNearbyRacesData, RacesGetNearbyRacesResponse, RacesGetTrendingRacesData, RacesGetTrendingRacesResponse, RacesGetRecommendedRacesData, RacesGetRecommendedRacesResponse, RacesReadMyOrganizedRacesData, RacesReadMyOrganizedRacesResponse, RacesReadRacesData, RacesReadRacesResponse, RacesCreateRaceData, RacesCreateRaceResponse, RacesGenerateRaceDetailsData, RacesGenerateRaceDetailsResponse, RacesGenerateRaceImageEndpointData, RacesGenerateRaceImageEndpointResponse, RacesReadRaceData, RacesReadRaceResponse, RacesUpdateRaceData, RacesUpdateRaceResponse, RacesDeleteRaceData, RacesDeleteRaceResponse, RacesGetSimilarRacesData, RacesGetSimilarRacesResponse, RacesAutoTagRaceData, RacesAutoTagRaceResponse, RacesEnhanceRaceDescriptionData, RacesEnhanceRaceDescriptionResponse, RacesAskRaceQuestionData, RacesAskRaceQuestionResponse, RacesUpdateRaceTranslationsData, RacesUpdateRaceTranslationsResponse, RacesGetRaceTranslationsData, RacesGetRaceTranslationsResponse, RolesReadRolesData, RolesReadRolesResponse, RolesCreateRoleData, RolesCreateRoleResponse, RolesReadRoleData, RolesReadRoleResponse, RolesUpdateRoleData, RolesUpdateRoleResponse, RolesDeleteRoleData, RolesDeleteRoleResponse, RolesAssignRoleToUserData, RolesAssignRoleToUserResponse, RolesRemoveRoleFromUserData, RolesRemoveRoleFromUserResponse, TagsListTagsResponse, TagsCreateTagData, TagsCreateTagResponse, TagsSetTagsForRaceData, TagsSetTagsForRaceResponse, TagsUpdateTagTranslationsData, TagsUpdateTagTranslationsResponse, TagsGetTagTranslationsData, TagsGetTagTranslationsResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { AdminReindexRaceEmbeddingsData, AdminReindexRaceEmbeddingsResponse, CmsBlogCategoriesReadBlogCategoriesData, CmsBlogCategoriesReadBlogCategoriesResponse, CmsBlogCategoriesCreateBlogCategoryData, CmsBlogCategoriesCreateBlogCategoryResponse, CmsBlogCategoriesReadBlogCategoryData, CmsBlogCategoriesReadBlogCategoryResponse, CmsBlogCategoriesUpdateBlogCategoryData, CmsBlogCategoriesUpdateBlogCategoryResponse, CmsBlogCategoriesDeleteBlogCategoryData, CmsBlogCategoriesDeleteBlogCategoryResponse, CmsBlogCategoriesReadBlogCategoryBySlugData, CmsBlogCategoriesReadBlogCategoryBySlugResponse, CmsBlogCategoriesUpdateBlogCategoryTranslationData, CmsBlogCategoriesUpdateBlogCategoryTranslationResponse, CmsBlogPostsReadBlogPostsData, CmsBlogPostsReadBlogPostsResponse, CmsBlogPostsCreateBlogPostData, CmsBlogPostsCreateBlogPostResponse, CmsBlogPostsReadBlogPostData, CmsBlogPostsReadBlogPostResponse, CmsBlogPostsUpdateBlogPostData, CmsBlogPostsUpdateBlogPostResponse, CmsBlogPostsDeleteBlogPostData, CmsBlogPostsDeleteBlogPostResponse, CmsBlogPostsReadBlogPostBySlugData, CmsBlogPostsReadBlogPostBySlugResponse, CmsBlogPostsUpdateBlogPostTranslationData, CmsBlogPostsUpdateBlogPostTranslationResponse, CmsBlogTagsReadBlogTagsData, CmsBlogTagsReadBlogTagsResponse, CmsBlogTagsCreateBlogTagData, CmsBlogTagsCreateBlogTagResponse, CmsBlogTagsReadBlogTagData, CmsBlogTagsReadBlogTagResponse, CmsBlogTagsUpdateBlogTagData, CmsBlogTagsUpdateBlogTagResponse, CmsBlogTagsDeleteBlogTagData, CmsBlogTagsDeleteBlogTagResponse, CmsBlogTagsReadBlogTagBySlugData, CmsBlogTagsReadBlogTagBySlugResponse, CmsBlogTagsUpdateBlogTagTranslationData, CmsBlogTagsUpdateBlogTagTranslationResponse, CmsMediaFoldersReadMediaFoldersData, CmsMediaFoldersReadMediaFoldersResponse, CmsMediaFoldersCreateMediaFolderData, CmsMediaFoldersCreateMediaFolderResponse, CmsMediaFoldersReadMediaFolderData, CmsMediaFoldersReadMediaFolderResponse, CmsMediaFoldersUpdateMediaFolderData, CmsMediaFoldersUpdateMediaFolderResponse, CmsMediaFoldersDeleteMediaFolderData, CmsMediaFoldersDeleteMediaFolderResponse, CmsMenusReadMenusData, CmsMenusReadMenusResponse, CmsMenusCreateMenuData, CmsMenusCreateMenuResponse, CmsMenusReadMenuData, CmsMenusReadMenuResponse, CmsMenusUpdateMenuData, CmsMenusUpdateMenuResponse, CmsMenusDeleteMenuData, CmsMenusDeleteMenuResponse, CmsMenusReadMenuBySlugData, CmsMenusReadMenuBySlugResponse, CmsMenusReadMenuItemsData, CmsMenusReadMenuItemsResponse, CmsMenusCreateMenuItemData, CmsMenusCreateMenuItemResponse, CmsMenusReadMenuItemData, CmsMenusReadMenuItemResponse, CmsMenusUpdateMenuItemData, CmsMenusUpdateMenuItemResponse, CmsMenusDeleteMenuItemData, CmsMenusDeleteMenuItemResponse, CmsMenusUpdateMenuItemTranslationData, CmsMenusUpdateMenuItemTranslationResponse, CmsPagesReadPagesData, CmsPagesReadPagesResponse, CmsPagesCreatePageData, CmsPagesCreatePageResponse, CmsPagesReadPageData, CmsPagesReadPageResponse, CmsPagesUpdatePageData, CmsPagesUpdatePageResponse, CmsPagesDeletePageData, CmsPagesDeletePageResponse, CmsPagesReadPageBySlugData, CmsPagesReadPageBySlugResponse, CmsPagesUpdatePageTranslationData, CmsPagesUpdatePageTranslationResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, MediaReadMediaAssetsData, MediaReadMediaAssetsResponse, MediaUploadMediaAssetData, MediaUploadMediaAssetResponse, MediaReadMediaFileData, MediaReadMediaFileResponse, MediaUpdateMediaAssetData, MediaUpdateMediaAssetResponse, MediaDeleteMediaAssetData, MediaDeleteMediaAssetResponse, PrivateCreateUserData, PrivateCreateUserResponse, ProfilesGetMyProfileResponse, ProfilesUpsertMyProfileData, ProfilesUpsertMyProfileResponse, ProfilesDeleteMyProfileResponse, ProfilesUpdateMyProfileData, ProfilesUpdateMyProfileResponse, ProfilesGetMySavedRacesResponse, ProfilesSaveRaceData, ProfilesSaveRaceResponse, ProfilesUnsaveRaceData, ProfilesUnsaveRaceResponse, ProfilesTrackRaceViewData, ProfilesTrackRaceViewResponse, ProvincesReadAdministrativeRegionsResponse, ProvincesReadAdministrativeUnitsResponse, ProvincesReadProvincesData, ProvincesReadProvincesResponse, ProvincesReadProvinceData, ProvincesReadProvinceResponse, ProvincesReadWardsByProvinceData, ProvincesReadWardsByProvinceResponse, ProvincesReadWardData, ProvincesReadWardResponse, RaceAttributesReadRaceAttributesData, RaceAttributesReadRaceAttributesResponse, RaceAttributesCreateRaceAttributeData, RaceAttributesCreateRaceAttributeResponse, RaceAttributesReadRaceAttributeData, RaceAttributesReadRaceAttributeResponse, RaceAttributesUpdateRaceAttributeData, RaceAttributesUpdateRaceAttributeResponse, RaceAttributesDeleteRaceAttributeData, RaceAttributesDeleteRaceAttributeResponse, RaceCategoriesReadRaceCategoriesData, RaceCategoriesReadRaceCategoriesResponse, RaceCategoriesCreateRaceCategoryData, RaceCategoriesCreateRaceCategoryResponse, RaceCategoriesReadRaceCategoryData, RaceCategoriesReadRaceCategoryResponse, RaceCategoriesUpdateRaceCategoryData, RaceCategoriesUpdateRaceCategoryResponse, RaceCategoriesDeleteRaceCategoryData, RaceCategoriesDeleteRaceCategoryResponse, RaceCategoriesUpdateCategoryTranslationsData, RaceCategoriesUpdateCategoryTranslationsResponse, RaceCategoriesGetCategoryTranslationsData, RaceCategoriesGetCategoryTranslationsResponse, RaceRegistrationsReadRaceRegistrationsData, RaceRegistrationsReadRaceRegistrationsResponse, RaceRegistrationsCreateRaceRegistrationData, RaceRegistrationsCreateRaceRegistrationResponse, RaceRegistrationsReadMyRegistrationsData, RaceRegistrationsReadMyRegistrationsResponse, RaceRegistrationsReadRaceRegistrationData, RaceRegistrationsReadRaceRegistrationResponse, RaceRegistrationsUpdateRaceRegistrationData, RaceRegistrationsUpdateRaceRegistrationResponse, RaceRegistrationsDeleteRaceRegistrationData, RaceRegistrationsDeleteRaceRegistrationResponse, RaceResultsReadRaceResultsData, RaceResultsReadRaceResultsResponse, RaceResultsCreateRaceResultData, RaceResultsCreateRaceResultResponse, RaceResultsReadRaceResultData, RaceResultsReadRaceResultResponse, RaceResultsUpdateRaceResultData, RaceResultsUpdateRaceResultResponse, RaceResultsDeleteRaceResultData, RaceResultsDeleteRaceResultResponse, RaceResultsReadRaceResultByRegistrationData, RaceResultsReadRaceResultByRegistrationResponse, RacesSearchRacesData, RacesSearchRacesResponse, RacesGetNearbyRacesData, RacesGetNearbyRacesResponse, RacesGetTrendingRacesData, RacesGetTrendingRacesResponse, RacesGetRecommendedRacesData, RacesGetRecommendedRacesResponse, RacesReadMyOrganizedRacesData, RacesReadMyOrganizedRacesResponse, RacesReadRacesData, RacesReadRacesResponse, RacesCreateRaceData, RacesCreateRaceResponse, RacesGenerateRaceDetailsData, RacesGenerateRaceDetailsResponse, RacesGenerateRaceImageEndpointData, RacesGenerateRaceImageEndpointResponse, RacesReadRaceData, RacesReadRaceResponse, RacesUpdateRaceData, RacesUpdateRaceResponse, RacesDeleteRaceData, RacesDeleteRaceResponse, RacesGetSimilarRacesData, RacesGetSimilarRacesResponse, RacesAutoTagRaceData, RacesAutoTagRaceResponse, RacesEnhanceRaceDescriptionData, RacesEnhanceRaceDescriptionResponse, RacesAskRaceQuestionData, RacesAskRaceQuestionResponse, RacesUpdateRaceTranslationsData, RacesUpdateRaceTranslationsResponse, RacesGetRaceTranslationsData, RacesGetRaceTranslationsResponse, RolesReadRolesData, RolesReadRolesResponse, RolesCreateRoleData, RolesCreateRoleResponse, RolesReadRoleData, RolesReadRoleResponse, RolesUpdateRoleData, RolesUpdateRoleResponse, RolesDeleteRoleData, RolesDeleteRoleResponse, RolesAssignRoleToUserData, RolesAssignRoleToUserResponse, RolesRemoveRoleFromUserData, RolesRemoveRoleFromUserResponse, TagsListTagsResponse, TagsCreateTagData, TagsCreateTagResponse, TagsSetTagsForRaceData, TagsSetTagsForRaceResponse, TagsUpdateTagTranslationsData, TagsUpdateTagTranslationsResponse, TagsGetTagTranslationsData, TagsGetTagTranslationsResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
 
 export class AdminService {
     /**
@@ -22,6 +22,1034 @@ export class AdminService {
             query: {
                 batch_size: data.batchSize
             },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class CmsBlogCategoriesService {
+    /**
+     * Read Blog Categories
+     * Retrieve all blog categories.
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @param data.isActive
+     * @returns BlogCategoriesPublic Successful Response
+     * @throws ApiError
+     */
+    public static readBlogCategories(data: CmsBlogCategoriesReadBlogCategoriesData = {}): CancelablePromise<CmsBlogCategoriesReadBlogCategoriesResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/blog/categories/',
+            query: {
+                skip: data.skip,
+                limit: data.limit,
+                is_active: data.isActive
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Blog Category
+     * Create a new blog category (admin only).
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns BlogCategoryPublic Successful Response
+     * @throws ApiError
+     */
+    public static createBlogCategory(data: CmsBlogCategoriesCreateBlogCategoryData): CancelablePromise<CmsBlogCategoriesCreateBlogCategoryResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/cms/blog/categories/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Blog Category
+     * Get a specific blog category by ID.
+     * @param data The data for the request.
+     * @param data.categoryId
+     * @returns BlogCategoryPublic Successful Response
+     * @throws ApiError
+     */
+    public static readBlogCategory(data: CmsBlogCategoriesReadBlogCategoryData): CancelablePromise<CmsBlogCategoriesReadBlogCategoryResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/blog/categories/{category_id}',
+            path: {
+                category_id: data.categoryId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Blog Category
+     * Update a blog category (admin only).
+     * @param data The data for the request.
+     * @param data.categoryId
+     * @param data.requestBody
+     * @returns BlogCategoryPublic Successful Response
+     * @throws ApiError
+     */
+    public static updateBlogCategory(data: CmsBlogCategoriesUpdateBlogCategoryData): CancelablePromise<CmsBlogCategoriesUpdateBlogCategoryResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/cms/blog/categories/{category_id}',
+            path: {
+                category_id: data.categoryId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Blog Category
+     * Delete a blog category (admin only).
+     * @param data The data for the request.
+     * @param data.categoryId
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteBlogCategory(data: CmsBlogCategoriesDeleteBlogCategoryData): CancelablePromise<CmsBlogCategoriesDeleteBlogCategoryResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/cms/blog/categories/{category_id}',
+            path: {
+                category_id: data.categoryId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Blog Category By Slug
+     * Get a specific blog category by slug.
+     * @param data The data for the request.
+     * @param data.slug
+     * @returns BlogCategoryPublic Successful Response
+     * @throws ApiError
+     */
+    public static readBlogCategoryBySlug(data: CmsBlogCategoriesReadBlogCategoryBySlugData): CancelablePromise<CmsBlogCategoriesReadBlogCategoryBySlugResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/blog/categories/by-slug/{slug}',
+            path: {
+                slug: data.slug
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Blog Category Translation
+     * Update or create a translation for a blog category (admin only).
+     * @param data The data for the request.
+     * @param data.categoryId
+     * @param data.requestBody
+     * @returns BlogCategoryPublic Successful Response
+     * @throws ApiError
+     */
+    public static updateBlogCategoryTranslation(data: CmsBlogCategoriesUpdateBlogCategoryTranslationData): CancelablePromise<CmsBlogCategoriesUpdateBlogCategoryTranslationResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/cms/blog/categories/{category_id}/translations',
+            path: {
+                category_id: data.categoryId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class CmsBlogPostsService {
+    /**
+     * Read Blog Posts
+     * Retrieve all blog posts (public access for published, admin for all).
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @param data.status Filter by status
+     * @param data.categoryId Filter by category
+     * @param data.tagId Filter by tag
+     * @param data.isFeatured Filter by featured
+     * @param data.authorId Filter by author
+     * @returns BlogPostsPublic Successful Response
+     * @throws ApiError
+     */
+    public static readBlogPosts(data: CmsBlogPostsReadBlogPostsData = {}): CancelablePromise<CmsBlogPostsReadBlogPostsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/blog/posts/',
+            query: {
+                skip: data.skip,
+                limit: data.limit,
+                status: data.status,
+                category_id: data.categoryId,
+                tag_id: data.tagId,
+                is_featured: data.isFeatured,
+                author_id: data.authorId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Blog Post
+     * Create a new blog post (admin only).
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns BlogPostPublic Successful Response
+     * @throws ApiError
+     */
+    public static createBlogPost(data: CmsBlogPostsCreateBlogPostData): CancelablePromise<CmsBlogPostsCreateBlogPostResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/cms/blog/posts/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Blog Post
+     * Get a specific blog post by ID.
+     * @param data The data for the request.
+     * @param data.postId
+     * @returns BlogPostPublic Successful Response
+     * @throws ApiError
+     */
+    public static readBlogPost(data: CmsBlogPostsReadBlogPostData): CancelablePromise<CmsBlogPostsReadBlogPostResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/blog/posts/{post_id}',
+            path: {
+                post_id: data.postId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Blog Post
+     * Update a blog post (admin only).
+     * @param data The data for the request.
+     * @param data.postId
+     * @param data.requestBody
+     * @returns BlogPostPublic Successful Response
+     * @throws ApiError
+     */
+    public static updateBlogPost(data: CmsBlogPostsUpdateBlogPostData): CancelablePromise<CmsBlogPostsUpdateBlogPostResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/cms/blog/posts/{post_id}',
+            path: {
+                post_id: data.postId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Blog Post
+     * Delete a blog post (admin only).
+     * @param data The data for the request.
+     * @param data.postId
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteBlogPost(data: CmsBlogPostsDeleteBlogPostData): CancelablePromise<CmsBlogPostsDeleteBlogPostResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/cms/blog/posts/{post_id}',
+            path: {
+                post_id: data.postId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Blog Post By Slug
+     * Get a specific blog post by slug (public access).
+     * @param data The data for the request.
+     * @param data.slug
+     * @returns BlogPostPublic Successful Response
+     * @throws ApiError
+     */
+    public static readBlogPostBySlug(data: CmsBlogPostsReadBlogPostBySlugData): CancelablePromise<CmsBlogPostsReadBlogPostBySlugResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/blog/posts/by-slug/{slug}',
+            path: {
+                slug: data.slug
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Blog Post Translation
+     * Update or create a translation for a blog post (admin only).
+     * @param data The data for the request.
+     * @param data.postId
+     * @param data.requestBody
+     * @returns BlogPostPublic Successful Response
+     * @throws ApiError
+     */
+    public static updateBlogPostTranslation(data: CmsBlogPostsUpdateBlogPostTranslationData): CancelablePromise<CmsBlogPostsUpdateBlogPostTranslationResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/cms/blog/posts/{post_id}/translations',
+            path: {
+                post_id: data.postId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class CmsBlogTagsService {
+    /**
+     * Read Blog Tags
+     * Retrieve all blog tags.
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @param data.isActive
+     * @returns BlogTagsPublic Successful Response
+     * @throws ApiError
+     */
+    public static readBlogTags(data: CmsBlogTagsReadBlogTagsData = {}): CancelablePromise<CmsBlogTagsReadBlogTagsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/blog/tags/',
+            query: {
+                skip: data.skip,
+                limit: data.limit,
+                is_active: data.isActive
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Blog Tag
+     * Create a new blog tag (admin only).
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns BlogTagPublic Successful Response
+     * @throws ApiError
+     */
+    public static createBlogTag(data: CmsBlogTagsCreateBlogTagData): CancelablePromise<CmsBlogTagsCreateBlogTagResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/cms/blog/tags/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Blog Tag
+     * Get a specific blog tag by ID.
+     * @param data The data for the request.
+     * @param data.tagId
+     * @returns BlogTagPublic Successful Response
+     * @throws ApiError
+     */
+    public static readBlogTag(data: CmsBlogTagsReadBlogTagData): CancelablePromise<CmsBlogTagsReadBlogTagResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/blog/tags/{tag_id}',
+            path: {
+                tag_id: data.tagId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Blog Tag
+     * Update a blog tag (admin only).
+     * @param data The data for the request.
+     * @param data.tagId
+     * @param data.requestBody
+     * @returns BlogTagPublic Successful Response
+     * @throws ApiError
+     */
+    public static updateBlogTag(data: CmsBlogTagsUpdateBlogTagData): CancelablePromise<CmsBlogTagsUpdateBlogTagResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/cms/blog/tags/{tag_id}',
+            path: {
+                tag_id: data.tagId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Blog Tag
+     * Delete a blog tag (admin only).
+     * @param data The data for the request.
+     * @param data.tagId
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteBlogTag(data: CmsBlogTagsDeleteBlogTagData): CancelablePromise<CmsBlogTagsDeleteBlogTagResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/cms/blog/tags/{tag_id}',
+            path: {
+                tag_id: data.tagId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Blog Tag By Slug
+     * Get a specific blog tag by slug.
+     * @param data The data for the request.
+     * @param data.slug
+     * @returns BlogTagPublic Successful Response
+     * @throws ApiError
+     */
+    public static readBlogTagBySlug(data: CmsBlogTagsReadBlogTagBySlugData): CancelablePromise<CmsBlogTagsReadBlogTagBySlugResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/blog/tags/by-slug/{slug}',
+            path: {
+                slug: data.slug
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Blog Tag Translation
+     * Update or create a translation for a blog tag (admin only).
+     * @param data The data for the request.
+     * @param data.tagId
+     * @param data.requestBody
+     * @returns BlogTagPublic Successful Response
+     * @throws ApiError
+     */
+    public static updateBlogTagTranslation(data: CmsBlogTagsUpdateBlogTagTranslationData): CancelablePromise<CmsBlogTagsUpdateBlogTagTranslationResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/cms/blog/tags/{tag_id}/translations',
+            path: {
+                tag_id: data.tagId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class CmsMediaFoldersService {
+    /**
+     * Read Media Folders
+     * Retrieve all media folders (admin only).
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @param data.parentId Filter by parent folder
+     * @returns MediaFoldersPublic Successful Response
+     * @throws ApiError
+     */
+    public static readMediaFolders(data: CmsMediaFoldersReadMediaFoldersData = {}): CancelablePromise<CmsMediaFoldersReadMediaFoldersResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/media/folders/',
+            query: {
+                skip: data.skip,
+                limit: data.limit,
+                parent_id: data.parentId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Media Folder
+     * Create a new media folder (admin only).
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns MediaFolderPublic Successful Response
+     * @throws ApiError
+     */
+    public static createMediaFolder(data: CmsMediaFoldersCreateMediaFolderData): CancelablePromise<CmsMediaFoldersCreateMediaFolderResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/cms/media/folders/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Media Folder
+     * Get a specific media folder by ID (admin only).
+     * @param data The data for the request.
+     * @param data.folderId
+     * @returns MediaFolderPublic Successful Response
+     * @throws ApiError
+     */
+    public static readMediaFolder(data: CmsMediaFoldersReadMediaFolderData): CancelablePromise<CmsMediaFoldersReadMediaFolderResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/media/folders/{folder_id}',
+            path: {
+                folder_id: data.folderId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Media Folder
+     * Update a media folder (admin only).
+     * @param data The data for the request.
+     * @param data.folderId
+     * @param data.requestBody
+     * @returns MediaFolderPublic Successful Response
+     * @throws ApiError
+     */
+    public static updateMediaFolder(data: CmsMediaFoldersUpdateMediaFolderData): CancelablePromise<CmsMediaFoldersUpdateMediaFolderResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/cms/media/folders/{folder_id}',
+            path: {
+                folder_id: data.folderId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Media Folder
+     * Delete a media folder (admin only).
+     * @param data The data for the request.
+     * @param data.folderId
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteMediaFolder(data: CmsMediaFoldersDeleteMediaFolderData): CancelablePromise<CmsMediaFoldersDeleteMediaFolderResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/cms/media/folders/{folder_id}',
+            path: {
+                folder_id: data.folderId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class CmsMenusService {
+    /**
+     * Read Menus
+     * Retrieve all menus.
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @param data.location Filter by location
+     * @returns MenusPublic Successful Response
+     * @throws ApiError
+     */
+    public static readMenus(data: CmsMenusReadMenusData = {}): CancelablePromise<CmsMenusReadMenusResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/menus/',
+            query: {
+                skip: data.skip,
+                limit: data.limit,
+                location: data.location
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Menu
+     * Create a new menu (admin only).
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns MenuPublic Successful Response
+     * @throws ApiError
+     */
+    public static createMenu(data: CmsMenusCreateMenuData): CancelablePromise<CmsMenusCreateMenuResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/cms/menus/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Menu
+     * Get a specific menu by ID.
+     * @param data The data for the request.
+     * @param data.menuId
+     * @returns MenuPublic Successful Response
+     * @throws ApiError
+     */
+    public static readMenu(data: CmsMenusReadMenuData): CancelablePromise<CmsMenusReadMenuResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/menus/{menu_id}',
+            path: {
+                menu_id: data.menuId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Menu
+     * Update a menu (admin only).
+     * @param data The data for the request.
+     * @param data.menuId
+     * @param data.requestBody
+     * @returns MenuPublic Successful Response
+     * @throws ApiError
+     */
+    public static updateMenu(data: CmsMenusUpdateMenuData): CancelablePromise<CmsMenusUpdateMenuResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/cms/menus/{menu_id}',
+            path: {
+                menu_id: data.menuId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Menu
+     * Delete a menu (admin only).
+     * @param data The data for the request.
+     * @param data.menuId
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteMenu(data: CmsMenusDeleteMenuData): CancelablePromise<CmsMenusDeleteMenuResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/cms/menus/{menu_id}',
+            path: {
+                menu_id: data.menuId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Menu By Slug
+     * Get a specific menu by slug.
+     * @param data The data for the request.
+     * @param data.slug
+     * @returns MenuPublic Successful Response
+     * @throws ApiError
+     */
+    public static readMenuBySlug(data: CmsMenusReadMenuBySlugData): CancelablePromise<CmsMenusReadMenuBySlugResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/menus/by-slug/{slug}',
+            path: {
+                slug: data.slug
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Menu Items
+     * Get all items for a menu.
+     * @param data The data for the request.
+     * @param data.menuId
+     * @param data.parentId Filter by parent
+     * @returns MenuItemsPublic Successful Response
+     * @throws ApiError
+     */
+    public static readMenuItems(data: CmsMenusReadMenuItemsData): CancelablePromise<CmsMenusReadMenuItemsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/menus/{menu_id}/items',
+            path: {
+                menu_id: data.menuId
+            },
+            query: {
+                parent_id: data.parentId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Menu Item
+     * Create a new menu item (admin only).
+     * @param data The data for the request.
+     * @param data.menuId
+     * @param data.requestBody
+     * @returns MenuItemPublic Successful Response
+     * @throws ApiError
+     */
+    public static createMenuItem(data: CmsMenusCreateMenuItemData): CancelablePromise<CmsMenusCreateMenuItemResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/cms/menus/{menu_id}/items',
+            path: {
+                menu_id: data.menuId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Menu Item
+     * Get a specific menu item by ID.
+     * @param data The data for the request.
+     * @param data.itemId
+     * @returns MenuItemPublic Successful Response
+     * @throws ApiError
+     */
+    public static readMenuItem(data: CmsMenusReadMenuItemData): CancelablePromise<CmsMenusReadMenuItemResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/menus/items/{item_id}',
+            path: {
+                item_id: data.itemId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Menu Item
+     * Update a menu item (admin only).
+     * @param data The data for the request.
+     * @param data.itemId
+     * @param data.requestBody
+     * @returns MenuItemPublic Successful Response
+     * @throws ApiError
+     */
+    public static updateMenuItem(data: CmsMenusUpdateMenuItemData): CancelablePromise<CmsMenusUpdateMenuItemResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/cms/menus/items/{item_id}',
+            path: {
+                item_id: data.itemId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Menu Item
+     * Delete a menu item (admin only).
+     * @param data The data for the request.
+     * @param data.itemId
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteMenuItem(data: CmsMenusDeleteMenuItemData): CancelablePromise<CmsMenusDeleteMenuItemResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/cms/menus/items/{item_id}',
+            path: {
+                item_id: data.itemId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Menu Item Translation
+     * Update or create a translation for a menu item (admin only).
+     * @param data The data for the request.
+     * @param data.itemId
+     * @param data.requestBody
+     * @returns MenuItemPublic Successful Response
+     * @throws ApiError
+     */
+    public static updateMenuItemTranslation(data: CmsMenusUpdateMenuItemTranslationData): CancelablePromise<CmsMenusUpdateMenuItemTranslationResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/cms/menus/items/{item_id}/translations',
+            path: {
+                item_id: data.itemId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class CmsPagesService {
+    /**
+     * Read Pages
+     * Retrieve all CMS pages (admin only).
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @param data.status Filter by status
+     * @param data.isHomepage Filter by homepage
+     * @returns PagesPublic Successful Response
+     * @throws ApiError
+     */
+    public static readPages(data: CmsPagesReadPagesData = {}): CancelablePromise<CmsPagesReadPagesResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/pages/',
+            query: {
+                skip: data.skip,
+                limit: data.limit,
+                status: data.status,
+                is_homepage: data.isHomepage
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Page
+     * Create a new CMS page (admin only).
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns PagePublic Successful Response
+     * @throws ApiError
+     */
+    public static createPage(data: CmsPagesCreatePageData): CancelablePromise<CmsPagesCreatePageResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/cms/pages/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Page
+     * Get a specific CMS page by ID (admin only).
+     * @param data The data for the request.
+     * @param data.pageId
+     * @returns PagePublic Successful Response
+     * @throws ApiError
+     */
+    public static readPage(data: CmsPagesReadPageData): CancelablePromise<CmsPagesReadPageResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/pages/{page_id}',
+            path: {
+                page_id: data.pageId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Page
+     * Update a CMS page (admin only).
+     * @param data The data for the request.
+     * @param data.pageId
+     * @param data.requestBody
+     * @returns PagePublic Successful Response
+     * @throws ApiError
+     */
+    public static updatePage(data: CmsPagesUpdatePageData): CancelablePromise<CmsPagesUpdatePageResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/cms/pages/{page_id}',
+            path: {
+                page_id: data.pageId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Page
+     * Delete a CMS page (admin only).
+     * @param data The data for the request.
+     * @param data.pageId
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deletePage(data: CmsPagesDeletePageData): CancelablePromise<CmsPagesDeletePageResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/cms/pages/{page_id}',
+            path: {
+                page_id: data.pageId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Page By Slug
+     * Get a specific CMS page by slug (public access).
+     * @param data The data for the request.
+     * @param data.slug
+     * @returns PagePublic Successful Response
+     * @throws ApiError
+     */
+    public static readPageBySlug(data: CmsPagesReadPageBySlugData): CancelablePromise<CmsPagesReadPageBySlugResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/cms/pages/by-slug/{slug}',
+            path: {
+                slug: data.slug
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Page Translation
+     * Update or create a translation for a page (admin only).
+     * @param data The data for the request.
+     * @param data.pageId
+     * @param data.requestBody
+     * @returns PagePublic Successful Response
+     * @throws ApiError
+     */
+    public static updatePageTranslation(data: CmsPagesUpdatePageTranslationData): CancelablePromise<CmsPagesUpdatePageTranslationResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/cms/pages/{page_id}/translations',
+            path: {
+                page_id: data.pageId
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: 'Validation Error'
             }
