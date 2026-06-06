@@ -37,9 +37,9 @@ def login_access_token(
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     elif not user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
-    elif not user.is_verified:
+    elif not user.is_verified and not user.is_superuser:
         raise HTTPException(
-            status_code=403,
+            status_code=400,
             detail="Please verify your email address before logging in. Check your inbox for the verification link."
         )
     
